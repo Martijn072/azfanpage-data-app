@@ -1,5 +1,5 @@
 
-import { Clock, User } from "lucide-react";
+import { User } from "lucide-react";
 
 interface Article {
   id: number;
@@ -56,12 +56,7 @@ export const NewsCard = ({ article }: NewsCardProps) => {
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              <span>{article.readTime}</span>
-            </div>
-            <span>•</span>
+          <div className="flex items-center">
             <span>{article.publishedAt}</span>
           </div>
         </div>
