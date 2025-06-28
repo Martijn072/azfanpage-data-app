@@ -132,8 +132,8 @@ const ArticleDetail = () => {
             {article.title}
           </h1>
 
-          {/* Meta info */}
-          <div className="flex items-center gap-6 text-premium-gray-600 text-sm border-b border-premium-gray-200 pb-4">
+          {/* Meta info - Improved mobile layout */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-premium-gray-600 text-sm border-b border-premium-gray-200 pb-4">
             <div className="flex items-center gap-1">
               <User className="w-4 h-4" />
               <span>{article.author}</span>
