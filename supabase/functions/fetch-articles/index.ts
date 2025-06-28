@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 const corsHeaders = {
@@ -23,6 +22,63 @@ interface WordPressPost {
   };
 }
 
+const transformPost = (post: WordPressPost) => {
+  const author = post._embedded?.author?.[0]?.name || 'AZFanpage Redactie';
+  const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || 
+    'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=600&fit=crop';
+  
+  // Get category name from embedded terms
+  const categoryTerms = post._embedded?.['wp:term']?.find(termGroup => 
+    termGroup.some(term => term.taxonomy === 'category')
+  );
+  const category = categoryTerms?.find(term => term.taxonomy === 'category')?.name || 'Nieuws';
+  
+  // Check if it's breaking news (based on tags or recent publication)
+  const tagTerms = post._embedded?.['wp:term']?.find(termGroup => 
+    termGroup.some(term => term.taxonomy === 'post_tag')
+  );
+  const tags = tagTerms?.filter(term => term.taxonomy === 'post_tag').map(term => term.name) || [];
+  const isBreaking = tags.some(tag => 
+    tag.toLowerCase().includes('breaking') || 
+    tag.toLowerCase().includes('laatste') ||
+    tag.toLowerCase().includes('urgent')
+  ) || (new Date().getTime() - new Date(post.date).getTime()) < 2 * 60 * 60 * 1000; // 2 hours
+
+  // Clean excerpt HTML
+  const excerpt = post.excerpt.rendered
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/&[^;]+;/g, ' ') // Remove HTML entities
+    .trim();
+
+  // Format date to Dutch
+  const publishedDate = new Date(post.date);
+  const now = new Date();
+  const diffHours = Math.floor((now.getTime() - publishedDate.getTime()) / (1000 * 60 * 60));
+  
+  let publishedAt: string;
+  if (diffHours < 1) {
+    publishedAt = 'Zojuist';
+  } else if (diffHours < 24) {
+    publishedAt = `${diffHours} uur geleden`;
+  } else {
+    const diffDays = Math.floor(diffHours / 24);
+    publishedAt = diffDays === 1 ? '1 dag geleden' : `${diffDays} dagen geleden`;
+  }
+
+  return {
+    id: post.id,
+    title: post.title.rendered.replace(/&[^;]+;/g, ' ').trim(),
+    excerpt: excerpt,
+    content: post.content.rendered, // Full content for article detail
+    author: author,
+    publishedAt: publishedAt,
+    imageUrl: featuredImage,
+    category: category,
+    isBreaking: isBreaking,
+    readTime: `${Math.ceil(post.content.rendered.split(' ').length / 200)} min`
+  };
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -30,9 +86,46 @@ serve(async (req) => {
   }
 
   try {
+    const body = await req.json().catch(() => ({}));
+    const { articleId } = body;
+
+    // If articleId is provided, fetch single article
+    if (articleId) {
+      console.log(`Fetching single article ${articleId} from azfanpage.nl WordPress API...`);
+      
+      const response = await fetch(
+        `https://azfanpage.nl/wp-json/wp/v2/posts/${articleId}?_embed`,
+        {
+          headers: {
+            'User-Agent': 'AZFanpage-App/1.0',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.error('Failed to fetch article from WordPress API:', response.status, response.statusText);
+        throw new Error(`WordPress API returned ${response.status}`);
+      }
+
+      const post: WordPressPost = await response.json();
+      console.log(`Successfully fetched article ${articleId}`);
+
+      const article = transformPost(post);
+
+      return new Response(
+        JSON.stringify({ article }),
+        { 
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+    }
+
+    // Otherwise, fetch list of articles
     console.log('Fetching articles from azfanpage.nl WordPress API...');
     
-    // Fetch posts with embedded author and featured media
     const response = await fetch(
       'https://azfanpage.nl/wp-json/wp/v2/posts?_embed&per_page=20&orderby=date&order=desc',
       {
@@ -50,62 +143,7 @@ serve(async (req) => {
     const posts: WordPressPost[] = await response.json();
     console.log(`Successfully fetched ${posts.length} articles`);
 
-    // Transform WordPress posts to our Article interface
-    const articles = posts.map((post) => {
-      const author = post._embedded?.author?.[0]?.name || 'AZFanpage Redactie';
-      const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || 
-        'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=600&fit=crop';
-      
-      // Get category name from embedded terms
-      const categoryTerms = post._embedded?.['wp:term']?.find(termGroup => 
-        termGroup.some(term => term.taxonomy === 'category')
-      );
-      const category = categoryTerms?.find(term => term.taxonomy === 'category')?.name || 'Nieuws';
-      
-      // Check if it's breaking news (based on tags or recent publication)
-      const tagTerms = post._embedded?.['wp:term']?.find(termGroup => 
-        termGroup.some(term => term.taxonomy === 'post_tag')
-      );
-      const tags = tagTerms?.filter(term => term.taxonomy === 'post_tag').map(term => term.name) || [];
-      const isBreaking = tags.some(tag => 
-        tag.toLowerCase().includes('breaking') || 
-        tag.toLowerCase().includes('laatste') ||
-        tag.toLowerCase().includes('urgent')
-      ) || (new Date().getTime() - new Date(post.date).getTime()) < 2 * 60 * 60 * 1000; // 2 hours
-
-      // Clean excerpt HTML
-      const excerpt = post.excerpt.rendered
-        .replace(/<[^>]*>/g, '') // Remove HTML tags
-        .replace(/&[^;]+;/g, ' ') // Remove HTML entities
-        .trim();
-
-      // Format date to Dutch
-      const publishedDate = new Date(post.date);
-      const now = new Date();
-      const diffHours = Math.floor((now.getTime() - publishedDate.getTime()) / (1000 * 60 * 60));
-      
-      let publishedAt: string;
-      if (diffHours < 1) {
-        publishedAt = 'Zojuist';
-      } else if (diffHours < 24) {
-        publishedAt = `${diffHours} uur geleden`;
-      } else {
-        const diffDays = Math.floor(diffHours / 24);
-        publishedAt = diffDays === 1 ? '1 dag geleden' : `${diffDays} dagen geleden`;
-      }
-
-      return {
-        id: post.id,
-        title: post.title.rendered.replace(/&[^;]+;/g, ' ').trim(),
-        excerpt: excerpt,
-        author: author,
-        publishedAt: publishedAt,
-        imageUrl: featuredImage,
-        category: category,
-        isBreaking: isBreaking,
-        readTime: `${Math.ceil(post.content.rendered.split(' ').length / 200)} min`
-      };
-    });
+    const articles = posts.map(transformPost);
 
     return new Response(
       JSON.stringify({ articles }),
