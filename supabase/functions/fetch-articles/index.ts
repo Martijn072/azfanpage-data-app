@@ -87,7 +87,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const { articleId } = body;
+    const { articleId, page = 1, perPage = 20, search = '', category = '' } = body;
 
     // If articleId is provided, fetch single article
     if (articleId) {
@@ -123,11 +123,32 @@ serve(async (req) => {
       );
     }
 
-    // Otherwise, fetch list of articles
-    console.log('Fetching articles from azfanpage.nl WordPress API...');
+    // Otherwise, fetch list of articles with pagination and search
+    console.log(`Fetching articles from azfanpage.nl WordPress API... Page: ${page}, Per page: ${perPage}`);
     
+    // Build query parameters
+    const queryParams = new URLSearchParams({
+      '_embed': 'true',
+      'per_page': perPage.toString(),
+      'page': page.toString(),
+      'orderby': 'date',
+      'order': 'desc'
+    });
+
+    // Add search parameter if provided
+    if (search) {
+      queryParams.append('search', search);
+    }
+
+    // Add category filter if provided
+    if (category && category !== 'Alle') {
+      // Note: This would require fetching categories first to get the ID
+      // For now, we'll skip category filtering in the API call
+      console.log(`Category filter requested: ${category}`);
+    }
+
     const response = await fetch(
-      'https://azfanpage.nl/wp-json/wp/v2/posts?_embed&per_page=20&orderby=date&order=desc',
+      `https://azfanpage.nl/wp-json/wp/v2/posts?${queryParams.toString()}`,
       {
         headers: {
           'User-Agent': 'AZFanpage-App/1.0',
@@ -140,13 +161,26 @@ serve(async (req) => {
       throw new Error(`WordPress API returned ${response.status}`);
     }
 
+    // Get total count from headers
+    const totalPosts = parseInt(response.headers.get('X-WP-Total') || '0');
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
+
     const posts: WordPressPost[] = await response.json();
-    console.log(`Successfully fetched ${posts.length} articles`);
+    console.log(`Successfully fetched ${posts.length} articles for page ${page}`);
 
     const articles = posts.map(transformPost);
 
     return new Response(
-      JSON.stringify({ articles }),
+      JSON.stringify({ 
+        articles,
+        pagination: {
+          currentPage: page,
+          totalPages: totalPages,
+          totalPosts: totalPosts,
+          hasNextPage: page < totalPages,
+          hasPreviousPage: page > 1
+        }
+      }),
       { 
         headers: { 
           ...corsHeaders, 

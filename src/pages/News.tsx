@@ -1,24 +1,62 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { NewsCard } from "@/components/NewsCard";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { ArticlesSkeleton } from "@/components/ArticlesSkeleton";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { SearchAndFilter } from "@/components/SearchAndFilter";
+import { ArticlePagination } from "@/components/ArticlePagination";
 import { useArticles } from "@/hooks/useArticles";
-import { Button } from "@/components/ui/button";
 
 const News = () => {
   const [activeTab, setActiveTab] = useState("news");
-  const [displayCount, setDisplayCount] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Alle");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   
-  const { data: articles, isLoading, error, refetch } = useArticles();
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1); // Reset to first page when searching
+    }, 500);
 
-  const displayedArticles = articles?.slice(0, displayCount) || [];
-  const hasMore = articles && articles.length > displayCount;
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
-  const handleLoadMore = () => {
-    setDisplayCount(prev => prev + 10);
+  const { data, isLoading, error, refetch } = useArticles(
+    currentPage, 
+    20, 
+    debouncedSearch, 
+    selectedCategory === 'Alle' ? '' : selectedCategory
+  );
+
+  const articles = data?.articles || [];
+  const pagination = data?.pagination;
+
+  // Get unique categories from articles for filter
+  const categories = ['Alle', ...Array.from(new Set(articles.map(article => article.category)))];
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("Alle");
+    setCurrentPage(1);
   };
 
   return (
@@ -35,45 +73,48 @@ const News = () => {
           </p>
         </div>
 
+        {/* Search and Filter */}
+        <SearchAndFilter
+          searchQuery={searchQuery}
+          selectedCategory={selectedCategory}
+          categories={categories}
+          onSearchChange={handleSearchChange}
+          onCategoryChange={handleCategoryChange}
+          onClearFilters={handleClearFilters}
+        />
+
         {/* Content */}
         {isLoading && <ArticlesSkeleton />}
         
         {error && <ErrorMessage onRetry={() => refetch()} />}
         
-        {articles && !isLoading && !error && (
+        {data && !isLoading && !error && (
           <>
             {/* News Feed */}
             <div className="space-y-6">
-              {displayedArticles.map((article) => (
+              {articles.map((article) => (
                 <NewsCard key={article.id} article={article} />
               ))}
             </div>
 
-            {displayedArticles.length === 0 && (
+            {articles.length === 0 && (
               <div className="card-premium p-8 text-center">
                 <p className="body-premium text-premium-gray-600">
-                  Geen artikelen gevonden.
+                  {searchQuery || selectedCategory !== 'Alle' 
+                    ? 'Geen artikelen gevonden voor de huidige filters.'
+                    : 'Geen artikelen gevonden.'
+                  }
                 </p>
               </div>
             )}
 
-            {/* Load More Button */}
-            {hasMore && (
-              <div className="mt-8 text-center">
-                <Button 
-                  onClick={handleLoadMore}
-                  className="bg-az-red hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 hover:shadow-md hover:scale-105"
-                >
-                  Laad meer artikelen
-                </Button>
-              </div>
-            )}
-
-            {/* Total count info */}
-            {articles.length > 0 && (
-              <div className="mt-4 text-center text-sm text-premium-gray-500">
-                {displayedArticles.length} van {articles.length} artikelen getoond
-              </div>
+            {/* Pagination */}
+            {pagination && articles.length > 0 && (
+              <ArticlePagination
+                pagination={pagination}
+                onPageChange={handlePageChange}
+                isLoading={isLoading}
+              />
             )}
           </>
         )}
