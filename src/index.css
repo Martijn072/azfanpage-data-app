@@ -116,10 +116,6 @@
     @apply prose prose-lg prose-gray max-w-none;
   }
 
-  .article-content.dark\:prose-invert {
-    @apply dark:prose-invert;
-  }
-
   .article-content h1 {
     @apply headline-premium text-headline-xl mb-6 mt-8 first:mt-0;
   }

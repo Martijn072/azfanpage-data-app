@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, User, Calendar, Tag, Link, Share2, MessageCircle } from "lucide-react";
@@ -150,7 +151,7 @@ const ArticleDetail = () => {
         </header>
 
         {/* Article content with enhanced styling */}
-        <div className="article-content dark:prose-invert">
+        <div className="article-content prose-invert:dark">
           <div 
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
