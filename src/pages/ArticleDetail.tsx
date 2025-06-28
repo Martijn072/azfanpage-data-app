@@ -64,7 +64,7 @@ const ArticleDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-premium-gray-50">
+      <div className="min-h-screen bg-premium-gray-50 dark:bg-gray-900">
         <Header />
         <div className="px-4 py-6">
           <ArticlesSkeleton />
@@ -76,7 +76,7 @@ const ArticleDetail = () => {
 
   if (error || !article) {
     return (
-      <div className="min-h-screen bg-premium-gray-50">
+      <div className="min-h-screen bg-premium-gray-50 dark:bg-gray-900">
         <Header />
         <div className="px-4 py-6">
           <ErrorMessage onRetry={() => refetch()} />
@@ -87,15 +87,15 @@ const ArticleDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-premium-gray-50">
+    <div className="min-h-screen bg-premium-gray-50 dark:bg-gray-900">
       <Header />
       
       {/* Back button section */}
-      <div className="bg-white border-b border-premium-gray-200">
+      <div className="bg-white dark:bg-gray-800 border-b border-premium-gray-200 dark:border-gray-700">
         <div className="px-4 py-4">
           <button
             onClick={() => navigate('/nieuws')}
-            className="flex items-center gap-2 text-premium-gray-600 hover:text-az-red transition-colors"
+            className="flex items-center gap-2 text-premium-gray-600 dark:text-gray-300 hover:text-az-red dark:hover:text-az-red transition-colors"
           >
             <span>← Terug naar nieuws</span>
           </button>
@@ -128,12 +128,12 @@ const ArticleDetail = () => {
             </span>
           </div>
 
-          <h1 className="headline-premium text-headline-xl mb-4">
+          <h1 className="headline-premium text-headline-xl mb-4 text-az-black dark:text-white">
             {article.title}
           </h1>
 
           {/* Meta info - Improved mobile layout */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-premium-gray-600 text-sm border-b border-premium-gray-200 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-premium-gray-600 dark:text-gray-300 text-sm border-b border-premium-gray-200 dark:border-gray-700 pb-4">
             <div className="flex items-center gap-1">
               <User className="w-4 h-4" />
               <span>{article.author}</span>
@@ -150,19 +150,19 @@ const ArticleDetail = () => {
         </header>
 
         {/* Article content with enhanced styling */}
-        <div className="article-content">
+        <div className="article-content dark:prose-invert">
           <div 
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
         </div>
 
         {/* Enhanced social sharing section */}
-        <div className="mt-8 pt-6 border-t border-premium-gray-200">
+        <div className="mt-8 pt-6 border-t border-premium-gray-200 dark:border-gray-700">
           <div className="text-center mb-6">
-            <h3 className="headline-premium text-headline-sm mb-2 text-az-black">
+            <h3 className="headline-premium text-headline-sm mb-2 text-az-black dark:text-white">
               Deel dit artikel
             </h3>
-            <p className="body-premium text-body-md text-premium-gray-600">
+            <p className="body-premium text-body-md text-premium-gray-600 dark:text-gray-300">
               Vond je dit artikel interessant? Deel het met anderen!
             </p>
           </div>
@@ -171,7 +171,7 @@ const ArticleDetail = () => {
             <Button
               onClick={handleCopyLink}
               variant="outline"
-              className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-premium-gray-200 hover:border-az-red hover:bg-az-red hover:text-white transition-all duration-200 group min-w-[160px]"
+              className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 border-2 border-premium-gray-200 dark:border-gray-600 hover:border-az-red hover:bg-az-red hover:text-white transition-all duration-200 group min-w-[160px] text-gray-900 dark:text-gray-100"
             >
               <Link className="w-5 h-5 transition-transform group-hover:scale-110" />
               <span className="font-medium">Link kopiëren</span>
@@ -188,7 +188,7 @@ const ArticleDetail = () => {
             <Button
               onClick={handleGenericShare}
               variant="outline"
-              className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-premium-gray-200 hover:border-az-red hover:bg-premium-gray-50 transition-all duration-200 group min-w-[160px]"
+              className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 border-2 border-premium-gray-200 dark:border-gray-600 hover:border-az-red hover:bg-premium-gray-50 dark:hover:bg-gray-700 transition-all duration-200 group min-w-[160px] text-gray-900 dark:text-gray-100"
             >
               <Share2 className="w-5 h-5 transition-transform group-hover:scale-110" />
               <span className="font-medium">Delen</span>
