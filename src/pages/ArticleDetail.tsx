@@ -95,10 +95,9 @@ const ArticleDetail = () => {
           </div>
         </header>
 
-        {/* Article content */}
-        <div className="prose prose-lg max-w-none">
+        {/* Article content with enhanced styling */}
+        <div className="article-content">
           <div 
-            className="body-premium text-body-lg leading-relaxed"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
         </div>
