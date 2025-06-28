@@ -30,9 +30,9 @@ export const NewsCard = ({ article }: NewsCardProps) => {
   };
 
   return (
-    <article className="card-premium overflow-hidden animate-slide-up">
+    <article className="card-premium overflow-hidden animate-slide-up w-full max-w-full">
       {/* Image */}
-      <div className="relative aspect-[16/9] overflow-hidden cursor-pointer" onClick={handleTitleClick}>
+      <div className="relative aspect-[16/9] overflow-hidden cursor-pointer w-full" onClick={handleTitleClick}>
         <img 
           src={article.imageUrl} 
           alt={article.title}
@@ -49,42 +49,42 @@ export const NewsCard = ({ article }: NewsCardProps) => {
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-6 w-full max-w-full">
         <h2 
-          className="headline-premium text-headline-md mb-3 hover:text-az-red transition-colors cursor-pointer"
+          className="headline-premium text-headline-md mb-3 hover:text-az-red transition-colors cursor-pointer break-words"
           onClick={handleTitleClick}
         >
           {article.title}
         </h2>
         
-        <p className="body-premium text-body-md text-premium-gray-600 mb-4 line-clamp-2">
+        <p className="body-premium text-body-md text-premium-gray-600 mb-4 line-clamp-2 break-words">
           {article.excerpt}
         </p>
 
         {/* Meta info */}
-        <div className="flex items-center justify-between text-sm text-premium-gray-500">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between text-sm text-premium-gray-500 flex-wrap gap-2">
+          <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center gap-1">
-              <User className="w-4 h-4" />
-              <span>{article.author}</span>
+              <User className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">{article.author}</span>
             </div>
           </div>
           
           <div className="flex items-center">
-            <span>{article.publishedAt}</span>
+            <span className="whitespace-nowrap">{article.publishedAt}</span>
           </div>
         </div>
       </div>
       
       {/* Interaction strip */}
-      <div className="px-6 pb-4">
+      <div className="px-6 pb-4 w-full max-w-full">
         <div className="flex items-center justify-start pt-4 border-t border-premium-gray-100">
           <button 
             onClick={handleReadMore}
             className="flex items-center gap-2 bg-az-red hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-md hover:scale-105 group"
           >
-            <span className="text-sm">Lees meer</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+            <span className="text-sm whitespace-nowrap">Lees meer</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 flex-shrink-0" />
           </button>
         </div>
       </div>

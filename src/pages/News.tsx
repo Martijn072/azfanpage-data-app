@@ -67,10 +67,10 @@ const News = () => {
   };
 
   return (
-    <div className="min-h-screen bg-premium-gray-50">
+    <div className="min-h-screen bg-premium-gray-50 overflow-x-hidden">
       <Header />
       
-      <div className="px-4 pb-20">
+      <div className="px-4 pb-20 max-w-full">
         {/* Hero Section */}
         <div className="pt-8 pb-8">
           <div className="max-w-4xl">
@@ -101,14 +101,14 @@ const News = () => {
         {data && !isLoading && !error && (
           <>
             {/* News Feed */}
-            <div className="space-y-6">
+            <div className="space-y-6 max-w-full">
               {articles.map((article) => (
                 <NewsCard key={article.id} article={article} />
               ))}
             </div>
 
             {articles.length === 0 && (
-              <div className="card-premium p-12 text-center">
+              <div className="card-premium p-12 text-center max-w-full">
                 <div className="max-w-md mx-auto">
                   <p className="body-premium text-body-lg text-premium-gray-600 mb-2">
                     {searchQuery || selectedCategory !== 'Alle' 
