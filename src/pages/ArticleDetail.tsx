@@ -1,13 +1,57 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Calendar, Tag } from "lucide-react";
+import { ArrowLeft, User, Calendar, Tag, Link, Share2, MessageCircle } from "lucide-react";
 import { useArticleDetail } from "@/hooks/useArticleDetail";
 import { ArticlesSkeleton } from "@/components/ArticlesSkeleton";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 const ArticleDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: article, isLoading, error, refetch } = useArticleDetail(id!);
+  const { toast } = useToast();
+
+  const handleCopyLink = async () => {
+    try {
+      const url = window.location.href;
+      await navigator.clipboard.writeText(url);
+      toast({
+        title: "Link gekopieerd!",
+        description: "De artikel link is gekopieerd naar je klembord.",
+      });
+    } catch (err) {
+      console.error('Failed to copy link:', err);
+      toast({
+        title: "Fout",
+        description: "Kon de link niet kopiëren. Probeer het opnieuw.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleWhatsAppShare = () => {
+    const url = window.location.href;
+    const text = `${article?.title} - ${url}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const handleGenericShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: article?.title,
+          text: article?.excerpt,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      handleCopyLink();
+    }
+  };
 
   if (isLoading) {
     return (
@@ -98,16 +142,43 @@ const ArticleDetail = () => {
           />
         </div>
 
-        {/* Social sharing */}
+        {/* Enhanced social sharing section */}
         <div className="mt-8 pt-6 border-t border-premium-gray-200">
-          <div className="flex items-center gap-4">
-            <span className="text-premium-gray-600 font-medium">Delen:</span>
-            <button className="flex items-center gap-2 text-premium-gray-600 hover:text-az-red transition-colors">
-              🔗 Link kopiëren
-            </button>
-            <button className="flex items-center gap-2 text-premium-gray-600 hover:text-az-red transition-colors">
-              📱 WhatsApp
-            </button>
+          <div className="text-center mb-6">
+            <h3 className="headline-premium text-headline-sm mb-2 text-az-black">
+              Deel dit artikel
+            </h3>
+            <p className="body-premium text-body-md text-premium-gray-600">
+              Vond je dit artikel interessant? Deel het met anderen!
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button
+              onClick={handleCopyLink}
+              variant="outline"
+              className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-premium-gray-200 hover:border-az-red hover:bg-az-red hover:text-white transition-all duration-200 group min-w-[160px]"
+            >
+              <Link className="w-5 h-5 transition-transform group-hover:scale-110" />
+              <span className="font-medium">Link kopiëren</span>
+            </Button>
+            
+            <Button
+              onClick={handleWhatsAppShare}
+              className="flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white transition-all duration-200 hover:shadow-lg hover:scale-105 group min-w-[160px]"
+            >
+              <MessageCircle className="w-5 h-5 transition-transform group-hover:scale-110" />
+              <span className="font-medium">WhatsApp</span>
+            </Button>
+            
+            <Button
+              onClick={handleGenericShare}
+              variant="outline"
+              className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-premium-gray-200 hover:border-az-red hover:bg-premium-gray-50 transition-all duration-200 group min-w-[160px]"
+            >
+              <Share2 className="w-5 h-5 transition-transform group-hover:scale-110" />
+              <span className="font-medium">Delen</span>
+            </Button>
           </div>
         </div>
       </article>
