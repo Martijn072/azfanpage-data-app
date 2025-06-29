@@ -14,7 +14,7 @@ export const EredivisieStandings = () => {
 
   if (isLoading) {
     return (
-      <Card className="card-premium dark:bg-gray-800 dark:border-gray-700">
+      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
         <CardHeader>
           <CardTitle className="text-az-black dark:text-white">Eredivisie Stand</CardTitle>
         </CardHeader>
@@ -30,7 +30,7 @@ export const EredivisieStandings = () => {
   }
 
   return (
-    <Card className="card-premium dark:bg-gray-800 dark:border-gray-700">
+    <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
       <CardHeader>
         <CardTitle className="text-az-black dark:text-white">Eredivisie Stand Seizoen 2024-2025</CardTitle>
       </CardHeader>
@@ -42,10 +42,10 @@ export const EredivisieStandings = () => {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto bg-white">
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="bg-white hover:bg-white">
                   <TableHead className="w-12">#</TableHead>
                   <TableHead>Team</TableHead>
                   <TableHead className="text-center w-12">Wed</TableHead>
@@ -56,7 +56,7 @@ export const EredivisieStandings = () => {
                   <TableHead className="text-center w-12">Ptn</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="bg-white">
                 {standings?.map((standing) => {
                   const isAZ = standing.team.name.toLowerCase().includes('az') && 
                              (standing.team.name.toLowerCase().includes('alkmaar') || 
@@ -65,7 +65,7 @@ export const EredivisieStandings = () => {
                   return (
                     <TableRow 
                       key={standing.team.id}
-                      className={isAZ ? 'bg-az-red/10 border-az-red/20' : ''}
+                      className={isAZ ? 'bg-az-red/10 border-az-red/20 hover:bg-az-red/15' : 'bg-white hover:bg-gray-50'}
                     >
                       <TableCell className="font-medium">
                         <span className={isAZ ? 'text-az-red font-bold' : ''}>
