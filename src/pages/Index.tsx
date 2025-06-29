@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { NewsCard } from "@/components/NewsCard";
 import { BottomNavigation } from "@/components/BottomNavigation";
-import { LiveScore } from "@/components/LiveScore";
+import { NextMatchWidget } from "@/components/NextMatchWidget";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { ArticlesSkeleton } from "@/components/ArticlesSkeleton";
 import { LoadMoreSkeleton } from "@/components/LoadMoreSkeleton";
@@ -47,8 +47,8 @@ const Index = () => {
       {/* API Test Component */}
       <FootballApiTest />
       
-      {/* Live Score Widget */}
-      <LiveScore />
+      {/* Next Match Widget - Vervangt de LiveScore widget */}
+      <NextMatchWidget />
       
       <div className="px-4 pb-20 pt-6">
         {/* Category Filter */}
