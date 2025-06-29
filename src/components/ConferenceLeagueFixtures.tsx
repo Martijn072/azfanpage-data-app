@@ -1,5 +1,5 @@
-
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,6 +62,8 @@ interface ConferenceLeagueFixturesProps {
 }
 
 export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: ConferenceLeagueFixturesProps) => {
+  const navigate = useNavigate();
+
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['conference-league-fixtures', teamId],
     queryFn: async () => {
@@ -104,6 +106,10 @@ export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: Conference
       case '2H': return '2e helft';
       default: return status;
     }
+  };
+
+  const handleFixtureClick = (fixtureId: number) => {
+    navigate(`/wedstrijd/${fixtureId}`);
   };
 
   if (error) {
@@ -165,7 +171,8 @@ export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: Conference
             {fixtures.map((fixture) => (
               <div 
                 key={fixture.fixture.id}
-                className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-600 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
+                onClick={() => handleFixtureClick(fixture.fixture.id)}
+                className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-600 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer hover:bg-premium-gray-50 dark:hover:bg-gray-700"
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2 text-sm text-premium-gray-600 dark:text-gray-300">
