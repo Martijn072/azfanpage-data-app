@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -107,18 +106,6 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
     });
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'NS': return 'Te spelen';
-      case 'FT': return 'Afgelopen';
-      case 'LIVE': return 'Live';
-      case '1H': return '1e helft';
-      case 'HT': return 'Rust';
-      case '2H': return '2e helft';
-      default: return status;
-    }
-  };
-
   const translateRound = (round: string) => {
     // Handle common round terminology
     if (round.toLowerCase().includes('regular season')) return 'Competitie';
@@ -156,22 +143,6 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
       case 848: return 'secondary'; // Conference League
       case 94: return 'outline'; // KNVB Beker
       default: return 'outline';
-    }
-  };
-
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case 'FT': 
-        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300 border-green-200 dark:border-green-800';
-      case 'NS':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300 border-blue-200 dark:border-blue-800';
-      case 'LIVE':
-      case '1H':
-      case 'HT':
-      case '2H':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300 border-red-200 dark:border-red-800 animate-pulse';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-700';
     }
   };
 
@@ -272,23 +243,18 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
                     <Calendar className="w-4 h-4" />
                     <span className="font-medium">{formatDate(fixture.fixture.date)}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      variant={getCompetitionBadgeVariant(fixture.league.id)}
-                      className={`text-xs font-semibold ${
-                        fixture.league.id === 88 
-                          ? 'bg-az-red text-white hover:bg-az-red/90 border-az-red' 
-                          : fixture.league.id === 848
-                          ? 'bg-blue-600 text-white hover:bg-blue-700 border-blue-600'
-                          : 'border-premium-gray-300 text-premium-gray-700 dark:border-gray-600 dark:text-gray-300'
-                      }`}
-                    >
-                      {getCompetitionName(fixture.league.id, fixture.league.name)}
-                    </Badge>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusBadgeClass(fixture.fixture.status.short)}`}>
-                      {getStatusText(fixture.fixture.status.short)}
-                    </span>
-                  </div>
+                  <Badge 
+                    variant={getCompetitionBadgeVariant(fixture.league.id)}
+                    className={`text-xs font-semibold ${
+                      fixture.league.id === 88 
+                        ? 'bg-az-red text-white hover:bg-az-red/90 border-az-red' 
+                        : fixture.league.id === 848
+                        ? 'bg-blue-600 text-white hover:bg-blue-700 border-blue-600'
+                        : 'border-premium-gray-300 text-premium-gray-700 dark:border-gray-600 dark:text-gray-300'
+                    }`}
+                  >
+                    {getCompetitionName(fixture.league.id, fixture.league.name)}
+                  </Badge>
                 </div>
 
                 <div className="flex items-center justify-between">
