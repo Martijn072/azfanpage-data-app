@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Calendar, Tag, Link, Share2, MessageCircle } from "lucide-react";
+import { ArrowLeft, User, Calendar, Tag, Link, Share2, MessageCircle, Facebook, Instagram, X } from "lucide-react";
 import { useArticleDetail } from "@/hooks/useArticleDetail";
 import { ArticlesSkeleton } from "@/components/ArticlesSkeleton";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -61,6 +60,17 @@ const ArticleDetail = () => {
     } else {
       handleCopyLink();
     }
+  };
+
+  const handleSocialMediaClick = (platform: string) => {
+    // Replace these URLs with your actual social media URLs
+    const socialUrls = {
+      facebook: 'https://facebook.com/your-page',
+      instagram: 'https://instagram.com/your-account',
+      x: 'https://x.com/your-account'
+    };
+    
+    window.open(socialUrls[platform as keyof typeof socialUrls], '_blank');
   };
 
   if (isLoading) {
@@ -151,14 +161,57 @@ const ArticleDetail = () => {
         </header>
 
         {/* Article content with enhanced styling */}
-        <div className="article-content prose-invert:dark">
+        <div className={`article-content ${typeof window !== 'undefined' && document.documentElement.classList.contains('dark') ? 'prose-invert' : ''}`}>
           <div 
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
         </div>
 
-        {/* Enhanced social sharing section */}
+        {/* Social Media Follow Section */}
         <div className="mt-8 pt-6 border-t border-premium-gray-200 dark:border-gray-700">
+          <div className="bg-gradient-to-r from-premium-gray-50 to-white dark:from-gray-800 dark:to-gray-750 rounded-lg p-6 border border-premium-gray-100 dark:border-gray-700">
+            <div className="text-center mb-4">
+              <h3 className="headline-premium text-headline-sm mb-2 text-az-black dark:text-white">
+                Volg ons op social media
+              </h3>
+              <p className="body-premium text-body-sm text-premium-gray-600 dark:text-gray-400">
+                Blijf op de hoogte van het laatste nieuws en updates
+              </p>
+            </div>
+            
+            <div className="flex items-center justify-center gap-4">
+              <button
+                onClick={() => handleSocialMediaClick('facebook')}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 hover:scale-105 group"
+                aria-label="Volg ons op Facebook"
+              >
+                <Facebook className="w-5 h-5 transition-transform group-hover:scale-110" />
+                <span className="font-medium text-sm">Facebook</span>
+              </button>
+              
+              <button
+                onClick={() => handleSocialMediaClick('instagram')}
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg transition-all duration-200 hover:scale-105 group"
+                aria-label="Volg ons op Instagram"
+              >
+                <Instagram className="w-5 h-5 transition-transform group-hover:scale-110" />
+                <span className="font-medium text-sm">Instagram</span>
+              </button>
+              
+              <button
+                onClick={() => handleSocialMediaClick('x')}
+                className="flex items-center gap-2 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg transition-all duration-200 hover:scale-105 group"
+                aria-label="Volg ons op X"
+              >
+                <X className="w-5 h-5 transition-transform group-hover:scale-110" />
+                <span className="font-medium text-sm">X</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced social sharing section */}
+        <div className="mt-6 pt-6 border-t border-premium-gray-200 dark:border-gray-700">
           <div className="text-center mb-6">
             <h3 className="headline-premium text-headline-sm mb-2 text-az-black dark:text-white">
               Deel dit artikel
