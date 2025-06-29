@@ -12,15 +12,15 @@ const Eredivisie = () => {
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
       
-      <div className="px-4 pb-20 pt-6">
+      <div className="px-4 pb-20 pt-8">
         {/* Hero Section */}
-        <div className="mb-8">
+        <div className="mb-12">
           <div className="max-w-4xl">
-            <h1 className="headline-premium text-headline-xl mb-4 text-az-black dark:text-white leading-tight">
+            <h1 className="headline-premium text-headline-xl mb-2 text-az-black dark:text-white leading-tight">
               Eredivisie Stand
             </h1>
-            <p className="body-premium text-body-lg text-premium-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">
-              Bekijk de huidige stand van de Eredivisie seizoen 2024-2025. AZ's positie wordt speciaal gemarkeerd.
+            <p className="text-premium-gray-500 dark:text-gray-400 text-sm font-light">
+              2024-2025
             </p>
           </div>
         </div>
