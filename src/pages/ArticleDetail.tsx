@@ -89,7 +89,7 @@ const ArticleDetail = () => {
       <Header />
       
       {/* Sticky Share Bar - positioned below Header */}
-      <div className="sticky top-28 z-45 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-b border-premium-gray-200 dark:border-gray-700 shadow-sm">
+      <div className="sticky top-18 z-45 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-b border-premium-gray-200 dark:border-gray-700 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-2">
           <div className="flex items-center justify-between">
             <button
