@@ -9,11 +9,6 @@ interface DisqusCommentsProps {
   articleId: string;
 }
 
-// Function to generate WordPress URL from slug
-const generateWordPressUrl = (slug: string): string => {
-  return `https://www.azfanpage.nl/${slug}/`;
-};
-
 export const DisqusComments = ({ slug, title, articleId }: DisqusCommentsProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,90 +40,110 @@ export const DisqusComments = ({ slug, title, articleId }: DisqusCommentsProps) 
     return () => observer.disconnect();
   }, []);
 
+  // Clean up function to remove Disqus completely
+  const cleanupDisqus = () => {
+    console.log('🧹 Cleaning up existing Disqus...');
+    
+    // Remove existing Disqus script
+    const existingScript = document.querySelector('script[src*="disqus.com/embed.js"]');
+    if (existingScript) {
+      existingScript.remove();
+      console.log('Removed existing Disqus script');
+    }
+
+    // Clear thread container
+    const threadContainer = document.getElementById('disqus_thread');
+    if (threadContainer) {
+      threadContainer.innerHTML = '';
+      console.log('Cleared Disqus thread container');
+    }
+
+    // Remove global Disqus variables
+    if (window.DISQUS) {
+      delete window.DISQUS;
+      console.log('Removed global DISQUS object');
+    }
+    
+    if (window.disqus_config) {
+      delete window.disqus_config;
+      console.log('Removed global disqus_config');
+    }
+  };
+
   const loadDisqus = async () => {
     if (isLoaded || isLoading) return;
     
-    console.log('Starting Disqus load process...');
+    console.log('🚀 Starting Disqus load process...');
     setIsLoading(true);
     setError(null);
 
-    // Use WordPress URL format to match existing comments
-    const wordpressUrl = generateWordPressUrl(slug);
+    // Clean up any existing Disqus first
+    cleanupDisqus();
+
+    // Wait for cleanup to complete
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    const currentUrl = window.location.href;
     
-    console.log('Disqus Configuration:', {
+    console.log('📝 Disqus Configuration:', {
       identifier: articleId,
-      url: wordpressUrl, // Use WordPress URL format
+      url: currentUrl,
       title: title,
       slug: slug
     });
 
-    // Wait a bit to ensure DOM is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    // Check if thread container exists after timeout
+    // Check if thread container exists
     const threadContainer = document.getElementById('disqus_thread');
     if (!threadContainer) {
-      console.error('Disqus thread container still not found after timeout');
-      setError('Could not find comments container');
+      console.error('❌ Disqus thread container not found');
+      setError('Comments container niet gevonden');
       setIsLoading(false);
       return;
     }
 
-    console.log('Disqus thread container found, proceeding with script load...');
+    console.log('✅ Disqus thread container found');
 
-    // Clean up any existing Disqus
-    if (window.DISQUS) {
-      console.log('Cleaning up existing Disqus instance...');
-      window.DISQUS.reset({
-        reload: true,
-        config: function () {
-          this.page.url = wordpressUrl; // Use WordPress URL
-          this.page.identifier = articleId;
-          this.page.title = title;
-        }
-      });
-      setIsLoaded(true);
-      setIsLoading(false);
-      return;
-    }
-
-    // Configure Disqus with WordPress URL
+    // Configure Disqus with simple, consistent approach
     window.disqus_config = function () {
-      this.page.url = wordpressUrl; // Use WordPress URL format
+      this.page.url = currentUrl;
       this.page.identifier = articleId;
       this.page.title = title;
+      
+      console.log('🔧 Disqus config set:', {
+        url: this.page.url,
+        identifier: this.page.identifier,
+        title: this.page.title
+      });
     };
 
-    // Load Disqus script
+    // Create and load new Disqus script
     const script = document.createElement('script');
     script.src = 'https://azfanpage.disqus.com/embed.js';
     script.setAttribute('data-timestamp', String(+new Date()));
+    script.async = true;
     
     script.onload = () => {
-      console.log('Disqus script loaded successfully');
+      console.log('✅ Disqus script loaded successfully');
       setIsLoaded(true);
       setIsLoading(false);
     };
     
     script.onerror = (error) => {
-      console.error('Failed to load Disqus script:', error);
-      setError('Failed to load comments');
+      console.error('❌ Failed to load Disqus script:', error);
+      setError('Kon comments niet laden');
       setIsLoading(false);
+      cleanupDisqus();
     };
 
     document.head.appendChild(script);
   };
 
   const resetDisqus = () => {
+    console.log('🔄 Resetting Disqus...');
     setIsLoaded(false);
     setIsLoading(false);
     setError(null);
-    
-    // Clear the thread container
-    const threadContainer = document.getElementById('disqus_thread');
-    if (threadContainer) {
-      threadContainer.innerHTML = '';
-    }
+    cleanupDisqus();
   };
 
   return (
@@ -169,7 +184,7 @@ export const DisqusComments = ({ slug, title, articleId }: DisqusCommentsProps) 
           </div>
         )}
 
-        {/* Single fixed Disqus container - always present once loading starts */}
+        {/* Disqus container - only show when loading or loaded */}
         {(isLoading || isLoaded) && (
           <div className="bg-white dark:bg-gray-800 rounded-lg border border-premium-gray-100 dark:border-gray-700 overflow-hidden">
             {isLoading && (
