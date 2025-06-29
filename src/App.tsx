@@ -8,6 +8,7 @@ import { DarkModeProvider } from "@/contexts/DarkModeContext";
 import Index from "./pages/Index";
 import News from "./pages/News";
 import ArticleDetail from "./pages/ArticleDetail";
+import ConferenceLeague from "./pages/ConferenceLeague";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/nieuws" element={<News />} />
             <Route path="/artikel/:id" element={<ArticleDetail />} />
+            <Route path="/europa" element={<ConferenceLeague />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

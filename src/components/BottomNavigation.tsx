@@ -1,5 +1,5 @@
 
-import { Bell, Calendar, MessageSquare, MoreHorizontal, House } from "lucide-react";
+import { Bell, Calendar, MessageSquare, MoreHorizontal, House, Trophy } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface BottomNavigationProps {
@@ -14,7 +14,7 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
   const tabs = [
     { id: "home", label: "Home", icon: House, path: "/" },
     { id: "news", label: "Nieuws", icon: Bell, path: "/nieuws" },
-    { id: "live", label: "Live", icon: Calendar, path: "#" },
+    { id: "europa", label: "Europa", icon: Trophy, path: "/europa" },
     { id: "more", label: "Meer", icon: MoreHorizontal, path: "#" },
   ];
 
@@ -22,6 +22,7 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
   const getActiveTab = () => {
     if (location.pathname === "/") return "home";
     if (location.pathname === "/nieuws") return "news";
+    if (location.pathname === "/europa") return "europa";
     return activeTab;
   };
 
