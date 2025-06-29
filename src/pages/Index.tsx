@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { NewsCard } from "@/components/NewsCard";
@@ -9,7 +10,6 @@ import { LoadMoreSkeleton } from "@/components/LoadMoreSkeleton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { SocialMediaPromo } from "@/components/SocialMediaPromo";
 import { PopularArticles } from "@/components/PopularArticles";
-import { FootballApiTest } from "@/components/FootballApiTest";
 import { useInfiniteArticles } from "@/hooks/useInfiniteArticles";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -43,9 +43,6 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-premium-gray-50 dark:bg-gray-900">
       <Header />
-      
-      {/* API Test Component */}
-      <FootballApiTest />
       
       {/* Live Score Widget */}
       <LiveScore />
