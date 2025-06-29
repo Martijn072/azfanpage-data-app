@@ -92,7 +92,7 @@ const Index = () => {
 
             {/* Load More Button */}
             {hasNextPage && allArticles.length > 0 && !isFetchingNextPage && (
-              <div className="mt-8 text-center">
+              <div className="mt-8 mb-8 text-center">
                 <Button 
                   onClick={handleLoadMore}
                   className="bg-white hover:bg-premium-gray-50 text-az-black border border-premium-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:hover:bg-gray-700 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
@@ -104,7 +104,7 @@ const Index = () => {
 
             {/* End of articles message */}
             {!hasNextPage && allArticles.length > 0 && !isFetchingNextPage && (
-              <div className="mt-8 text-center">
+              <div className="mt-8 mb-8 text-center">
                 <p className="text-premium-gray-500 dark:text-gray-400 text-sm">
                   Alle artikelen zijn geladen
                 </p>
