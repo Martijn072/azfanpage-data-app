@@ -1,4 +1,3 @@
-
 import { useEredivisieStandings } from '@/hooks/useFootballApi';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,7 +44,7 @@ export const EredivisieStandings = () => {
           <div className="overflow-x-auto bg-white">
             <Table>
               <TableHeader>
-                <TableRow className="bg-white hover:bg-white">
+                <TableRow className="bg-white hover:bg-white border-b border-gray-200">
                   <TableHead className="w-12">#</TableHead>
                   <TableHead>Team</TableHead>
                   <TableHead className="text-center w-12">Wed</TableHead>
@@ -65,7 +64,7 @@ export const EredivisieStandings = () => {
                   return (
                     <TableRow 
                       key={standing.team.id}
-                      className={isAZ ? 'bg-az-red/10 border-az-red/20 hover:bg-az-red/15' : 'bg-white hover:bg-gray-50'}
+                      className={isAZ ? 'bg-az-red/10 border-b border-az-red/20 hover:bg-az-red/15' : 'bg-white hover:bg-gray-50 border-b border-gray-100'}
                     >
                       <TableCell className="font-medium">
                         <span className={isAZ ? 'text-az-red font-bold' : ''}>
