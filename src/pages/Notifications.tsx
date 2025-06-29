@@ -84,11 +84,11 @@ const Notifications = () => {
               <Button
                 onClick={() => clearAll.mutate()}
                 disabled={clearAll.isPending}
-                className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 text-sm font-semibold transition-colors rounded-lg"
+                className="bg-white dark:bg-gray-800 border border-premium-gray-300 dark:border-gray-600 hover:bg-premium-gray-50 dark:hover:bg-gray-700 text-premium-gray-700 dark:text-gray-300 px-4 py-2 text-sm font-semibold transition-colors rounded-lg"
               >
                 <CheckCheck className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Alles gelezen</span>
-                <span className="sm:hidden">Alles</span>
+                <span className="hidden sm:inline">Alle gelezen</span>
+                <span className="sm:hidden">Gelezen</span>
               </Button>
             </div>
           </div>
