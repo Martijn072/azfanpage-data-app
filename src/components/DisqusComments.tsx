@@ -4,12 +4,11 @@ import { Button } from '@/components/ui/button';
 import { MessageCircle, Loader2 } from 'lucide-react';
 
 interface DisqusCommentsProps {
-  url: string;
-  identifier: string;
+  slug: string;
   title: string;
 }
 
-export const DisqusComments = ({ url, identifier, title }: DisqusCommentsProps) => {
+export const DisqusComments = ({ slug, title }: DisqusCommentsProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -44,24 +43,42 @@ export const DisqusComments = ({ url, identifier, title }: DisqusCommentsProps) 
     
     setIsLoading(true);
 
-    // Configure Disqus
+    // WordPress URL format for consistency with existing comments
+    const wordpressUrl = `https://www.azfanpage.nl/${slug}/`;
+    
+    console.log('Disqus Configuration:', {
+      identifier: slug,
+      url: wordpressUrl,
+      title: title
+    });
+
+    // Configure Disqus with WordPress-compatible settings
     window.disqus_config = function () {
-      this.page.url = url;
-      this.page.identifier = identifier;
+      this.page.url = wordpressUrl;
+      this.page.identifier = slug; // Use WordPress slug as identifier
       this.page.title = title;
     };
+
+    // Ensure the thread container exists
+    const threadContainer = document.getElementById('disqus_thread');
+    if (!threadContainer) {
+      console.error('Disqus thread container not found');
+      setIsLoading(false);
+      return;
+    }
 
     // Load Disqus script
     const script = document.createElement('script');
     script.src = 'https://azfanpage.disqus.com/embed.js';
     script.setAttribute('data-timestamp', String(+new Date()));
     script.onload = () => {
+      console.log('Disqus script loaded successfully');
       setIsLoaded(true);
       setIsLoading(false);
     };
-    script.onerror = () => {
+    script.onerror = (error) => {
+      console.error('Failed to load Disqus script:', error);
       setIsLoading(false);
-      console.error('Failed to load Disqus');
     };
 
     document.head.appendChild(script);

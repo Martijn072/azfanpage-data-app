@@ -1,4 +1,3 @@
-
 import { WordPressPost, WordPressCategory, Article } from './types.ts';
 import { formatPublishedDate, cleanHtmlContent } from './utils.ts';
 
@@ -58,7 +57,8 @@ export const transformPost = (post: WordPressPost): Article => {
     imageUrl: featuredImage,
     category: category,
     isBreaking: isBreaking,
-    readTime: `${Math.ceil(post.content.rendered.split(' ').length / 200)} min`
+    readTime: `${Math.ceil(post.content.rendered.split(' ').length / 200)} min`,
+    slug: post.slug // Add WordPress slug for Disqus identifier
   };
 };
 

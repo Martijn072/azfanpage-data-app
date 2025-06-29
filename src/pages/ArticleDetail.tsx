@@ -251,10 +251,9 @@ const ArticleDetail = () => {
           </div>
         </div>
 
-        {/* Disqus Comments Section */}
+        {/* Disqus Comments Section - Updated to use slug */}
         <DisqusComments
-          url={window.location.href}
-          identifier={`article-${article.id}`}
+          slug={article.slug}
           title={article.title}
         />
       </article>

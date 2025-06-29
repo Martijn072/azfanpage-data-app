@@ -13,6 +13,7 @@ interface ArticleDetail {
   category: string;
   isBreaking: boolean;
   readTime: string;
+  slug: string; // Add slug for Disqus
 }
 
 export const useArticleDetail = (id: string) => {
