@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Loader2 } from 'lucide-react';
@@ -5,8 +6,13 @@ import { MessageCircle, Loader2 } from 'lucide-react';
 interface DisqusCommentsProps {
   slug: string;
   title: string;
-  articleId: string; // Add articleId prop
+  articleId: string;
 }
+
+// Function to generate WordPress URL from slug
+const generateWordPressUrl = (slug: string): string => {
+  return `https://www.azfanpage.nl/${slug}/`;
+};
 
 export const DisqusComments = ({ slug, title, articleId }: DisqusCommentsProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -46,13 +52,14 @@ export const DisqusComments = ({ slug, title, articleId }: DisqusCommentsProps) 
     setIsLoading(true);
     setError(null);
 
-    // Use current browser URL instead of hardcoded WordPress URL
-    const currentUrl = window.location.href;
+    // Use WordPress URL format to match existing comments
+    const wordpressUrl = generateWordPressUrl(slug);
     
     console.log('Disqus Configuration:', {
-      identifier: articleId, // Use articleId as identifier
-      url: currentUrl, // Use current browser URL
-      title: title
+      identifier: articleId,
+      url: wordpressUrl, // Use WordPress URL format
+      title: title,
+      slug: slug
     });
 
     // Wait a bit to ensure DOM is ready
@@ -75,8 +82,8 @@ export const DisqusComments = ({ slug, title, articleId }: DisqusCommentsProps) 
       window.DISQUS.reset({
         reload: true,
         config: function () {
-          this.page.url = currentUrl; // Use current browser URL
-          this.page.identifier = articleId; // Use articleId as identifier
+          this.page.url = wordpressUrl; // Use WordPress URL
+          this.page.identifier = articleId;
           this.page.title = title;
         }
       });
@@ -85,10 +92,10 @@ export const DisqusComments = ({ slug, title, articleId }: DisqusCommentsProps) 
       return;
     }
 
-    // Configure Disqus with current URL
+    // Configure Disqus with WordPress URL
     window.disqus_config = function () {
-      this.page.url = currentUrl; // Use current browser URL
-      this.page.identifier = articleId; // Use articleId as identifier
+      this.page.url = wordpressUrl; // Use WordPress URL format
+      this.page.identifier = articleId;
       this.page.title = title;
     };
 
