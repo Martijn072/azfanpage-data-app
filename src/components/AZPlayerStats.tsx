@@ -120,6 +120,17 @@ const callFootballApi = async (endpoint: string, params: Record<string, string> 
   return data;
 };
 
+const translatePosition = (position: string): string => {
+  const positionMap: Record<string, string> = {
+    'Goalkeeper': 'Doelman',
+    'Defender': 'Verdediger',
+    'Midfielder': 'Middenvelder',
+    'Attacker': 'Aanvaller'
+  };
+  
+  return positionMap[position] || position;
+};
+
 interface AZPlayerStatsProps {
   teamId: number | null;
   isLoadingTeamId: boolean;
@@ -245,11 +256,11 @@ export const AZPlayerStats = ({ teamId, isLoadingTeamId }: AZPlayerStatsProps) =
 
   return (
     <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
-      <CardHeader className="bg-white dark:bg-gray-800">
+      <CardHeader>
         <div className="flex flex-col space-y-4">
           <CardTitle className="text-az-black dark:text-white">AZ Speler Statistieken Seizoen 2024-2025</CardTitle>
           
-          {/* Sort buttons with consistent styling */}
+          {/* Sort buttons */}
           <div className="flex gap-2 flex-wrap">
             <Button
               variant={sortBy === 'goals' ? 'default' : 'outline'}
@@ -286,7 +297,7 @@ export const AZPlayerStats = ({ teamId, isLoadingTeamId }: AZPlayerStatsProps) =
           </div>
         </div>
       </CardHeader>
-      <CardContent className="bg-white dark:bg-gray-800">
+      <CardContent>
         {sortedPlayers.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-premium-gray-600 dark:text-gray-300">
@@ -297,28 +308,28 @@ export const AZPlayerStats = ({ teamId, isLoadingTeamId }: AZPlayerStatsProps) =
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto bg-white">
+          <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-white hover:bg-white border-b border-gray-200">
-                  <TableHead className="text-gray-900 dark:text-white font-semibold">Speler</TableHead>
-                  <TableHead className="text-center text-gray-900 dark:text-white font-semibold">Pos</TableHead>
-                  <TableHead className="text-center text-gray-900 dark:text-white font-semibold">Wedst</TableHead>
-                  <TableHead className="text-center text-gray-900 dark:text-white font-semibold">Min</TableHead>
-                  <TableHead className="text-center text-gray-900 dark:text-white font-semibold">Goals</TableHead>
-                  <TableHead className="text-center text-gray-900 dark:text-white font-semibold">Assists</TableHead>
-                  <TableHead className="text-center text-gray-900 dark:text-white font-semibold">🟡</TableHead>
-                  <TableHead className="text-center text-gray-900 dark:text-white font-semibold">🟥</TableHead>
-                  <TableHead className="text-center text-gray-900 dark:text-white font-semibold">Rating</TableHead>
+                <TableRow className="hover:bg-transparent border-b border-gray-200 dark:border-gray-700">
+                  <TableHead className="text-az-black dark:text-white font-semibold">Speler</TableHead>
+                  <TableHead className="text-center text-az-black dark:text-white font-semibold">Pos</TableHead>
+                  <TableHead className="text-center text-az-black dark:text-white font-semibold">Wedst</TableHead>
+                  <TableHead className="text-center text-az-black dark:text-white font-semibold">Min</TableHead>
+                  <TableHead className="text-center text-az-black dark:text-white font-semibold">Goals</TableHead>
+                  <TableHead className="text-center text-az-black dark:text-white font-semibold">Assists</TableHead>
+                  <TableHead className="text-center text-az-black dark:text-white font-semibold">🟡</TableHead>
+                  <TableHead className="text-center text-az-black dark:text-white font-semibold">🟥</TableHead>
+                  <TableHead className="text-center text-az-black dark:text-white font-semibold">Rating</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="bg-white">
+              <TableBody>
                 {sortedPlayers.map((playerData) => {
                   const player = playerData.player;
                   const stats = playerData.statistics[0];
                   
                   return (
-                    <TableRow key={player.id} className="bg-white hover:bg-gray-50 border-b border-gray-100">
+                    <TableRow key={player.id} className="hover:bg-premium-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700">
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <img 
@@ -339,13 +350,13 @@ export const AZPlayerStats = ({ teamId, isLoadingTeamId }: AZPlayerStatsProps) =
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-center text-xs">
-                        {stats?.games?.position || '-'}
+                      <TableCell className="text-center text-xs text-premium-gray-600 dark:text-gray-300">
+                        {stats?.games?.position ? translatePosition(stats.games.position) : '-'}
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
                         {stats?.games?.appearences || 0}
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
                         {stats?.games?.minutes || 0}
                       </TableCell>
                       <TableCell className="text-center font-bold text-az-red">
@@ -354,13 +365,13 @@ export const AZPlayerStats = ({ teamId, isLoadingTeamId }: AZPlayerStatsProps) =
                       <TableCell className="text-center font-bold text-green-600">
                         {stats?.goals?.assists || 0}
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
                         {stats?.cards?.yellow || 0}
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
                         {stats?.cards?.red || 0}
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
                         {stats?.games?.rating ? parseFloat(stats.games.rating).toFixed(1) : '-'}
                       </TableCell>
                     </TableRow>
