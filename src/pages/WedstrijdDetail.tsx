@@ -261,11 +261,11 @@ const WedstrijdDetail = () => {
       <Header />
       
       <div className="px-4 pt-6 pb-20">
-        {/* Back button */}
+        {/* Back button with AZ-red styling */}
         <Button 
           variant="ghost" 
           onClick={() => navigate(-1)}
-          className="mb-4 p-2 hover:bg-premium-gray-100 dark:hover:bg-gray-700"
+          className="mb-4 p-2 hover:bg-premium-gray-100 dark:hover:bg-gray-700 text-premium-gray-600 dark:text-gray-300 hover:text-az-red dark:hover:text-az-red focus-visible:ring-az-red transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Terug
