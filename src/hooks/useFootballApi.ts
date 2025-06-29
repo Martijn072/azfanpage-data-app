@@ -1,3 +1,4 @@
+
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -169,7 +170,7 @@ export const useAZFixtures = (teamId: number | null, last: number = 5) => {
   });
 };
 
-// Hook for next AZ fixture - Enhanced with auto-refresh
+// Hook for next AZ fixture
 export const useNextAZFixture = (teamId: number | null) => {
   return useQuery({
     queryKey: ['next-az-fixture', teamId],
@@ -190,8 +191,7 @@ export const useNextAZFixture = (teamId: number | null) => {
       return response.response[0] || null;
     },
     enabled: !!teamId,
-    staleTime: 1000 * 60 * 60, // Cache for 1 hour
-    refetchInterval: 1000 * 60 * 60, // Auto-refresh every hour
+    staleTime: 1000 * 60 * 30, // Cache for 30 minutes
     retry: 2,
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
