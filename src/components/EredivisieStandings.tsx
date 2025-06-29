@@ -48,6 +48,7 @@ export const EredivisieStandings = () => {
                 <TableRow>
                   <TableHead className="w-12">#</TableHead>
                   <TableHead>Team</TableHead>
+                  <TableHead className="text-center w-12">Wed</TableHead>
                   <TableHead className="text-center w-12">W</TableHead>
                   <TableHead className="text-center w-12">G</TableHead>
                   <TableHead className="text-center w-12">V</TableHead>
@@ -82,6 +83,11 @@ export const EredivisieStandings = () => {
                             {standing.team.name}
                           </span>
                         </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <span className={isAZ ? 'text-az-red font-bold' : ''}>
+                          {standing.all.played}
+                        </span>
                       </TableCell>
                       <TableCell className="text-center">
                         <span className={isAZ ? 'text-az-red font-bold' : ''}>
