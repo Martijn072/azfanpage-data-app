@@ -12,6 +12,7 @@ import Eredivisie from "./pages/Eredivisie";
 import AZProgramma from "./pages/AZProgramma";
 import SpelerStatistieken from "./pages/SpelerStatistieken";
 import ConferenceLeague from "./pages/ConferenceLeague";
+import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/programma" element={<AZProgramma />} />
             <Route path="/spelers" element={<SpelerStatistieken />} />
             <Route path="/conference-league" element={<ConferenceLeague />} />
+            <Route path="/notificaties" element={<Notifications />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

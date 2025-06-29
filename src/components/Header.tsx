@@ -5,14 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "@/contexts/DarkModeContext";
 import { HeaderMenu } from "./HeaderMenu";
 import { SearchOverlay } from "./SearchOverlay";
-import { NotificationCenter } from "./NotificationCenter";
 import { useNotifications } from "@/hooks/useNotifications";
 
 export const Header = () => {
   const navigate = useNavigate();
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isNotificationCenterOpen, setIsNotificationCenterOpen] = useState(false);
   const { unreadCount } = useNotifications();
 
   const handleLogoClick = () => {
@@ -24,7 +22,7 @@ export const Header = () => {
   };
 
   const handleNotificationClick = () => {
-    setIsNotificationCenterOpen(true);
+    navigate("/notificaties");
   };
 
   return (
@@ -84,12 +82,6 @@ export const Header = () => {
       <SearchOverlay 
         isOpen={isSearchOpen} 
         onClose={() => setIsSearchOpen(false)} 
-      />
-
-      {/* Notification Center */}
-      <NotificationCenter 
-        isOpen={isNotificationCenterOpen} 
-        onClose={() => setIsNotificationCenterOpen(false)} 
       />
     </>
   );

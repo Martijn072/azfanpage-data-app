@@ -25,6 +25,7 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
     if (location.pathname === "/nieuws") return "news";
     if (location.pathname === "/eredivisie") return "eredivisie";
     if (location.pathname === "/programma") return "programma";
+    if (location.pathname === "/notificaties") return "notifications";
     // For "more" pages, don't highlight any main tab
     if (location.pathname === "/spelers" || location.pathname === "/conference-league") return "meer";
     return activeTab;
