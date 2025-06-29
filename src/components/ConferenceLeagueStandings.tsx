@@ -60,7 +60,7 @@ export const ConferenceLeagueStandings = () => {
 
   if (error) {
     return (
-      <Card className="card-premium dark:bg-gray-800 dark:border-gray-700">
+      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
         <CardHeader>
           <CardTitle className="text-az-black dark:text-white">Conference League Stand</CardTitle>
         </CardHeader>
@@ -83,7 +83,7 @@ export const ConferenceLeagueStandings = () => {
 
   if (isLoading) {
     return (
-      <Card className="card-premium dark:bg-gray-800 dark:border-gray-700">
+      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
         <CardHeader>
           <CardTitle className="text-az-black dark:text-white">Conference League Stand</CardTitle>
         </CardHeader>
@@ -106,7 +106,7 @@ export const ConferenceLeagueStandings = () => {
   );
 
   return (
-    <Card className="card-premium dark:bg-gray-800 dark:border-gray-700">
+    <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
       <CardHeader>
         <CardTitle className="text-az-black dark:text-white">Conference League Stand</CardTitle>
       </CardHeader>
@@ -139,7 +139,7 @@ export const ConferenceLeagueStandings = () => {
                   return (
                     <TableRow 
                       key={`${standing.group}-${standing.team.id}`}
-                      className={isAZ ? 'border-az-red/30' : ''}
+                      className={isAZ ? 'border-l-4 border-l-az-red' : ''}
                     >
                       <TableCell className="font-medium">
                         <span className={isAZ ? 'text-az-red font-bold' : ''}>
