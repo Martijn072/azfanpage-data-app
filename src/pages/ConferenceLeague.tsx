@@ -27,7 +27,7 @@ const ConferenceLeague = () => {
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
       
-      <div className="px-4 pb-20 pt-6">
+      <div className="px-4 pb-20 pt-6 bg-white dark:bg-gray-900">
         {/* Hero Section */}
         <div className="mb-8">
           <div className="max-w-4xl">
