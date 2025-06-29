@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -127,9 +128,34 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
     }
   };
 
+  const getCompetitionBadgeVariant = (leagueId: number) => {
+    switch (leagueId) {
+      case 88: return 'default'; // Eredivisie - primary red
+      case 848: return 'secondary'; // Conference League
+      case 94: return 'outline'; // KNVB Beker
+      default: return 'outline';
+    }
+  };
+
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case 'FT': 
+        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300 border-green-200 dark:border-green-800';
+      case 'NS':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300 border-blue-200 dark:border-blue-800';
+      case 'LIVE':
+      case '1H':
+      case 'HT':
+      case '2H':
+        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300 border-red-200 dark:border-red-800 animate-pulse';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-700';
+    }
+  };
+
   if (error) {
     return (
-      <Card className="card-premium dark:bg-gray-800 dark:border-gray-700">
+      <Card className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-700 shadow-sm">
         <CardHeader>
           <CardTitle className="text-az-black dark:text-white">AZ Wedstrijdprogramma</CardTitle>
         </CardHeader>
@@ -152,7 +178,7 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
 
   if (isLoading || isLoadingTeamId) {
     return (
-      <Card className="card-premium dark:bg-gray-800 dark:border-gray-700">
+      <Card className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-700 shadow-sm">
         <CardHeader>
           <CardTitle className="text-az-black dark:text-white">AZ Wedstrijdprogramma</CardTitle>
         </CardHeader>
@@ -171,8 +197,8 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
   const sortedFixtures = fixtures.sort((a, b) => new Date(b.fixture.date).getTime() - new Date(a.fixture.date).getTime());
 
   return (
-    <Card className="card-premium dark:bg-gray-800 dark:border-gray-700">
-      <CardHeader>
+    <Card className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-700 shadow-sm">
+      <CardHeader className="bg-white dark:bg-gray-800">
         <div className="flex flex-col space-y-4">
           <CardTitle className="text-az-black dark:text-white">AZ Wedstrijdprogramma Seizoen 2024-2025</CardTitle>
           
@@ -182,7 +208,7 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
               variant={filter === 'all' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilter('all')}
-              className={filter === 'all' ? 'bg-az-red hover:bg-az-red/90' : ''}
+              className={filter === 'all' ? 'bg-az-red hover:bg-az-red/90 text-white border-az-red' : 'border-premium-gray-300 hover:bg-premium-gray-50 dark:border-gray-600 dark:hover:bg-gray-700'}
             >
               Alles
             </Button>
@@ -190,7 +216,7 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
               variant={filter === 'eredivisie' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilter('eredivisie')}
-              className={filter === 'eredivisie' ? 'bg-az-red hover:bg-az-red/90' : ''}
+              className={filter === 'eredivisie' ? 'bg-az-red hover:bg-az-red/90 text-white border-az-red' : 'border-premium-gray-300 hover:bg-premium-gray-50 dark:border-gray-600 dark:hover:bg-gray-700'}
             >
               Eredivisie
             </Button>
@@ -198,14 +224,14 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
               variant={filter === 'europa' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilter('europa')}
-              className={filter === 'europa' ? 'bg-az-red hover:bg-az-red/90' : ''}
+              className={filter === 'europa' ? 'bg-az-red hover:bg-az-red/90 text-white border-az-red' : 'border-premium-gray-300 hover:bg-premium-gray-50 dark:border-gray-600 dark:hover:bg-gray-700'}
             >
               Europa
             </Button>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="bg-white dark:bg-gray-800">
         {fixtures.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-premium-gray-600 dark:text-gray-300">
@@ -217,24 +243,27 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
             {sortedFixtures.map((fixture) => (
               <div 
                 key={fixture.fixture.id}
-                className="border border-premium-gray-200 dark:border-gray-600 rounded-lg p-4"
+                className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-600 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2 text-sm text-premium-gray-600 dark:text-gray-300">
                     <Calendar className="w-4 h-4" />
-                    <span>{formatDate(fixture.fixture.date)}</span>
+                    <span className="font-medium">{formatDate(fixture.fixture.date)}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs bg-premium-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                    <Badge 
+                      variant={getCompetitionBadgeVariant(fixture.league.id)}
+                      className={`text-xs font-semibold ${
+                        fixture.league.id === 88 
+                          ? 'bg-az-red text-white hover:bg-az-red/90 border-az-red' 
+                          : fixture.league.id === 848
+                          ? 'bg-blue-600 text-white hover:bg-blue-700 border-blue-600'
+                          : 'border-premium-gray-300 text-premium-gray-700 dark:border-gray-600 dark:text-gray-300'
+                      }`}
+                    >
                       {getCompetitionName(fixture.league.id, fixture.league.name)}
-                    </span>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      fixture.fixture.status.short === 'FT' 
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                        : fixture.fixture.status.short === 'NS'
-                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                        : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                    }`}>
+                    </Badge>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusBadgeClass(fixture.fixture.status.short)}`}>
                       {getStatusText(fixture.fixture.status.short)}
                     </span>
                   </div>
@@ -242,33 +271,33 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3 flex-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <img 
                         src={fixture.teams.home.logo} 
                         alt={fixture.teams.home.name}
                         className="w-8 h-8 object-contain"
                       />
-                      <span className="font-medium text-az-black dark:text-white">
+                      <span className="font-semibold text-az-black dark:text-white">
                         {fixture.teams.home.name}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 px-4">
+                  <div className="flex items-center gap-4 px-6">
                     {fixture.goals.home !== null && fixture.goals.away !== null ? (
-                      <div className="text-lg font-bold text-az-red">
+                      <div className="text-xl font-bold text-az-red">
                         {fixture.goals.home} - {fixture.goals.away}
                       </div>
                     ) : (
-                      <div className="text-premium-gray-400 dark:text-gray-500">
+                      <div className="text-premium-gray-400 dark:text-gray-500 font-medium">
                         vs
                       </div>
                     )}
                   </div>
 
                   <div className="flex items-center gap-3 flex-1 justify-end">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-az-black dark:text-white">
+                    <div className="flex items-center gap-3">
+                      <span className="font-semibold text-az-black dark:text-white">
                         {fixture.teams.away.name}
                       </span>
                       <img 
@@ -280,14 +309,17 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 mt-2 text-sm text-premium-gray-600 dark:text-gray-300">
-                  <div className="flex items-center gap-1">
+                <div className="flex items-center justify-between mt-3 text-sm">
+                  <div className="flex items-center gap-2 text-premium-gray-600 dark:text-gray-300">
                     <MapPin className="w-3 h-3" />
                     <span>{fixture.fixture.venue.name}</span>
                   </div>
-                  <span className="text-xs bg-premium-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                  <Badge 
+                    variant="outline" 
+                    className="text-xs bg-premium-gray-50 dark:bg-gray-700 border-premium-gray-200 dark:border-gray-600 text-premium-gray-700 dark:text-gray-300"
+                  >
                     {fixture.league.round}
-                  </span>
+                  </Badge>
                 </div>
               </div>
             ))}
