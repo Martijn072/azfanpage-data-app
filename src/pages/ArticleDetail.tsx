@@ -9,7 +9,6 @@ import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { DisqusComments } from "@/components/DisqusComments";
 import { ShareBar } from "@/components/ShareBar";
-import { AuthorCard } from "@/components/AuthorCard";
 
 const ArticleDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -124,12 +123,6 @@ const ArticleDetail = () => {
             className="border border-premium-gray-200 dark:border-gray-700 rounded-lg"
           />
         </div>
-
-        {/* Author Card - placed after Share Bar */}
-        <AuthorCard 
-          author={article.author}
-          authorInfo={article.authorInfo}
-        />
 
         {/* Disqus Comments Section */}
         <DisqusComments
