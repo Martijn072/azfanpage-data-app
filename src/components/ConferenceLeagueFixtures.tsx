@@ -2,6 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, MapPin } from "lucide-react";
 
@@ -107,7 +108,7 @@ export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: Conference
 
   if (error) {
     return (
-      <Card className="card-premium dark:bg-gray-800 dark:border-gray-700">
+      <Card className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-700 shadow-sm">
         <CardHeader>
           <CardTitle className="text-az-black dark:text-white">Conference League Wedstrijden</CardTitle>
         </CardHeader>
@@ -130,7 +131,7 @@ export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: Conference
 
   if (isLoading || isLoadingTeamId) {
     return (
-      <Card className="card-premium dark:bg-gray-800 dark:border-gray-700">
+      <Card className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-700 shadow-sm">
         <CardHeader>
           <CardTitle className="text-az-black dark:text-white">Conference League Wedstrijden</CardTitle>
         </CardHeader>
@@ -148,11 +149,11 @@ export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: Conference
   const fixtures = data || [];
 
   return (
-    <Card className="card-premium dark:bg-gray-800 dark:border-gray-700">
-      <CardHeader>
+    <Card className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-700 shadow-sm">
+      <CardHeader className="bg-white dark:bg-gray-800">
         <CardTitle className="text-az-black dark:text-white">Conference League Wedstrijden</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="bg-white dark:bg-gray-800">
         {fixtures.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-premium-gray-600 dark:text-gray-300">
@@ -164,53 +165,50 @@ export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: Conference
             {fixtures.map((fixture) => (
               <div 
                 key={fixture.fixture.id}
-                className="border border-premium-gray-200 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-800"
+                className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-600 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2 text-sm text-premium-gray-600 dark:text-gray-300">
                     <Calendar className="w-4 h-4" />
-                    <span>{formatDate(fixture.fixture.date)}</span>
+                    <span className="font-medium">{formatDate(fixture.fixture.date)}</span>
                   </div>
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    fixture.fixture.status.short === 'FT' 
-                      ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                      : fixture.fixture.status.short === 'NS'
-                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                      : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                  }`}>
+                  <Badge 
+                    variant="outline"
+                    className="text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 border-blue-600"
+                  >
                     {getStatusText(fixture.fixture.status.short)}
-                  </span>
+                  </Badge>
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3 flex-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <img 
                         src={fixture.teams.home.logo} 
                         alt={fixture.teams.home.name}
                         className="w-8 h-8 object-contain"
                       />
-                      <span className="font-medium text-az-black dark:text-white">
+                      <span className="font-semibold text-az-black dark:text-white">
                         {fixture.teams.home.name}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 px-4">
+                  <div className="flex items-center gap-4 px-6">
                     {fixture.goals.home !== null && fixture.goals.away !== null ? (
-                      <div className="text-lg font-bold text-az-red">
+                      <div className="text-xl font-bold text-az-red">
                         {fixture.goals.home} - {fixture.goals.away}
                       </div>
                     ) : (
-                      <div className="text-premium-gray-400 dark:text-gray-500">
+                      <div className="text-premium-gray-400 dark:text-gray-500 font-medium">
                         vs
                       </div>
                     )}
                   </div>
 
                   <div className="flex items-center gap-3 flex-1 justify-end">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-az-black dark:text-white">
+                    <div className="flex items-center gap-3">
+                      <span className="font-semibold text-az-black dark:text-white">
                         {fixture.teams.away.name}
                       </span>
                       <img 
@@ -222,14 +220,17 @@ export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: Conference
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 mt-2 text-sm text-premium-gray-600 dark:text-gray-300">
-                  <div className="flex items-center gap-1">
+                <div className="flex items-center justify-between mt-3 text-sm">
+                  <div className="flex items-center gap-2 text-premium-gray-600 dark:text-gray-300">
                     <MapPin className="w-3 h-3" />
                     <span>{fixture.fixture.venue.name}</span>
                   </div>
-                  <span className="text-xs bg-premium-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                  <Badge 
+                    variant="outline" 
+                    className="text-xs bg-premium-gray-50 dark:bg-gray-700 border-premium-gray-200 dark:border-gray-600 text-premium-gray-700 dark:text-gray-300"
+                  >
                     {fixture.league.round}
-                  </span>
+                  </Badge>
                 </div>
               </div>
             ))}

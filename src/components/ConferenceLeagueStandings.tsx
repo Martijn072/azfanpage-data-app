@@ -60,7 +60,7 @@ export const ConferenceLeagueStandings = () => {
 
   if (error) {
     return (
-      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
+      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
         <CardHeader>
           <CardTitle className="text-az-black dark:text-white">Conference League Stand</CardTitle>
         </CardHeader>
@@ -83,7 +83,7 @@ export const ConferenceLeagueStandings = () => {
 
   if (isLoading) {
     return (
-      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
+      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
         <CardHeader>
           <CardTitle className="text-az-black dark:text-white">Conference League Stand</CardTitle>
         </CardHeader>
@@ -100,15 +100,11 @@ export const ConferenceLeagueStandings = () => {
 
   // Flatten all groups for display
   const allStandings = data?.flat() || [];
-  const azStandings = allStandings.filter(standing => 
-    standing.team.name.toLowerCase().includes('az') && 
-    standing.team.name.toLowerCase().includes('alkmaar')
-  );
 
   return (
-    <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
+    <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
       <CardHeader>
-        <CardTitle className="text-az-black dark:text-white">Conference League Stand</CardTitle>
+        <CardTitle className="text-az-black dark:text-white">Conference League Stand Seizoen 2024-2025</CardTitle>
       </CardHeader>
       <CardContent>
         {allStandings.length === 0 ? (
@@ -118,20 +114,21 @@ export const ConferenceLeagueStandings = () => {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto bg-white">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">#</TableHead>
-                  <TableHead>Team</TableHead>
-                  <TableHead className="text-center w-12">W</TableHead>
-                  <TableHead className="text-center w-12">D</TableHead>
-                  <TableHead className="text-center w-12">L</TableHead>
-                  <TableHead className="text-center w-16">Doelpunten</TableHead>
-                  <TableHead className="text-center w-12">Ptn</TableHead>
+                <TableRow className="bg-white hover:bg-white border-b border-gray-200">
+                  <TableHead className="w-12 text-gray-900 dark:text-white font-semibold">#</TableHead>
+                  <TableHead className="text-gray-900 dark:text-white font-semibold">Team</TableHead>
+                  <TableHead className="text-center w-12 text-gray-900 dark:text-white font-semibold">Wed</TableHead>
+                  <TableHead className="text-center w-12 text-gray-900 dark:text-white font-semibold">W</TableHead>
+                  <TableHead className="text-center w-12 text-gray-900 dark:text-white font-semibold">G</TableHead>
+                  <TableHead className="text-center w-12 text-gray-900 dark:text-white font-semibold">V</TableHead>
+                  <TableHead className="text-center w-16 text-gray-900 dark:text-white font-semibold">Doelpunten</TableHead>
+                  <TableHead className="text-center w-12 text-gray-900 dark:text-white font-semibold">Ptn</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="bg-white">
                 {allStandings.map((standing) => {
                   const isAZ = standing.team.name.toLowerCase().includes('az') && 
                              standing.team.name.toLowerCase().includes('alkmaar');
@@ -139,7 +136,7 @@ export const ConferenceLeagueStandings = () => {
                   return (
                     <TableRow 
                       key={`${standing.group}-${standing.team.id}`}
-                      className={isAZ ? 'border-l-4 border-l-az-red' : ''}
+                      className={isAZ ? 'bg-white hover:bg-gray-50 border-b border-gray-100 border-l-4 border-l-az-red' : 'bg-white hover:bg-gray-50 border-b border-gray-100'}
                     >
                       <TableCell className="font-medium">
                         <span className={isAZ ? 'text-az-red font-bold' : ''}>
@@ -157,6 +154,11 @@ export const ConferenceLeagueStandings = () => {
                             {standing.team.name}
                           </span>
                         </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <span className={isAZ ? 'text-az-red font-bold' : ''}>
+                          {standing.all.played}
+                        </span>
                       </TableCell>
                       <TableCell className="text-center">
                         <span className={isAZ ? 'text-az-red font-bold' : ''}>
