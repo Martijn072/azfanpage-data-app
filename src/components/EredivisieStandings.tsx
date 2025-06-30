@@ -9,14 +9,18 @@ export const EredivisieStandings = () => {
   const { data: standings, isLoading, error, refetch } = useEredivisieStandings();
 
   if (error) {
-    return <ErrorMessage onRetry={() => refetch()} />;
+    return (
+      <div className="animate-fade-in">
+        <ErrorMessage onRetry={() => refetch()} />
+      </div>
+    );
   }
 
   if (isLoading) {
     return (
-      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm animate-pulse">
         <CardHeader>
-          <CardTitle className="text-az-black dark:text-white">Eredivisie Stand</CardTitle>
+          <Skeleton className="h-6 w-48" />
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -30,7 +34,7 @@ export const EredivisieStandings = () => {
   }
 
   return (
-    <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+    <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm transform transition-all duration-300 hover:shadow-lg animate-fade-in">
       <CardHeader>
         <CardTitle className="text-az-black dark:text-white">Eredivisie Stand Seizoen 2024-2025</CardTitle>
       </CardHeader>
@@ -57,7 +61,7 @@ export const EredivisieStandings = () => {
                 </TableRow>
               </TableHeader>
               <TableBody className="bg-white dark:bg-gray-800">
-                {standings?.map((standing) => {
+                {standings?.map((standing, index) => {
                   const isAZ = standing.team.name.toLowerCase().includes('az') && 
                              (standing.team.name.toLowerCase().includes('alkmaar') || 
                               standing.team.name === 'AZ');
@@ -65,7 +69,8 @@ export const EredivisieStandings = () => {
                   return (
                     <TableRow 
                       key={standing.team.id}
-                      className={isAZ ? 'bg-az-red/10 dark:bg-az-red/20 border-b border-az-red/20 dark:border-az-red/30 hover:bg-az-red/15 dark:hover:bg-az-red/25' : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-600'}
+                      className={`${isAZ ? 'bg-az-red/10 dark:bg-az-red/20 border-b border-az-red/20 dark:border-az-red/30 hover:bg-az-red/15 dark:hover:bg-az-red/25' : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-600'} transition-all duration-200 animate-fade-in`}
+                      style={{ animationDelay: `${index * 0.02}s` }}
                     >
                       <TableCell className="font-medium">
                         <span className={isAZ ? 'text-az-red font-bold' : 'text-gray-900 dark:text-gray-100'}>
@@ -77,7 +82,7 @@ export const EredivisieStandings = () => {
                           <img 
                             src={standing.team.logo} 
                             alt={standing.team.name}
-                            className="w-6 h-6 object-contain"
+                            className="w-6 h-6 object-contain transform transition-transform duration-200 hover:scale-110"
                           />
                           {/* Hide team name on mobile, show on larger screens */}
                           <span className={`hidden sm:block font-medium ${isAZ ? 'text-az-red font-bold' : 'text-az-black dark:text-gray-100'}`}>

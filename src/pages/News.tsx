@@ -7,7 +7,9 @@ import { ArticlesSkeleton } from "@/components/ArticlesSkeleton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { SearchAndFilter } from "@/components/SearchAndFilter";
 import { ArticlePagination } from "@/components/ArticlePagination";
+import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
 import { useArticles } from "@/hooks/useArticles";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 
 // Fixed categories in the specified order
 const FIXED_CATEGORIES = [
@@ -47,6 +49,13 @@ const News = () => {
     selectedCategory === 'Alle' ? '' : selectedCategory
   );
 
+  // Pull to refresh
+  const { isRefreshing, pullDistance } = usePullToRefresh({
+    onRefresh: async () => {
+      await refetch();
+    }
+  });
+
   const articles = data?.articles || [];
   const pagination = data?.pagination;
 
@@ -72,11 +81,17 @@ const News = () => {
 
   return (
     <div className="min-h-screen bg-premium-gray-50 dark:bg-gray-900 overflow-x-hidden">
+      <PullToRefreshIndicator 
+        isRefreshing={isRefreshing} 
+        pullDistance={pullDistance} 
+        threshold={100}
+      />
+      
       <Header />
       
       <div className="px-4 pb-20 max-w-full">
         {/* Hero Section */}
-        <div className="pt-8 pb-8">
+        <div className="pt-8 pb-8 animate-fade-in">
           <div className="max-w-4xl">
             <h1 className="headline-premium text-headline-xl mb-2 text-az-black dark:text-white leading-tight">
               AZ Nieuws
@@ -85,14 +100,16 @@ const News = () => {
         </div>
 
         {/* Search and Filter */}
-        <SearchAndFilter
-          searchQuery={searchQuery}
-          selectedCategory={selectedCategory}
-          categories={FIXED_CATEGORIES}
-          onSearchChange={handleSearchChange}
-          onCategoryChange={handleCategoryChange}
-          onClearFilters={handleClearFilters}
-        />
+        <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <SearchAndFilter
+            searchQuery={searchQuery}
+            selectedCategory={selectedCategory}
+            categories={FIXED_CATEGORIES}
+            onSearchChange={handleSearchChange}
+            onCategoryChange={handleCategoryChange}
+            onClearFilters={handleClearFilters}
+          />
+        </div>
 
         {/* Content */}
         {isLoading && <ArticlesSkeleton />}
@@ -103,13 +120,19 @@ const News = () => {
           <>
             {/* News Feed */}
             <div className="space-y-6 max-w-full">
-              {articles.map((article) => (
-                <NewsCard key={article.id} article={article} />
+              {articles.map((article, index) => (
+                <div 
+                  key={article.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${0.2 + (index * 0.05)}s` }}
+                >
+                  <NewsCard article={article} />
+                </div>
               ))}
             </div>
 
             {articles.length === 0 && (
-              <div className="card-premium dark:bg-gray-800 p-12 text-center max-w-full">
+              <div className="card-premium dark:bg-gray-800 p-12 text-center max-w-full animate-fade-in">
                 <div className="max-w-md mx-auto">
                   <p className="body-premium text-body-lg text-premium-gray-600 dark:text-gray-300 mb-2">
                     {searchQuery || selectedCategory !== 'Alle' 
@@ -128,11 +151,13 @@ const News = () => {
 
             {/* Pagination */}
             {pagination && articles.length > 0 && (
-              <ArticlePagination
-                pagination={pagination}
-                onPageChange={handlePageChange}
-                isLoading={isLoading}
-              />
+              <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                <ArticlePagination
+                  pagination={pagination}
+                  onPageChange={handlePageChange}
+                  isLoading={isLoading}
+                />
+              </div>
             )}
           </>
         )}

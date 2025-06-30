@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAZTeamId, useNextAZFixture } from '@/hooks/useFootballApi';
 import { Calendar, Clock } from 'lucide-react';
@@ -12,14 +13,29 @@ export const NextMatchWidget = () => {
   if (isLoading) {
     return (
       <div className="mb-6">
-        <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4">
-          <div className="animate-pulse">
-            <div className="h-3 bg-premium-gray-200 dark:bg-gray-600 rounded w-32 mb-3 mx-auto"></div>
-            <div className="flex items-center justify-center space-x-6">
-              <div className="w-12 h-12 bg-premium-gray-200 dark:bg-gray-600 rounded-full"></div>
-              <div className="h-4 bg-premium-gray-200 dark:bg-gray-600 rounded w-6"></div>
+        <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4 animate-pulse">
+          <div className="text-center mb-4">
+            <div className="h-4 bg-premium-gray-200 dark:bg-gray-600 rounded w-32 mx-auto"></div>
+          </div>
+          <div className="flex items-center justify-center space-x-8 mb-4">
+            <div className="flex flex-col items-center">
               <div className="w-12 h-12 bg-premium-gray-200 dark:bg-gray-600 rounded-full"></div>
             </div>
+            <div className="flex flex-col items-center">
+              <div className="h-6 bg-premium-gray-200 dark:bg-gray-600 rounded w-8"></div>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-premium-gray-200 dark:bg-gray-600 rounded-full"></div>
+            </div>
+          </div>
+          <div className="text-center mb-4">
+            <div className="flex items-center justify-center space-x-4">
+              <div className="h-4 bg-premium-gray-200 dark:bg-gray-600 rounded w-24"></div>
+              <div className="h-4 bg-premium-gray-200 dark:bg-gray-600 rounded w-16"></div>
+            </div>
+          </div>
+          <div className="text-center pt-3 border-t border-premium-gray-100 dark:border-gray-700">
+            <div className="h-3 bg-premium-gray-200 dark:bg-gray-600 rounded w-32 mx-auto"></div>
           </div>
         </div>
       </div>
@@ -29,7 +45,7 @@ export const NextMatchWidget = () => {
   if (hasError || !nextFixture) {
     return (
       <div className="mb-6">
-        <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4">
+        <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4 animate-fade-in">
           <p className="text-premium-gray-600 dark:text-gray-400 text-center">
             Geen wedstrijd gepland
           </p>
@@ -71,7 +87,7 @@ export const NextMatchWidget = () => {
 
   return (
     <div className="mb-6">
-      <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4 hover:shadow-lg transition-all duration-200">
+      <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4 hover:shadow-lg transition-all duration-300 animate-fade-in transform hover:scale-[1.01]">
         {/* Competitie naam */}
         <div className="text-center mb-4">
           <p className="text-sm text-premium-gray-600 dark:text-gray-400">
@@ -82,12 +98,12 @@ export const NextMatchWidget = () => {
         {/* Teams met Logo's */}
         <div className="flex items-center justify-center space-x-8 mb-4">
           {/* AZ Logo */}
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center transform transition-transform duration-300 hover:scale-110">
             <div className="relative w-12 h-12">
               <img
                 src={azTeam.logo}
                 alt="AZ Alkmaar"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain transition-transform duration-300"
                 onError={handleImageError}
               />
               <span 
@@ -101,18 +117,18 @@ export const NextMatchWidget = () => {
 
           {/* VS */}
           <div className="flex flex-col items-center">
-            <span className="text-xl font-bold text-premium-gray-400 dark:text-gray-500">
+            <span className="text-xl font-bold text-premium-gray-400 dark:text-gray-500 animate-pulse">
               VS
             </span>
           </div>
 
           {/* Opponent Logo */}
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center transform transition-transform duration-300 hover:scale-110">
             <div className="relative w-12 h-12">
               <img
                 src={opponentTeam.logo}
                 alt={opponentTeam.name}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain transition-transform duration-300"
                 onError={handleImageError}
               />
               <span 
@@ -128,11 +144,11 @@ export const NextMatchWidget = () => {
         {/* Datum en tijd */}
         <div className="text-center mb-4">
           <div className="flex items-center justify-center space-x-4 text-premium-gray-600 dark:text-gray-400">
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-1 transform transition-transform duration-200 hover:scale-105">
               <Calendar size={14} />
               <span className="text-sm">{formatDate(matchDate)}</span>
             </div>
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-1 transform transition-transform duration-200 hover:scale-105">
               <Clock size={14} />
               <span className="text-sm">{formatTime(matchDate)}</span>
             </div>
@@ -145,7 +161,7 @@ export const NextMatchWidget = () => {
             href="https://072design.nl"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-premium-gray-400 dark:text-gray-500 hover:text-az-red dark:hover:text-az-red hover:underline cursor-pointer transition-colors duration-200"
+            className="text-xs text-premium-gray-400 dark:text-gray-500 hover:text-az-red dark:hover:text-az-red hover:underline cursor-pointer transition-all duration-200 transform hover:scale-105"
           >
             Powered by 072DESIGN
           </a>

@@ -30,28 +30,31 @@ export const NewsCard = ({ article }: NewsCardProps) => {
   };
 
   return (
-    <article className="card-premium dark:bg-gray-800 dark:border-gray-700 overflow-hidden animate-slide-up w-full max-w-full">
+    <article className="card-premium dark:bg-gray-800 dark:border-gray-700 overflow-hidden animate-slide-up w-full max-w-full group transform transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
       {/* Image */}
       <div className="relative aspect-[16/9] overflow-hidden cursor-pointer w-full" onClick={handleTitleClick}>
         <img 
           src={article.imageUrl} 
           alt={article.title}
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
         {article.isBreaking && (
-          <div className="absolute top-4 left-4">
-            <span className="breaking-news">🔥 Breaking</span>
+          <div className="absolute top-4 left-4 animate-pulse">
+            <span className="breaking-news shadow-lg">🔥 Breaking</span>
           </div>
         )}
-        <div className="absolute top-4 right-4 bg-az-red/80 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-lg text-xs font-semibold text-white shadow-lg hover:bg-az-red/90 hover:scale-105 transition-all duration-200">
+        <div className="absolute top-4 right-4 bg-az-red/80 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-lg text-xs font-semibold text-white shadow-lg hover:bg-az-red/90 hover:scale-105 transition-all duration-200 cursor-pointer">
           {article.category}
         </div>
+        
+        {/* Overlay gradient on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
       {/* Content */}
       <div className="p-6 w-full max-w-full">
         <h2 
-          className="headline-premium text-headline-md mb-3 hover:text-az-red transition-colors cursor-pointer break-words text-az-black dark:text-white"
+          className="headline-premium text-headline-md mb-3 hover:text-az-red transition-colors duration-300 cursor-pointer break-words text-az-black dark:text-white group-hover:text-az-red"
           onClick={handleTitleClick}
         >
           {article.title}
@@ -81,10 +84,10 @@ export const NewsCard = ({ article }: NewsCardProps) => {
         <div className="flex items-center justify-start pt-4 border-t border-premium-gray-100 dark:border-gray-700">
           <button 
             onClick={handleReadMore}
-            className="flex items-center gap-2 bg-az-red hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-md hover:scale-105 group"
+            className="flex items-center gap-2 bg-az-red hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95 group/btn transform"
           >
             <span className="text-sm whitespace-nowrap">Lees meer</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 flex-shrink-0" />
+            <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200 flex-shrink-0" />
           </button>
         </div>
       </div>
