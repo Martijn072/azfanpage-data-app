@@ -20,17 +20,19 @@ const INSTAGRAM_USER_ID = Deno.env.get("INSTAGRAM_USER_ID")?.trim();
 
 function validateTwitterCredentials() {
   if (!API_KEY || !API_SECRET || !ACCESS_TOKEN || !ACCESS_TOKEN_SECRET) {
-    console.log('⚠️ Twitter credentials not configured, skipping Twitter fetch');
+    console.log('⚠️ Twitter credentials not fully configured');
     return false;
   }
+  console.log('✅ All Twitter credentials are configured');
   return true;
 }
 
 function validateInstagramCredentials() {
   if (!INSTAGRAM_ACCESS_TOKEN || !INSTAGRAM_USER_ID) {
-    console.log('⚠️ Instagram credentials not configured, using mock data');
+    console.log('⚠️ Instagram credentials not configured, will use mock data');
     return false;
   }
+  console.log('✅ Instagram credentials are configured');
   return true;
 }
 
@@ -98,6 +100,7 @@ function generateOAuthHeader(method: string, url: string, queryParams: Record<st
 
 async function fetchTwitterPosts(): Promise<any[]> {
   if (!validateTwitterCredentials()) {
+    console.log('🐦 Skipping Twitter fetch - credentials not configured');
     return [];
   }
 
@@ -119,15 +122,16 @@ async function fetchTwitterPosts(): Promise<any[]> {
 
     if (!userResponse.ok) {
       const errorText = await userResponse.text();
-      console.error('❌ Error fetching user info:', errorText);
+      console.error('❌ Error fetching user info:', userResponse.status, errorText);
       return [];
     }
 
     const userData = await userResponse.json();
+    console.log('📊 User data response:', userData);
+    
     const userId = userData.data?.id;
-
     if (!userId) {
-      console.error('❌ User azfanpage not found');
+      console.error('❌ User azfanpage not found in response');
       return [];
     }
 
@@ -156,11 +160,12 @@ async function fetchTwitterPosts(): Promise<any[]> {
 
     if (!tweetsResponse.ok) {
       const errorText = await tweetsResponse.text();
-      console.error('❌ Error fetching tweets:', errorText);
+      console.error('❌ Error fetching tweets:', tweetsResponse.status, errorText);
       return [];
     }
 
     const tweetsData = await tweetsResponse.json();
+    console.log('📊 Tweets data response:', tweetsData);
     console.log(`✅ Successfully fetched ${tweetsData.data?.length || 0} tweets`);
 
     return tweetsData.data || [];
@@ -193,11 +198,12 @@ async function fetchInstagramPosts(): Promise<any[]> {
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ Error fetching Instagram posts:', errorText);
+      console.error('❌ Error fetching Instagram posts:', response.status, errorText);
       return [];
     }
 
     const data = await response.json();
+    console.log('📊 Instagram data response:', data);
     console.log(`✅ Successfully fetched ${data.data?.length || 0} Instagram posts`);
     
     return data.data || [];
@@ -213,6 +219,9 @@ serve(async (req) => {
   }
 
   try {
+    console.log('🚀 Social media fetcher starting...');
+    console.log('📅 Timestamp:', new Date().toISOString());
+    
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -238,6 +247,7 @@ serve(async (req) => {
       .limit(100)
 
     const existingUrls = new Set(existingNotifications?.map(n => n.social_media_url) || [])
+    console.log(`🔍 Found ${existingUrls.size} existing social media notifications`);
 
     // Insert new Twitter posts
     let newTwitterPosts = 0;
@@ -267,6 +277,8 @@ serve(async (req) => {
           console.log('✅ Tweet added successfully')
           newTwitterPosts++;
         }
+      } else {
+        console.log('⏭️ Tweet already exists, skipping:', tweet.id);
       }
     }
 
@@ -298,22 +310,28 @@ serve(async (req) => {
           console.log('✅ Instagram post added successfully')
           newInstagramPosts++;
         }
+      } else {
+        console.log('⏭️ Instagram post already exists, skipping:', post.id);
       }
     }
 
-    console.log('✅ Social media fetch completed')
+    const result = {
+      success: true,
+      timestamp: new Date().toISOString(),
+      message: 'Social media posts fetched successfully',
+      new_twitter_posts: newTwitterPosts,
+      new_instagram_posts: newInstagramPosts,
+      total_twitter_checked: twitterPosts.length,
+      total_instagram_checked: instagramPosts.length,
+      twitter_configured: validateTwitterCredentials(),
+      instagram_configured: validateInstagramCredentials(),
+      existing_notifications_count: existingUrls.size
+    };
+
+    console.log('✅ Social media fetch completed:', result);
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: 'Social media posts fetched successfully',
-        new_twitter_posts: newTwitterPosts,
-        new_instagram_posts: newInstagramPosts,
-        total_twitter_checked: twitterPosts.length,
-        total_instagram_checked: instagramPosts.length,
-        twitter_configured: validateTwitterCredentials(),
-        instagram_configured: validateInstagramCredentials()
-      }),
+      JSON.stringify(result),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200 
@@ -321,9 +339,15 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('❌ Error in social media fetcher:', error)
+    console.error('❌ Error in social media fetcher:', error);
+    const errorResult = {
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    };
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify(errorResult),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500 
