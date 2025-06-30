@@ -8,6 +8,7 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -39,7 +40,7 @@ serve(async (req) => {
       if (socialError) {
         console.error('❌ Social media fetcher error:', socialError)
         results.errors.push(`Social media error: ${socialError.message}`)
-        results.social_media_result = { error: socialError.message }
+        results.social_media_result = { success: false, error: socialError.message }
       } else {
         console.log('✅ Social media fetcher success:', socialData)
         results.social_media_result = socialData
@@ -47,7 +48,7 @@ serve(async (req) => {
     } catch (error) {
       console.error('❌ Social media fetcher exception:', error)
       results.errors.push(`Social media exception: ${error.message}`)
-      results.social_media_result = { error: error.message }
+      results.social_media_result = { success: false, error: error.message }
     }
 
     // Call articles fetcher in notifications mode
@@ -60,7 +61,7 @@ serve(async (req) => {
       if (articlesError) {
         console.error('❌ Articles fetcher error:', articlesError)
         results.errors.push(`Articles error: ${articlesError.message}`)
-        results.articles_result = { error: articlesError.message }
+        results.articles_result = { success: false, error: articlesError.message }
       } else {
         console.log('✅ Articles fetcher success:', articlesData)
         results.articles_result = articlesData
@@ -68,7 +69,7 @@ serve(async (req) => {
     } catch (error) {
       console.error('❌ Articles fetcher exception:', error)
       results.errors.push(`Articles exception: ${error.message}`)
-      results.articles_result = { error: error.message }
+      results.articles_result = { success: false, error: error.message }
     }
 
     // Set overall success status
@@ -76,15 +77,15 @@ serve(async (req) => {
 
     console.log('📋 Scheduler Summary:')
     console.log(`  ✅ Success: ${results.success}`)
-    console.log(`  🐦 Social Media: ${results.social_media_result?.success ? '✅' : '❌'}`)
-    console.log(`  📰 Articles: ${results.articles_result?.success ? '✅' : '❌'}`)
+    console.log(`  🐦 Social Media: ${results.social_media_result?.success !== false ? '✅' : '❌'}`)
+    console.log(`  📰 Articles: ${results.articles_result?.success !== false ? '✅' : '❌'}`)
     console.log(`  ❌ Errors: ${results.errors.length}`)
 
     return new Response(
       JSON.stringify(results, null, 2),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: results.success ? 200 : 207 // 207 Multi-Status for partial success
+        status: 200
       }
     )
 
