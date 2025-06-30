@@ -1,150 +1,122 @@
 
-import { useState } from "react";
-import { Header } from "@/components/Header";
+import { Hero } from "@/components/Hero";
 import { NewsCard } from "@/components/NewsCard";
-import { BottomNavigation } from "@/components/BottomNavigation";
 import { NextMatchWidget } from "@/components/NextMatchWidget";
-import { CategoryFilter } from "@/components/CategoryFilter";
-import { ArticlesSkeleton } from "@/components/ArticlesSkeleton";
-import { LoadMoreSkeleton } from "@/components/LoadMoreSkeleton";
-import { ErrorMessage } from "@/components/ErrorMessage";
+import { EredivisieStandings } from "@/components/EredivisieStandings";
 import { SocialMediaPromo } from "@/components/SocialMediaPromo";
-import { PopularArticles } from "@/components/PopularArticles";
+import { Header } from "@/components/Header";
+import { BottomNavigation } from "@/components/BottomNavigation";
+import { NotificationTest } from "@/components/NotificationTest";
 import { useInfiniteArticles } from "@/hooks/useInfiniteArticles";
+import { LoadMoreSkeleton } from "@/components/LoadMoreSkeleton";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState("news");
-  const [selectedCategory, setSelectedCategory] = useState("Alles");
-  
+  const [activeTab, setActiveTab] = useState("home");
   const { 
-    data, 
+    articles, 
     isLoading, 
     error, 
     fetchNextPage, 
     hasNextPage, 
-    isFetchingNextPage,
-    refetch 
-  } = useInfiniteArticles(8, '', selectedCategory === 'Alles' ? '' : selectedCategory);
+    isFetchingNextPage 
+  } = useInfiniteArticles();
 
-  // Flatten all articles from all pages
-  const allArticles = data?.pages.flatMap(page => page.articles) || [];
-  const breakingNews = allArticles.filter(article => article.isBreaking);
-
-  const handleLoadMore = () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  };
+  if (error) {
+    return (
+      <div className="min-h-screen bg-premium-gray-50 dark:bg-gray-900">
+        <Header />
+        <main className="pb-20">
+          <div className="container mx-auto px-4 py-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-red-600 mb-4">
+                Fout bij het laden van artikelen
+              </h2>
+              <p className="text-premium-gray-600 dark:text-gray-400">
+                {error.message}
+              </p>
+            </div>
+          </div>
+        </main>
+        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-premium-gray-50 dark:bg-gray-900">
       <Header />
       
-      {/* Next Match Widget with improved spacing */}
-      <div className="mt-8 mb-10">
-        <NextMatchWidget />
-      </div>
-      
-      <div className="px-4 pb-20">
-        {/* Category Filter with consistent spacing */}
-        <div className="mb-10">
-          <CategoryFilter 
-            categories={[]} // No longer needed as we use fixed categories
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-          />
-        </div>
-
-        {/* Breaking News Badge with improved spacing */}
-        {breakingNews.length > 0 && (
-          <div className="mb-8">
-            <div className="flex items-center gap-2 mb-6">
-              <span className="breaking-news">🔥 Breaking</span>
-              <span className="text-premium-gray-600 dark:text-gray-300 text-sm">
-                {breakingNews.length} {breakingNews.length === 1 ? 'nieuw artikel' : 'nieuwe artikelen'}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Content with improved vertical rhythm */}
-        {isLoading && (
-          <div className="mt-8">
-            <ArticlesSkeleton />
-          </div>
-        )}
+      <main className="pb-20">
+        <Hero />
         
-        {error && (
-          <div className="mt-8">
-            <ErrorMessage onRetry={() => refetch()} />
-          </div>
-        )}
-        
-        {data && !isLoading && !error && (
-          <>
-            {/* News Feed with Social Media Promo and consistent spacing */}
-            <div className="space-y-8 mb-12">
-              {allArticles.map((article, index) => (
-                <div key={article.id}>
-                  <NewsCard article={article} />
-                  {/* Show Social Media Promo after 4th article (index 3) with proper spacing */}
-                  {index === 3 && (
-                    <div className="my-10">
-                      <SocialMediaPromo />
-                    </div>
-                  )}
+        <div className="container mx-auto px-4 py-8">
+          {/* Notification Test Component */}
+          <NotificationTest />
+          
+          {/* Next Match Widget */}
+          <NextMatchWidget />
+          
+          {/* News Section */}
+          <section className="mb-12">
+            <h2 className="headline-premium text-headline-lg text-az-black dark:text-white font-bold mb-6">
+              Laatste Nieuws
+            </h2>
+            
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, index) => (
+                  <div key={index} className="animate-pulse">
+                    <div className="bg-premium-gray-200 dark:bg-gray-700 rounded-lg aspect-video mb-4"></div>
+                    <div className="h-4 bg-premium-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                    <div className="h-4 bg-premium-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                  {articles.map((article) => (
+                    <NewsCard
+                      key={article.id}
+                      id={article.id}
+                      title={article.title}
+                      excerpt={article.excerpt}
+                      imageUrl={article.imageUrl}
+                      publishedAt={article.publishedAt}
+                      author={article.author}
+                      category={article.category}
+                      readTime={article.readTime}
+                      isBreaking={article.isBreaking}
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
-
-            {/* Loading skeleton for "Load More" with consistent spacing */}
-            {isFetchingNextPage && (
-              <div className="mb-8">
-                <LoadMoreSkeleton />
-              </div>
+                
+                {hasNextPage && (
+                  <div className="text-center">
+                    <Button
+                      onClick={() => fetchNextPage()}
+                      disabled={isFetchingNextPage}
+                      className="bg-az-red hover:bg-red-700 text-white px-8 py-3 text-lg"
+                    >
+                      {isFetchingNextPage ? 'Laden...' : 'Meer artikelen laden'}
+                    </Button>
+                  </div>
+                )}
+                
+                {isFetchingNextPage && <LoadMoreSkeleton />}
+              </>
             )}
+          </section>
 
-            {/* No articles message with improved spacing */}
-            {allArticles.length === 0 && !isFetchingNextPage && (
-              <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-8 text-center my-8">
-                <p className="body-premium text-premium-gray-600 dark:text-gray-300">
-                  Geen artikelen gevonden voor de categorie "{selectedCategory}".
-                </p>
-              </div>
-            )}
-
-            {/* Popular Articles Section with improved spacing */}
-            {allArticles.length > 0 && (
-              <div className="mb-12">
-                <PopularArticles />
-              </div>
-            )}
-
-            {/* Load More Button with consistent spacing */}
-            {hasNextPage && allArticles.length > 0 && !isFetchingNextPage && (
-              <div className="mt-10 mb-12 text-center">
-                <Button 
-                  onClick={handleLoadMore}
-                  className="bg-white hover:bg-premium-gray-50 text-az-black border border-premium-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:hover:bg-gray-700 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
-                >
-                  Laad meer artikelen
-                </Button>
-              </div>
-            )}
-
-            {/* End of articles message with proper spacing */}
-            {!hasNextPage && allArticles.length > 0 && !isFetchingNextPage && (
-              <div className="mt-10 mb-12 text-center">
-                <p className="text-premium-gray-500 dark:text-gray-400 text-sm">
-                  Alle artikelen zijn geladen
-                </p>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+          {/* Eredivisie Standings */}
+          <EredivisieStandings />
+          
+          {/* Social Media Promo */}
+          <SocialMediaPromo />
+        </div>
+      </main>
 
       <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
