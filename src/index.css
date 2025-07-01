@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -149,10 +148,12 @@
   }
 
   .article-content img {
-    @apply rounded-lg shadow-sm my-6 w-full object-cover;
+    @apply rounded-lg shadow-sm my-6 w-full;
     aspect-ratio: 16/9;
     height: auto;
     max-width: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   .article-content a {
