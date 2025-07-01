@@ -131,7 +131,7 @@ const ArticleDetail = () => {
                 </div>
                 <div className="flex items-center gap-1">
                   <Eye className="w-4 h-4" />
-                  <span>{article.views?.toLocaleString() || 0} weergaven</span>
+                  <span>0 weergaven</span>
                 </div>
               </div>
             </div>
@@ -154,28 +154,11 @@ const ArticleDetail = () => {
                 dangerouslySetInnerHTML={{ __html: article.content }}
               />
             </div>
-
-            {/* Tags */}
-            {article.tags && article.tags.length > 0 && (
-              <div className="px-6 pb-6">
-                <div className="flex flex-wrap gap-2">
-                  {article.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-premium-gray-100 dark:bg-gray-700 text-premium-gray-700 dark:text-gray-300 rounded-full text-sm"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
           </article>
 
           {/* Share Bar */}
           <div className="mt-8">
             <ShareBar
-              url={`${window.location.origin}/artikel/${article.id}`}
               title={article.title}
               description={article.excerpt}
             />
@@ -184,7 +167,7 @@ const ArticleDetail = () => {
           {/* Secure Comments Section */}
           <div className="mt-8">
             <SecureCommentsSection
-              articleId={article.id.toString()}
+              articleId={id || ''}
               title={article.title}
               onAuthRequired={handleAuthRequired}
             />

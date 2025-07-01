@@ -53,7 +53,7 @@ export const useSecureComments = (articleId: string) => {
         .from('secure_comments')
         .select(`
           *,
-          user_profiles!inner (
+          user_profiles (
             username,
             display_name,
             avatar_url,
@@ -77,7 +77,7 @@ export const useSecureComments = (articleId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       let userReactions: any[] = [];
       
-      if (user && data.length > 0) {
+      if (user && data && data.length > 0) {
         const { data: reactions } = await supabase
           .from('comment_reactions')
           .select('comment_id, reaction_type')
@@ -89,7 +89,7 @@ export const useSecureComments = (articleId: string) => {
       
       // Organize comments with replies and user reactions
       const organizedComments = organizeCommentsWithReplies(
-        data as SecureComment[], 
+        data as any[] || [], 
         userReactions
       );
       
@@ -358,7 +358,7 @@ export const useReportComment = () => {
 
 // Helper function to organize comments with replies
 const organizeCommentsWithReplies = (
-  comments: SecureComment[], 
+  comments: any[], 
   userReactions: any[]
 ): SecureComment[] => {
   const commentMap = new Map<string, SecureComment>();
@@ -372,7 +372,7 @@ const organizeCommentsWithReplies = (
 
   // Initialize all comments in map with user reactions
   comments.forEach(comment => {
-    const commentWithReaction = {
+    const commentWithReaction: SecureComment = {
       ...comment,
       replies: [],
       user_reaction: reactionMap.get(comment.id) as 'like' | 'dislike' | null || null
