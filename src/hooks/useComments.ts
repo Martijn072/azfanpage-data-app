@@ -1,4 +1,5 @@
 
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -73,8 +74,8 @@ export const useComments = (articleId: string) => {
       
       console.log('✅ Secure comments fetched:', data);
       
-      // Organize comments with replies
-      const organizedComments = organizeCommentsWithReplies(data as Comment[]);
+      // Organize comments with replies - cast to Comment[] to handle type conversion
+      const organizedComments = organizeCommentsWithReplies(data as any[] as Comment[]);
       return organizedComments;
     },
   });
@@ -226,3 +227,4 @@ const organizeCommentsWithReplies = (comments: Comment[]): Comment[] => {
 
   return rootComments;
 };
+
