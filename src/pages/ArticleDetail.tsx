@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Download, Wifi } from "lucide-react";
@@ -234,12 +233,13 @@ const ArticleDetail = () => {
             const images = document.querySelectorAll('.article-content img');
             console.log('Found images in DOM:', images.length);
             images.forEach((img, index) => {
+              const imageElement = img as HTMLImageElement;
               console.log(`Image ${index + 1} dimensions:`, {
-                width: img.clientWidth,
-                height: img.clientHeight,
-                naturalWidth: img.naturalWidth,
-                naturalHeight: img.naturalHeight,
-                src: img.src
+                width: imageElement.clientWidth,
+                height: imageElement.clientHeight,
+                naturalWidth: imageElement.naturalWidth,
+                naturalHeight: imageElement.naturalHeight,
+                src: imageElement.src
               });
             });
           }}
