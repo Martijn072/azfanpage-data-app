@@ -47,6 +47,24 @@ const ArticleDetail = () => {
     }
   }, [article, isOnline]);
 
+  // Debug: Log article content when it changes
+  useEffect(() => {
+    if (article) {
+      console.log('Article ID:', article.id);
+      console.log('Article content length:', article.content?.length);
+      console.log('Article content preview:', article.content?.substring(0, 500));
+      
+      // Check for images in content
+      const imgMatches = article.content?.match(/<img[^>]*>/g);
+      console.log('Images found in content:', imgMatches?.length || 0);
+      if (imgMatches) {
+        imgMatches.forEach((img, index) => {
+          console.log(`Image ${index + 1}:`, img);
+        });
+      }
+    }
+  }, [article]);
+
   // Use cached content if offline and no online data
   const displayArticle = article || (cachedArticle && !isOnline ? cachedArticle : null);
   const isShowingCachedContent = !article && cachedArticle && !isOnline;
@@ -208,8 +226,24 @@ const ArticleDetail = () => {
           </div>
         </header>
 
-        {/* Article content with enhanced styling */}
-        <div className={`article-content ${typeof window !== 'undefined' && document.documentElement.classList.contains('dark') ? 'prose-invert' : ''}`}>
+        {/* Article content with enhanced styling and debug info */}
+        <div 
+          className={`article-content ${typeof window !== 'undefined' && document.documentElement.classList.contains('dark') ? 'prose-invert' : ''}`}
+          onLoad={() => {
+            console.log('Article content loaded, checking images...');
+            const images = document.querySelectorAll('.article-content img');
+            console.log('Found images in DOM:', images.length);
+            images.forEach((img, index) => {
+              console.log(`Image ${index + 1} dimensions:`, {
+                width: img.clientWidth,
+                height: img.clientHeight,
+                naturalWidth: img.naturalWidth,
+                naturalHeight: img.naturalHeight,
+                src: img.src
+              });
+            });
+          }}
+        >
           <div 
             dangerouslySetInnerHTML={{ __html: displayArticle.content || displayArticle.excerpt }}
           />
