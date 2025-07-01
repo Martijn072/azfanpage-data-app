@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 export interface Comment {
   id: string;
   article_id: string;
-  user_id: string | null;
+  user_id: string;
   author_name: string;
   author_email: string | null;
   author_avatar: string | null;
@@ -35,7 +35,7 @@ export const useComments = (articleId: string) => {
     queryFn: async () => {
       console.log('🔍 Fetching comments for article:', articleId);
       const { data, error } = await supabase
-        .from('comments')
+        .from('secure_comments')
         .select('*')
         .eq('article_id', articleId)
         .eq('is_approved', true)
@@ -48,8 +48,16 @@ export const useComments = (articleId: string) => {
       
       console.log('✅ Comments fetched:', data);
       
+      // Map the secure_comments data to match our Comment interface
+      const mappedComments = data.map(comment => ({
+        ...comment,
+        author_name: 'Anonymous User', // Default since secure_comments doesn't have author_name
+        author_email: null,
+        author_avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user_id}`,
+      })) as Comment[];
+      
       // Organize comments with replies
-      const organizedComments = organizeCommentsWithReplies(data as Comment[]);
+      const organizedComments = organizeCommentsWithReplies(mappedComments);
       return organizedComments;
     },
   });
@@ -68,14 +76,12 @@ export const useAddComment = () => {
     mutationFn: async ({ articleId, commentData }: { articleId: string; commentData: CommentFormData }) => {
       console.log('💬 Adding new comment:', commentData);
       const { data, error } = await supabase
-        .from('comments')
+        .from('secure_comments')
         .insert({
           article_id: articleId,
-          author_name: commentData.author_name,
-          author_email: commentData.author_email,
           content: commentData.content,
           parent_id: commentData.parent_id || null,
-          author_avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${commentData.author_name}`,
+          user_id: 'anonymous-user', // Since we don't have auth, use placeholder
         })
         .select()
         .single();
@@ -115,69 +121,38 @@ export const useLikeComment = () => {
     mutationFn: async ({ commentId, userIdentifier }: { commentId: string; userIdentifier: string }) => {
       console.log('👍 Toggling like for comment:', commentId);
       
-      // Check if already liked
-      const { data: existingLike } = await supabase
-        .from('comment_likes')
+      // Check if already liked using comment_reactions
+      const { data: existingReaction } = await supabase
+        .from('comment_reactions')
         .select('id')
         .eq('comment_id', commentId)
-        .eq('user_identifier', userIdentifier)
+        .eq('user_id', userIdentifier)
+        .eq('reaction_type', 'like')
         .single();
 
-      if (existingLike) {
-        // Unlike: remove the like
+      if (existingReaction) {
+        // Unlike: remove the reaction
         const { error } = await supabase
-          .from('comment_likes')
+          .from('comment_reactions')
           .delete()
           .eq('comment_id', commentId)
-          .eq('user_identifier', userIdentifier);
+          .eq('user_id', userIdentifier)
+          .eq('reaction_type', 'like');
 
         if (error) throw error;
-
-        // Get current likes count and decrease by 1
-        const { data: currentComment } = await supabase
-          .from('comments')
-          .select('likes_count')
-          .eq('id', commentId)
-          .single();
-
-        if (currentComment) {
-          const newCount = Math.max(0, (currentComment.likes_count || 0) - 1);
-          const { error: updateError } = await supabase
-            .from('comments')
-            .update({ likes_count: newCount })
-            .eq('id', commentId);
-
-          if (updateError) throw updateError;
-        }
         
         return { action: 'unliked' };
       } else {
-        // Like: add the like
+        // Like: add the reaction
         const { error } = await supabase
-          .from('comment_likes')
+          .from('comment_reactions')
           .insert({
             comment_id: commentId,
-            user_identifier: userIdentifier,
+            user_id: userIdentifier,
+            reaction_type: 'like',
           });
 
         if (error) throw error;
-
-        // Get current likes count and increase by 1
-        const { data: currentComment } = await supabase
-          .from('comments')
-          .select('likes_count')
-          .eq('id', commentId)
-          .single();
-
-        if (currentComment) {
-          const newCount = (currentComment.likes_count || 0) + 1;
-          const { error: updateError } = await supabase
-            .from('comments')
-            .update({ likes_count: newCount })
-            .eq('id', commentId);
-
-          if (updateError) throw updateError;
-        }
         
         return { action: 'liked' };
       }
