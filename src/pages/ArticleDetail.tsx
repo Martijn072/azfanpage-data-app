@@ -100,13 +100,28 @@ const ArticleDetail = () => {
       
       if (articleId) {
         console.log('✅ Converting internal link to app route:', `/artikel/${articleId}`);
-        // Replace with internal app link that uses router navigation
-        return `<a href="/artikel/${articleId}" class="internal-link text-az-red hover:text-red-700 underline">${linkText}</a>`;
+        // Replace with internal app link with data attribute for navigation
+        return `<a href="#" data-internal-link="/artikel/${articleId}" class="internal-link text-az-red hover:text-red-700 underline">${linkText}</a>`;
       }
       
       console.log('❌ Could not extract article ID from:', originalUrl);
       return match; // Return original if we can't parse the ID
     });
+  };
+
+  // Handle clicks on internal links
+  const handleContentClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const link = target.closest('a[data-internal-link]') as HTMLAnchorElement;
+    
+    if (link) {
+      e.preventDefault();
+      const internalRoute = link.getAttribute('data-internal-link');
+      if (internalRoute) {
+        console.log('🚀 Navigating to internal route:', internalRoute);
+        navigate(internalRoute);
+      }
+    }
   };
 
   // Use cached content if offline and no online data
@@ -295,6 +310,7 @@ const ArticleDetail = () => {
           }}
         >
           <div 
+            onClick={handleContentClick}
             dangerouslySetInnerHTML={{ __html: processedContent }}
           />
         </div>
