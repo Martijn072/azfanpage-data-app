@@ -14,6 +14,7 @@ import SpelerStatistieken from "./pages/SpelerStatistieken";
 import ConferenceLeague from "./pages/ConferenceLeague";
 import Notifications from "./pages/Notifications";
 import WedstrijdDetail from "./pages/WedstrijdDetail";
+import SpelerProfiel from "./pages/SpelerProfiel";
 import Community from "./pages/Community";
 import NotFound from "./pages/NotFound";
 
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/notificaties" element={<Notifications />} />
             <Route path="/community" element={<Community />} />
             <Route path="/wedstrijd/:fixtureId" element={<WedstrijdDetail />} />
+            <Route path="/speler/:playerId" element={<SpelerProfiel />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

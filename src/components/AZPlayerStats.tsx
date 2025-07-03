@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -153,6 +154,7 @@ interface AZPlayerStatsProps {
 }
 
 export const AZPlayerStats = ({ teamId, isLoadingTeamId }: AZPlayerStatsProps) => {
+  const navigate = useNavigate();
   const [selectedSeason, setSelectedSeason] = useState<string>(currentSeason);
   const [sortBy, setSortBy] = useState<'goals' | 'assists' | 'minutes' | 'cards'>('goals');
 
@@ -229,9 +231,13 @@ export const AZPlayerStats = ({ teamId, isLoadingTeamId }: AZPlayerStatsProps) =
     });
   };
 
+  const handlePlayerClick = (playerId: number) => {
+    navigate(`/speler/${playerId}`);
+  };
+
   if (error) {
     return (
-      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+      <Card className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-700 shadow-sm">
         <CardHeader>
           <CardTitle className="text-az-black dark:text-white">Speler Statistieken</CardTitle>
         </CardHeader>
@@ -254,7 +260,7 @@ export const AZPlayerStats = ({ teamId, isLoadingTeamId }: AZPlayerStatsProps) =
 
   if (isLoading || isLoadingTeamId) {
     return (
-      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+      <Card className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-700 shadow-sm">
         <CardHeader>
           <CardTitle className="text-az-black dark:text-white">Speler Statistieken</CardTitle>
         </CardHeader>
@@ -372,7 +378,11 @@ export const AZPlayerStats = ({ teamId, isLoadingTeamId }: AZPlayerStatsProps) =
                   const stats = playerData.statistics[0];
                   
                   return (
-                    <TableRow key={player.id} className="hover:bg-premium-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700">
+                    <TableRow 
+                      key={player.id} 
+                      onClick={() => handlePlayerClick(player.id)}
+                      className="hover:bg-premium-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 cursor-pointer transition-colors"
+                    >
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <img 
