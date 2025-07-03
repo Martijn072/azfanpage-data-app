@@ -138,6 +138,7 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
       if (homeTeamName.toLowerCase().includes('az')) return 'AFAS Stadion';
       if (homeTeamName.toLowerCase().includes('nac')) return 'Rat Verlegh Stadion';
       if (homeTeamName.toLowerCase().includes('telstar')) return 'BUKO Stadion';
+      if (homeTeamName.toLowerCase().includes('volendam')) return 'Kras Stadion';
       return 'Onbekend stadion';
     }
 
