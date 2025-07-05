@@ -80,13 +80,13 @@ export const AccessibilitySettings = () => {
               Tekstgrootte
             </Label>
             <Select value={textSize} onValueChange={applyTextSize}>
-              <SelectTrigger id="text-size" aria-label="Selecteer tekstgrootte" className="focus:ring-az-red">
+              <SelectTrigger id="text-size" aria-label="Selecteer tekstgrootte" className="focus:ring-az-red border-premium-gray-200 dark:border-gray-700">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="100">Normaal (100%)</SelectItem>
-                <SelectItem value="125">Groot (125%)</SelectItem>
-                <SelectItem value="150">Extra groot (150%)</SelectItem>
+              <SelectContent className="bg-white dark:bg-gray-800 border-premium-gray-200 dark:border-gray-700">
+                <SelectItem value="100" className="hover:bg-az-red/10 hover:text-az-red">Normaal (100%)</SelectItem>
+                <SelectItem value="125" className="hover:bg-az-red/10 hover:text-az-red">Groot (125%)</SelectItem>
+                <SelectItem value="150" className="hover:bg-az-red/10 hover:text-az-red">Extra groot (150%)</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -101,7 +101,7 @@ export const AccessibilitySettings = () => {
               checked={highContrast}
               onCheckedChange={applyHighContrast}
               aria-describedby="high-contrast-desc"
-              className="data-[state=checked]:bg-az-red focus-visible:ring-az-red"
+              className="data-[state=checked]:bg-az-red focus-visible:ring-az-red focus-visible:ring-offset-2"
             />
           </div>
           <p id="high-contrast-desc" className="text-xs text-premium-gray-500 dark:text-gray-400">
@@ -118,7 +118,7 @@ export const AccessibilitySettings = () => {
               checked={reduceMotion}
               onCheckedChange={applyReduceMotion}
               aria-describedby="reduce-motion-desc"
-              className="data-[state=checked]:bg-az-red focus-visible:ring-az-red"
+              className="data-[state=checked]:bg-az-red focus-visible:ring-az-red focus-visible:ring-offset-2"
             />
           </div>
           <p id="reduce-motion-desc" className="text-xs text-premium-gray-500 dark:text-gray-400">
@@ -135,7 +135,7 @@ export const AccessibilitySettings = () => {
               checked={screenReaderMode}
               onCheckedChange={applyScreenReaderMode}
               aria-describedby="screen-reader-desc"
-              className="data-[state=checked]:bg-az-red focus-visible:ring-az-red"
+              className="data-[state=checked]:bg-az-red focus-visible:ring-az-red focus-visible:ring-offset-2"
             />
           </div>
           <p id="screen-reader-desc" className="text-xs text-premium-gray-500 dark:text-gray-400">
@@ -146,7 +146,7 @@ export const AccessibilitySettings = () => {
           <div className="pt-4 border-t border-premium-gray-200 dark:border-gray-700">
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full rounded-lg border-premium-gray-300 dark:border-gray-600 hover:bg-az-red/5 hover:text-az-red hover:border-az-red/30"
               onClick={() => {
                 applyTextSize("100");
                 applyHighContrast(false);
