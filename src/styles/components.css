@@ -1,21 +1,21 @@
 /* Premium button styles */
 @layer components {
   .btn-primary {
-    @apply bg-az-red hover:bg-red-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md font-body transform hover:scale-105 active:scale-95;
+    @apply bg-az-red hover:bg-red-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md font-body transform hover:scale-105 active:scale-95 !important;
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-premium-gray-50 text-az-black font-medium px-6 py-3 rounded-lg border border-premium-gray-200 transition-all duration-200 shadow-sm hover:shadow-md font-body transform hover:scale-105 active:scale-95;
+    @apply bg-white hover:bg-premium-gray-50 text-az-black font-medium px-6 py-3 rounded-lg border border-premium-gray-200 transition-all duration-200 shadow-sm hover:shadow-md font-body transform hover:scale-105 active:scale-95 !important;
   }
 
   /* Premium card styles */
   .card-premium {
-    @apply bg-white rounded-xl shadow-sm border border-premium-gray-100 hover:shadow-md transition-all duration-200;
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-premium-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-200 !important;
   }
 
-  /* Breaking news indicator */
+  /* Breaking news indicator - FORCE AZ RED STYLING */
   .breaking-news {
-    @apply bg-az-red text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide font-body;
+    @apply bg-az-red text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide font-body !important;
   }
 
   /* Enhanced micro-interactions */
