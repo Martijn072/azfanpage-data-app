@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAZTeamId } from "@/hooks/useTeamHooks";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -131,6 +132,9 @@ const SpelerProfiel = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("speler-statistieken");
 
+  // Get AZ team ID for filtering
+  const { data: azTeamId } = useAZTeamId();
+
   // Fetch player career statistics across multiple seasons
   const { data: playerData, isLoading, error } = useQuery({
     queryKey: ['player-profile', playerId],
@@ -166,9 +170,11 @@ const SpelerProfiel = () => {
     retry: 2,
   });
 
-  // Calculate career totals
-  const getCareerTotals = () => {
-    if (!playerData || playerData.length === 0) return null;
+  // Calculate AZ career totals only
+  const getAZCareerTotals = () => {
+    if (!playerData || playerData.length === 0 || !azTeamId) return null;
+    
+    console.log('🔍 Filtering AZ career stats with team ID:', azTeamId);
     
     let totalGames = 0;
     let totalMinutes = 0;
@@ -178,16 +184,20 @@ const SpelerProfiel = () => {
     let totalRedCards = 0;
     
     playerData.forEach(seasonData => {
-      const stats = seasonData.statistics[0];
-      if (stats) {
-        totalGames += stats.games?.appearences || 0;
-        totalMinutes += stats.games?.minutes || 0;
-        totalGoals += stats.goals?.total || 0;
-        totalAssists += stats.goals?.assists || 0;
-        totalYellowCards += stats.cards?.yellow || 0;
-        totalRedCards += stats.cards?.red || 0;
+      // Find AZ statistics for this season
+      const azStats = seasonData.statistics.find(stat => stat.team.id === azTeamId);
+      if (azStats) {
+        console.log(`📊 Found AZ stats for season ${azStats.league.season}:`, azStats.games?.appearences, 'games');
+        totalGames += azStats.games?.appearences || 0;
+        totalMinutes += azStats.games?.minutes || 0;
+        totalGoals += azStats.goals?.total || 0;
+        totalAssists += azStats.goals?.assists || 0;
+        totalYellowCards += azStats.cards?.yellow || 0;
+        totalRedCards += azStats.cards?.red || 0;
       }
     });
+    
+    console.log('🏆 AZ Career totals:', { totalGames, totalGoals, totalAssists });
     
     return {
       games: totalGames,
@@ -200,7 +210,7 @@ const SpelerProfiel = () => {
   };
 
   const playerInfo = playerData?.[0]?.player;
-  const careerTotals = getCareerTotals();
+  const azCareerTotals = getAZCareerTotals();
 
   if (error) {
     return (
@@ -345,36 +355,36 @@ const SpelerProfiel = () => {
           </CardContent>
         </Card>
 
-        {/* Career Totals */}
-        {careerTotals && (
+        {/* AZ Career Totals */}
+        {azCareerTotals && (
           <Card className="bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-700 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-az-black dark:text-white">Carrière</CardTitle>
+              <CardTitle className="text-az-black dark:text-white">AZ-Carrière</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-2xl font-bold text-az-red">{careerTotals.games}</div>
+                  <div className="text-2xl font-bold text-az-red">{azCareerTotals.games}</div>
                   <div className="text-sm text-premium-gray-600 dark:text-gray-300">Wedstrijden</div>
                 </div>
                 <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-2xl font-bold text-az-red">{Math.round(careerTotals.minutes / 90)}</div>
+                  <div className="text-2xl font-bold text-az-red">{Math.round(azCareerTotals.minutes / 90)}</div>
                   <div className="text-sm text-premium-gray-600 dark:text-gray-300">Volledige wedstrijden</div>
                 </div>
                 <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">{careerTotals.goals}</div>
+                  <div className="text-2xl font-bold text-green-600">{azCareerTotals.goals}</div>
                   <div className="text-sm text-premium-gray-600 dark:text-gray-300">Doelpunten</div>
                 </div>
                 <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{careerTotals.assists}</div>
+                  <div className="text-2xl font-bold text-blue-600">{azCareerTotals.assists}</div>
                   <div className="text-sm text-premium-gray-600 dark:text-gray-300">Assists</div>
                 </div>
                 <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-2xl font-bold text-az-red">{careerTotals.yellowCards}</div>
+                  <div className="text-2xl font-bold text-az-red">{azCareerTotals.yellowCards}</div>
                   <div className="text-sm text-premium-gray-600 dark:text-gray-300">Gele kaarten</div>
                 </div>
                 <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-2xl font-bold text-red-600">{careerTotals.redCards}</div>
+                  <div className="text-2xl font-bold text-red-600">{azCareerTotals.redCards}</div>
                   <div className="text-sm text-premium-gray-600 dark:text-gray-300">Rode kaarten</div>
                 </div>
               </div>
@@ -406,44 +416,45 @@ const SpelerProfiel = () => {
                   </TableHeader>
                   <TableBody>
                     {playerData.map((seasonData, index) => {
-                      const stats = seasonData.statistics[0];
-                      if (!stats || !stats.games?.appearences) return null;
+                      // Only show AZ statistics
+                      const azStats = seasonData.statistics.find(stat => stat.team.id === azTeamId);
+                      if (!azStats || !azStats.games?.appearences) return null;
                       
                       return (
-                        <TableRow key={`${stats.league.season}-${index}`} className="hover:bg-premium-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700">
+                        <TableRow key={`${azStats.league.season}-${index}`} className="hover:bg-premium-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700">
                           <TableCell className="font-medium text-az-black dark:text-white">
-                            {stats.league.season}-{(stats.league.season + 1).toString().slice(-2)}
+                            {azStats.league.season}-{(azStats.league.season + 1).toString().slice(-2)}
                           </TableCell>
                           <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
                             <div className="flex items-center justify-center gap-2">
                               <img 
-                                src={stats.league.logo} 
-                                alt={stats.league.name}
+                                src={azStats.league.logo} 
+                                alt={azStats.league.name}
                                 className="w-4 h-4"
                               />
-                              <span className="text-xs">{stats.league.name}</span>
+                              <span className="text-xs">{azStats.league.name}</span>
                             </div>
                           </TableCell>
                           <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
-                            {stats.games?.appearences || 0}
+                            {azStats.games?.appearences || 0}
                           </TableCell>
                           <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
-                            {stats.games?.minutes || 0}
+                            {azStats.games?.minutes || 0}
                           </TableCell>
                           <TableCell className="text-center font-bold text-green-600">
-                            {stats.goals?.total || 0}
+                            {azStats.goals?.total || 0}
                           </TableCell>
                           <TableCell className="text-center font-bold text-blue-600">
-                            {stats.goals?.assists || 0}
+                            {azStats.goals?.assists || 0}
                           </TableCell>
                           <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
-                            {stats.cards?.yellow || 0}
+                            {azStats.cards?.yellow || 0}
                           </TableCell>
                           <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
-                            {stats.cards?.red || 0}
+                            {azStats.cards?.red || 0}
                           </TableCell>
                           <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
-                            {stats.games?.rating ? parseFloat(stats.games.rating).toFixed(1) : '-'}
+                            {azStats.games?.rating ? parseFloat(azStats.games.rating).toFixed(1) : '-'}
                           </TableCell>
                         </TableRow>
                       );
