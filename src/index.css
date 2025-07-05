@@ -113,6 +113,7 @@
   /* Enhanced article content styling with proper WordPress content formatting */
   .article-content {
     @apply prose prose-lg prose-gray max-w-none;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
   }
 
   .article-content h1 {
@@ -147,13 +148,67 @@
     @apply border-l-4 border-az-red pl-6 italic my-6 text-premium-gray-600 dark:text-gray-400;
   }
 
-  .article-content img {
-    @apply rounded-lg shadow-sm my-6 w-full;
-    aspect-ratio: 16/9;
-    height: auto;
-    max-width: 100%;
-    object-fit: cover;
+  /* Comprehensive responsive image styling */
+  .article-content img,
+  .article-content figure img,
+  .wp-content img,
+  .wp-block-image img {
+    max-width: 100% !important;
+    height: auto !important;
+    width: auto;
     display: block;
+    margin: 1.5rem auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  /* Remove fixed aspect ratio for inline images */
+  .article-content img:not(.featured-image) {
+    aspect-ratio: unset;
+    object-fit: unset;
+  }
+
+  /* Figure and figcaption styling */
+  .article-content figure {
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+
+  .article-content figcaption,
+  .article-content .wp-caption-text {
+    @apply text-sm text-premium-gray-600 dark:text-gray-400 italic mt-2 px-4;
+    text-align: center;
+  }
+
+  /* Gallery images styling */
+  .article-content .wp-block-gallery,
+  .article-content .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .article-content .wp-block-gallery img,
+  .article-content .gallery img {
+    margin: 0;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+
+  /* Mobile specific improvements */
+  @media (max-width: 768px) {
+    .article-content img,
+    .article-content figure img {
+      margin: 1rem auto;
+      border-radius: 0.25rem;
+    }
+    
+    .article-content .wp-block-gallery,
+    .article-content .gallery {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.5rem;
+    }
   }
 
   .article-content a {
@@ -166,6 +221,27 @@
 
   .article-content em, .article-content i {
     @apply italic;
+  }
+
+  /* Custom text selection - Remove yellow highlights */
+  ::selection {
+    background-color: hsl(var(--primary));
+    color: white;
+  }
+
+  ::-moz-selection {
+    background-color: hsl(var(--primary));
+    color: white;
+  }
+
+  .article-content ::selection {
+    background-color: hsl(var(--primary));
+    color: white;
+  }
+
+  .article-content ::-moz-selection {
+    background-color: hsl(var(--primary));
+    color: white;
   }
 
   /* Custom scrollbar for premium feel */
