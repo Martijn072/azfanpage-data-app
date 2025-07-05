@@ -148,24 +148,40 @@
     @apply border-l-4 border-az-red pl-6 italic my-6 text-premium-gray-600 dark:text-gray-400;
   }
 
-  /* Comprehensive responsive image styling */
+  /* Ultra-specific CSS rules to force natural scaling for ALL article images */
   .article-content img,
   .article-content figure img,
+  .article-content figure > img,
+  .article-content div > img,
+  .article-content p > img,
   .wp-content img,
-  .wp-block-image img {
+  .wp-block-image img,
+  .wp-block-gallery img,
+  .article-content .wp-image-1,
+  .article-content .wp-image-2,
+  .article-content .wp-image-3,
+  .article-content .wp-image-4,
+  .article-content .wp-image-5,
+  .article-content .wp-image-6,
+  .article-content .wp-image-7,
+  .article-content .wp-image-8,
+  .article-content .wp-image-9,
+  .article-content [class*="wp-image-"] {
     max-width: 100% !important;
+    width: 100% !important;
     height: auto !important;
-    width: auto;
+    aspect-ratio: unset !important;
+    object-fit: unset !important;
     display: block;
     margin: 1.5rem auto;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   }
 
-  /* Remove fixed aspect ratio for inline images */
-  .article-content img:not(.featured-image) {
-    aspect-ratio: unset;
-    object-fit: unset;
+  /* Ensure featured images keep their styling */
+  .article-content img.featured-image {
+    aspect-ratio: 16/9;
+    object-fit: cover;
   }
 
   /* Figure and figcaption styling */
