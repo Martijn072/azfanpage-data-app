@@ -80,7 +80,12 @@ export const AccessibilitySettings = () => {
               Tekstgrootte
             </Label>
             <Select value={textSize} onValueChange={applyTextSize}>
-              <SelectTrigger id="text-size" aria-label="Selecteer tekstgrootte" className="focus:ring-az-red border-premium-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+              <SelectTrigger 
+                id="text-size" 
+                aria-label="Selecteer tekstgrootte" 
+                className="focus:ring-az-red focus:ring-2 focus:ring-offset-2 focus:border-az-red border-premium-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 [&:focus]:outline-none [&:focus]:shadow-none"
+                style={{ outline: 'none !important', boxShadow: 'none !important' }}
+              >
                 <SelectValue className="text-az-black dark:text-white" />
               </SelectTrigger>
               <SelectContent className="bg-white dark:bg-gray-800 border-premium-gray-200 dark:border-gray-700">
