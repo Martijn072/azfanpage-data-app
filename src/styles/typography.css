@@ -1,0 +1,69 @@
+/* Premium typography classes optimized for Dutch readability */
+.headline-premium {
+  @apply font-headline font-bold tracking-tight text-az-black;
+  font-feature-settings: "ss01" 1;
+  letter-spacing: -0.02em;
+}
+
+.body-premium {
+  @apply font-body text-premium-gray-700 leading-relaxed;
+  font-feature-settings: "kern" 1;
+}
+
+/* Enhanced article content styling with proper WordPress content formatting */
+.article-content {
+  @apply prose prose-lg prose-gray max-w-none;
+}
+
+.article-content h1 {
+  @apply headline-premium text-headline-xl mb-6 mt-8 first:mt-0;
+}
+
+.article-content h2 {
+  @apply headline-premium text-headline-lg mb-4 mt-8 first:mt-0 text-az-black dark:text-white;
+}
+
+.article-content h3 {
+  @apply headline-premium text-headline-md mb-3 mt-6 first:mt-0 text-az-black dark:text-white;
+}
+
+.article-content h4 {
+  @apply headline-premium text-headline-sm mb-3 mt-5 first:mt-0 text-az-black dark:text-white;
+}
+
+.article-content p {
+  @apply body-premium text-body-lg mb-6 leading-relaxed text-premium-gray-700 dark:text-gray-300;
+}
+
+.article-content ul, .article-content ol {
+  @apply mb-6 space-y-2;
+}
+
+.article-content li {
+  @apply body-premium text-body-lg leading-relaxed text-premium-gray-700 dark:text-gray-300;
+}
+
+.article-content blockquote {
+  @apply border-l-4 border-az-red pl-6 italic my-6 text-premium-gray-600 dark:text-gray-400;
+}
+
+.article-content img {
+  @apply rounded-lg shadow-sm my-6 w-full;
+  aspect-ratio: 16/9;
+  height: auto;
+  max-width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.article-content a {
+  @apply text-az-red hover:underline font-medium;
+}
+
+.article-content strong, .article-content b {
+  @apply font-semibold text-az-black dark:text-white;
+}
+
+.article-content em, .article-content i {
+  @apply italic;
+}

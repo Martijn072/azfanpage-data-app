@@ -1,0 +1,94 @@
+/* ===== ULTIMATE UI COMPONENT OVERRIDES - ELIMINATE ALL YELLOW ===== */
+
+/* All Checkboxes */
+[data-radix-checkbox-root][data-state="checked"],
+input[type="checkbox"]:checked,
+.peer:checked ~ * {
+  background-color: #DB0021 !important;
+  border-color: #DB0021 !important;
+}
+
+/* All Switches */
+[data-radix-switch-root][data-state="checked"],
+[role="switch"][data-state="checked"] {
+  background-color: #DB0021 !important;
+}
+
+/* All Radio Buttons */
+[data-radix-radio-item][data-state="checked"],
+input[type="radio"]:checked {
+  background-color: #DB0021 !important;
+  border-color: #DB0021 !important;
+}
+
+/* All Progress Bars */
+[data-radix-progress-indicator],
+.progress-indicator {
+  background-color: #DB0021 !important;
+}
+
+/* All Sliders */
+[data-radix-slider-range],
+[data-radix-slider-thumb] {
+  background-color: #DB0021 !important;
+  border-color: #DB0021 !important;
+}
+
+/* All Tabs */
+[data-radix-tabs-trigger][data-state="active"],
+[role="tab"][data-state="active"] {
+  background-color: rgba(219, 0, 33, 0.1) !important;
+  border-color: #DB0021 !important;
+  color: #DB0021 !important;
+}
+
+/* All Accordion triggers */
+[data-radix-accordion-trigger][data-state="open"] {
+  color: #DB0021 !important;
+}
+
+/* All Calendar selections */
+[data-radix-calendar-day][data-selected="true"],
+[data-selected="true"] {
+  background-color: #DB0021 !important;
+  color: white !important;
+}
+
+/* All Dropdown Menu highlights */
+[data-radix-dropdown-menu-item][data-highlighted],
+[data-highlighted="true"] {
+  background-color: rgba(219, 0, 33, 0.1) !important;
+  color: #DB0021 !important;
+}
+
+/* All Alert Dialog actions */
+.destructive,
+[data-destructive="true"] {
+  background-color: #DB0021 !important;
+  color: white !important;
+}
+
+/* Force all button variants */
+.btn-primary,
+button[data-primary="true"],
+[data-variant="default"] {
+  background-color: #DB0021 !important;
+  color: white !important;
+}
+
+/* Browser cache busting - timestamped selectors */
+.force-az-red-v2025-01-05 {
+  background-color: #DB0021 !important;
+  border-color: #DB0021 !important;
+  color: #DB0021 !important;
+}
+
+/* Final catch-all for any remaining yellow */
+*[style*="yellow"],
+*[class*="yellow"],
+*[style*="#FFFF00"],
+*[style*="#FFD700"] {
+  background-color: #DB0021 !important;
+  border-color: #DB0021 !important;
+  color: #DB0021 !important;
+}

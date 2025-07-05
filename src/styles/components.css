@@ -1,0 +1,67 @@
+/* Premium button styles */
+@layer components {
+  .btn-primary {
+    @apply bg-az-red hover:bg-red-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md font-body transform hover:scale-105 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-premium-gray-50 text-az-black font-medium px-6 py-3 rounded-lg border border-premium-gray-200 transition-all duration-200 shadow-sm hover:shadow-md font-body transform hover:scale-105 active:scale-95;
+  }
+
+  /* Premium card styles */
+  .card-premium {
+    @apply bg-white rounded-xl shadow-sm border border-premium-gray-100 hover:shadow-md transition-all duration-200;
+  }
+
+  /* Breaking news indicator */
+  .breaking-news {
+    @apply bg-az-red text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide font-body;
+  }
+
+  /* Enhanced micro-interactions */
+  .interactive-card {
+    @apply transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg;
+  }
+
+  .interactive-button {
+    @apply transform transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-lg;
+  }
+
+  .interactive-icon {
+    @apply transform transition-all duration-200 hover:scale-110 hover:text-az-red;
+  }
+
+  /* Audio Player Slider Styling - Force AZ Red */
+  .audio-slider [data-radix-slider-track] {
+    @apply bg-premium-gray-200 dark:bg-gray-700;
+  }
+
+  .audio-slider [data-radix-slider-range] {
+    @apply bg-az-red;
+  }
+
+  .audio-slider [data-radix-slider-thumb] {
+    @apply bg-az-red border-az-red hover:bg-red-700 focus:ring-az-red;
+  }
+
+  .audio-slider [data-radix-slider-thumb]:focus {
+    @apply ring-2 ring-az-red ring-offset-2;
+  }
+}
+
+/* Custom scrollbar for premium feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-premium-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-az-red;
+}

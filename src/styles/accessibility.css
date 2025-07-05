@@ -1,0 +1,109 @@
+/* Remove all animations and transitions for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Accessibility classes */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+.high-contrast {
+  --premium-gray-50: hsl(0, 0%, 100%);
+  --premium-gray-100: hsl(0, 0%, 95%);
+  --premium-gray-200: hsl(0, 0%, 10%);
+  --premium-gray-300: hsl(0, 0%, 5%);
+  --premium-gray-400: hsl(0, 0%, 0%);
+  --premium-gray-500: hsl(0, 0%, 0%);
+  --premium-gray-600: hsl(0, 0%, 0%);
+  --az-red: hsl(0, 100%, 30%);
+  --az-black: hsl(0, 0%, 0%);
+}
+
+.high-contrast.dark {
+  --premium-gray-50: hsl(0, 0%, 0%);
+  --premium-gray-100: hsl(0, 0%, 5%);
+  --premium-gray-200: hsl(0, 0%, 90%);
+  --premium-gray-300: hsl(0, 0%, 95%);
+  --premium-gray-400: hsl(0, 0%, 100%);
+  --premium-gray-500: hsl(0, 0%, 100%);
+  --premium-gray-600: hsl(0, 0%, 100%);
+  --az-red: hsl(0, 100%, 60%);
+}
+
+.screen-reader-mode .sr-only {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0.25rem !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+  background: hsl(var(--premium-gray-100));
+  border: 1px solid hsl(var(--premium-gray-300));
+}
+
+/* Focus improvements */
+*:focus-visible {
+  outline: 2px solid hsl(var(--az-red)) !important;
+  outline-offset: 2px !important;
+}
+
+/* Accessibility Settings - Force AZ Red Styling */
+.accessibility-settings-v2 [data-radix-select-trigger] {
+  border-color: #e5e5e5 !important;
+}
+
+.accessibility-settings-v2 [data-radix-select-trigger]:focus {
+  ring-color: #DB0021 !important;
+  border-color: #DB0021 !important;
+  box-shadow: 0 0 0 2px #DB0021 !important;
+}
+
+.accessibility-settings-v2 [data-radix-switch-root][data-state="checked"] {
+  background-color: #DB0021 !important;
+}
+
+.accessibility-settings-v2 [data-radix-switch-root]:focus-visible {
+  box-shadow: 0 0 0 2px #DB0021 !important;
+  outline: 2px solid #DB0021 !important;
+}
+
+.accessibility-settings-v2 [data-radix-select-content] {
+  background-color: white !important;
+  border: 1px solid #e5e5e5 !important;
+}
+
+.dark .accessibility-settings-v2 [data-radix-select-content] {
+  background-color: #262327 !important;
+  border: 1px solid #403d41 !important;
+}
+
+.accessibility-settings-v2 [data-radix-select-item]:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.dark .accessibility-settings-v2 [data-radix-select-item]:hover {
+  background-color: #403d41 !important;
+}
+
+.accessibility-settings-v2 [data-radix-select-item][data-highlighted] {
+  background-color: #f5f5f5 !important;
+}
+
+.dark .accessibility-settings-v2 [data-radix-select-item][data-highlighted] {
+  background-color: #403d41 !important;
+}

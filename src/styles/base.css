@@ -1,0 +1,163 @@
+/* ===== ULTIMATE YELLOW ELIMINATION - FORCE AZ RED EVERYWHERE ===== */
+/* This section forces ALL primary colors to AZ Red (#DB0021) with maximum CSS specificity */
+
+/* Force all primary-related colors to AZ Red */
+:root {
+  --color-primary: #DB0021 !important;
+  --primary-color: #DB0021 !important;
+  --accent-color: #DB0021 !important;
+}
+
+/* Override ALL possible Radix UI states that could show yellow */
+[data-state="checked"],
+[data-state="on"],
+[data-checked="true"],
+[data-state="active"] {
+  background-color: #DB0021 !important;
+  border-color: #DB0021 !important;
+}
+
+/* Force all focus rings and outlines to AZ Red */
+*:focus,
+*:focus-visible,
+*:focus-within {
+  outline-color: #DB0021 !important;
+  ring-color: #DB0021 !important;
+  box-shadow: 0 0 0 2px #DB0021 !important;
+}
+
+/* Override ALL Tailwind primary utilities */
+.bg-primary,
+.border-primary,
+.text-primary,
+.ring-primary,
+.outline-primary {
+  background-color: #DB0021 !important;
+  border-color: #DB0021 !important;
+  color: #DB0021 !important;
+  ring-color: #DB0021 !important;
+  outline-color: #DB0021 !important;
+}
+
+/* Force all interactive elements */
+button[data-state="checked"],
+input[type="checkbox"]:checked,
+input[type="radio"]:checked,
+[role="switch"][data-state="checked"],
+[role="tab"][data-state="active"],
+[role="button"][data-state="on"] {
+  background-color: #DB0021 !important;
+  border-color: #DB0021 !important;
+}
+
+/* Eliminate any possible yellow from CSS variables */
+* {
+  --tw-ring-color: #DB0021 !important;
+  --tw-border-color: #DB0021 !important;
+}
+
+/* Target specific Radix components that might show yellow */
+[data-radix-collection-item][data-highlighted],
+[data-radix-select-item][data-highlighted],
+[data-radix-dropdown-menu-item][data-highlighted],
+[data-radix-menubar-item][data-highlighted] {
+  background-color: rgba(219, 0, 33, 0.1) !important;
+  color: #DB0021 !important;
+}
+
+/* Definition of the premium design system with improved Dutch readability */
+
+@layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 26 23 27;
+
+    --card: 255 255 255;
+    --card-foreground: 26 23 27;
+
+    --popover: 255 255 255;
+    --popover-foreground: 26 23 27;
+
+    --primary: 219 0 33;
+    --primary-foreground: 255 255 255;
+
+    --secondary: 245 245 245;
+    --secondary-foreground: 26 23 27;
+
+    --muted: 245 245 245;
+    --muted-foreground: 115 115 115;
+
+    --accent: 245 245 245;
+    --accent-foreground: 26 23 27;
+
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+
+    --border: 229 229 229;
+    --input: 229 229 229;
+    --ring: 219 0 33;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 255 255 255;
+    --sidebar-foreground: 26 23 27;
+    --sidebar-primary: 219 0 33;
+    --sidebar-primary-foreground: 255 255 255;
+    --sidebar-accent: 245 245 245;
+    --sidebar-accent-foreground: 26 23 27;
+    --sidebar-border: 229 229 229;
+    --sidebar-ring: 219 0 33;
+  }
+
+  .dark {
+    --background: 26 23 27;
+    --foreground: 255 255 255;
+
+    --card: 38 35 39;
+    --card-foreground: 255 255 255;
+
+    --popover: 26 23 27;
+    --popover-foreground: 255 255 255;
+
+    --primary: 219 0 33;
+    --primary-foreground: 255 255 255;
+
+    --secondary: 64 61 65;
+    --secondary-foreground: 255 255 255;
+
+    --muted: 64 61 65;
+    --muted-foreground: 163 163 163;
+
+    --accent: 64 61 65;
+    --accent-foreground: 255 255 255;
+
+    --destructive: 220 38 38;
+    --destructive-foreground: 255 255 255;
+
+    --border: 64 61 65;
+    --input: 64 61 65;
+    --ring: 219 0 33;
+
+    --sidebar-background: 26 23 27;
+    --sidebar-foreground: 255 255 255;
+    --sidebar-primary: 219 0 33;
+    --sidebar-primary-foreground: 255 255 255;
+    --sidebar-accent: 64 61 65;
+    --sidebar-accent-foreground: 255 255 255;
+    --sidebar-border: 64 61 65;
+    --sidebar-ring: 219 0 33;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
