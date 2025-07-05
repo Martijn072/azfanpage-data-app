@@ -25,7 +25,7 @@ export const TTSButton = ({ text, title, className = '' }: TTSButtonProps) => {
       disabled={isLoading}
       variant="outline"
       size="sm"
-      className={`flex items-center gap-2 bg-az-red text-white border-az-red hover:bg-red-700 ${className}`}
+      className={`flex items-center gap-2 bg-az-red text-white border-az-red hover:bg-red-700 hover:text-white hover:border-red-700 transition-colors ${className}`}
     >
       {isLoading ? (
         <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
