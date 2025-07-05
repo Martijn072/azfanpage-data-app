@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Download, Wifi } from "lucide-react";
 import { useArticleDetail } from "@/hooks/useArticleDetail";
@@ -15,7 +15,7 @@ import { TweetCard } from "@/components/TweetCard";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { useOfflineDetection } from "@/hooks/useOfflineDetection";
 import { articleCache } from "@/services/articleCache";
-import { processTwitterContent } from "@/utils/tweetDetector";
+import { processTwitterContent, scanForTwitterContent } from "@/utils/tweetDetector";
 import { TweetData } from "@/utils/tweetParser";
 
 const ArticleDetail = () => {
@@ -235,23 +235,35 @@ const ArticleDetail = () => {
   const displayArticle = article || (cachedArticle && !isOnline ? cachedArticle : null);
   const isShowingCachedContent = !article && cachedArticle && !isOnline;
 
-  // Process article content to clean images, convert internal links, and replace Twitter embeds
-  const processedContent = displayArticle?.content 
-    ? (() => {
-        // First process Twitter content
-        const twitterProcessed = processTwitterContent(displayArticle.content);
-        setTweetData(twitterProcessed.tweets);
-        
-        // Then apply other content processing
-        return convertInternalLinks(
-          cleanImageAttributes(
-            cleanImageUrls(
-              cleanWordPressContainers(twitterProcessed.processedContent)
-            )
-          )
-        );
-      })()
-    : displayArticle?.excerpt || '';
+  // Process Twitter content and set tweet data
+  useEffect(() => {
+    if (displayArticle?.content) {
+      console.log('🔍 Processing Twitter content for article...');
+      const twitterProcessed = processTwitterContent(displayArticle.content);
+      setTweetData(twitterProcessed.tweets);
+    } else {
+      setTweetData([]);
+    }
+  }, [displayArticle?.content]);
+
+  // Memoized processed content for performance
+  const processedContent = useMemo(() => {
+    if (!displayArticle?.content) return displayArticle?.excerpt || '';
+    
+    console.log('🔄 Processing article content...');
+    
+    // Process Twitter content but don't set state here
+    const twitterProcessed = scanForTwitterContent(displayArticle.content);
+    
+    // Apply content processing pipeline
+    return convertInternalLinks(
+      cleanImageAttributes(
+        cleanImageUrls(
+          cleanWordPressContainers(twitterProcessed.processedContent)
+        )
+      )
+    );
+  }, [displayArticle?.content]);
 
   // DOM cleanup for any remaining image attributes after rendering
   useEffect(() => {
