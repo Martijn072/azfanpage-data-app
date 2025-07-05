@@ -1,14 +1,7 @@
-/* ===== ULTIMATE YELLOW ELIMINATION - FORCE AZ RED EVERYWHERE ===== */
-/* This section forces ALL primary colors to AZ Red (#DB0021) with maximum CSS specificity */
+/* ===== TARGETED AZ RED ENFORCEMENT ===== */
+/* Targeted overrides to enforce AZ red while preserving Tailwind functionality */
 
-/* Force all primary-related colors to AZ Red */
-:root {
-  --color-primary: #DB0021 !important;
-  --primary-color: #DB0021 !important;
-  --accent-color: #DB0021 !important;
-}
-
-/* Override ALL possible Radix UI states that could show yellow */
+/* Override specific Radix UI states that could show yellow */
 [data-state="checked"],
 [data-state="on"],
 [data-checked="true"],
@@ -17,16 +10,7 @@
   border-color: #DB0021 !important;
 }
 
-/* Force all focus rings and outlines to AZ Red */
-*:focus,
-*:focus-visible,
-*:focus-within {
-  outline-color: #DB0021 !important;
-  ring-color: #DB0021 !important;
-  box-shadow: 0 0 0 2px #DB0021 !important;
-}
-
-/* Override ALL Tailwind primary utilities */
+/* Target primary color utilities specifically */
 .bg-primary,
 .border-primary,
 .text-primary,
@@ -39,7 +23,7 @@
   outline-color: #DB0021 !important;
 }
 
-/* Force all interactive elements */
+/* Force interactive elements to use AZ red when active */
 button[data-state="checked"],
 input[type="checkbox"]:checked,
 input[type="radio"]:checked,
@@ -48,12 +32,6 @@ input[type="radio"]:checked,
 [role="button"][data-state="on"] {
   background-color: #DB0021 !important;
   border-color: #DB0021 !important;
-}
-
-/* Eliminate any possible yellow from CSS variables */
-* {
-  --tw-ring-color: #DB0021 !important;
-  --tw-border-color: #DB0021 !important;
 }
 
 /* Target specific Radix components that might show yellow */
