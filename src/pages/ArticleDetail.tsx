@@ -342,28 +342,28 @@ const ArticleDetail = () => {
             )}
           </div>
 
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <h1 className="headline-premium text-headline-xl text-az-black dark:text-white flex-1">
-              {displayArticle.title}
-            </h1>
-            
-            <div className="flex gap-2 flex-shrink-0">
-              <TTSButton 
-                text={`${displayArticle.title}. ${displayArticle.content || displayArticle.excerpt}`}
-                title={displayArticle.title}
-              />
-              <button
-                onClick={() => setShowAudioPlayer(!showAudioPlayer)}
-                className="text-az-red hover:text-red-700 text-sm underline font-medium"
-              >
-                {showAudioPlayer ? 'Verberg' : 'Meer opties'}
-              </button>
-            </div>
-          </div>
+          <h1 className="headline-premium text-headline-xl text-az-black dark:text-white mb-4">
+            {displayArticle.title}
+          </h1>
 
           {/* Meta info - Compact layout with author and date only */}
-          <div className="text-premium-gray-600 dark:text-gray-300 text-sm border-b border-premium-gray-200 dark:border-gray-700 pb-4">
+          <div className="text-premium-gray-600 dark:text-gray-300 text-sm border-b border-premium-gray-200 dark:border-gray-700 pb-4 mb-4">
             <span>{displayArticle.author} • {displayArticle.publishedAt}</span>
+          </div>
+
+          {/* Audio Controls - Below author info for better mobile layout */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <TTSButton 
+              text={`${displayArticle.title}. ${displayArticle.content || displayArticle.excerpt}`}
+              title={displayArticle.title}
+              className="w-full sm:w-auto"
+            />
+            <button
+              onClick={() => setShowAudioPlayer(!showAudioPlayer)}
+              className="text-az-red hover:text-red-700 text-sm underline font-medium text-left sm:text-center"
+            >
+              {showAudioPlayer ? 'Verberg audio opties' : 'Meer audio opties'}
+            </button>
           </div>
         </header>
 
