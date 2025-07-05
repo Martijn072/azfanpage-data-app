@@ -80,7 +80,7 @@ export const AccessibilitySettings = () => {
               Tekstgrootte
             </Label>
             <Select value={textSize} onValueChange={applyTextSize}>
-              <SelectTrigger id="text-size" aria-label="Selecteer tekstgrootte">
+              <SelectTrigger id="text-size" aria-label="Selecteer tekstgrootte" className="focus:ring-az-red">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -101,6 +101,7 @@ export const AccessibilitySettings = () => {
               checked={highContrast}
               onCheckedChange={applyHighContrast}
               aria-describedby="high-contrast-desc"
+              className="data-[state=checked]:bg-az-red focus-visible:ring-az-red"
             />
           </div>
           <p id="high-contrast-desc" className="text-xs text-premium-gray-500 dark:text-gray-400">
@@ -117,6 +118,7 @@ export const AccessibilitySettings = () => {
               checked={reduceMotion}
               onCheckedChange={applyReduceMotion}
               aria-describedby="reduce-motion-desc"
+              className="data-[state=checked]:bg-az-red focus-visible:ring-az-red"
             />
           </div>
           <p id="reduce-motion-desc" className="text-xs text-premium-gray-500 dark:text-gray-400">
@@ -133,6 +135,7 @@ export const AccessibilitySettings = () => {
               checked={screenReaderMode}
               onCheckedChange={applyScreenReaderMode}
               aria-describedby="screen-reader-desc"
+              className="data-[state=checked]:bg-az-red focus-visible:ring-az-red"
             />
           </div>
           <p id="screen-reader-desc" className="text-xs text-premium-gray-500 dark:text-gray-400">
