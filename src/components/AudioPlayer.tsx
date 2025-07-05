@@ -1,0 +1,194 @@
+import { useState, useEffect } from 'react';
+import { Play, Pause, Square, SkipBack, SkipForward, Volume2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useTTS } from '@/hooks/useTTS';
+
+interface AudioPlayerProps {
+  text: string;
+  title: string;
+  voice?: string;
+  className?: string;
+}
+
+export const AudioPlayer = ({ text, title, voice = 'nl-NL-Standard-A', className = '' }: AudioPlayerProps) => {
+  const {
+    isLoading,
+    isPlaying,
+    isPaused,
+    currentTime,
+    duration,
+    error,
+    speak,
+    pause,
+    resume,
+    stop,
+    setSpeed,
+    setVolume,
+    skipForward,
+    skipBackward
+  } = useTTS();
+
+  const [speed, setSpeedState] = useState(1);
+  const [volume, setVolumeState] = useState(0.8);
+  const [selectedVoice, setSelectedVoice] = useState(voice);
+
+  useEffect(() => {
+    setSpeed(speed);
+  }, [speed, setSpeed]);
+
+  useEffect(() => {
+    setVolume(volume);
+  }, [volume, setVolume]);
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const handlePlay = () => {
+    if (isPaused) {
+      resume();
+    } else {
+      speak(text, { voice: selectedVoice, speed });
+    }
+  };
+
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  return (
+    <div className={`bg-white dark:bg-gray-800 border border-premium-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm ${className}`}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Volume2 className="w-5 h-5 text-az-red" />
+          <span className="font-medium text-az-black dark:text-white">Audio Artikel</span>
+        </div>
+        
+        {/* Voice Selection */}
+        <Select value={selectedVoice} onValueChange={setSelectedVoice}>
+          <SelectTrigger className="w-32">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="nl-NL-Standard-A">Vrouw A</SelectItem>
+            <SelectItem value="nl-NL-Standard-B">Man B</SelectItem>
+            <SelectItem value="nl-NL-Standard-C">Vrouw C</SelectItem>
+            <SelectItem value="nl-NL-Standard-D">Man D</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mb-4">
+        <div className="flex items-center justify-between text-sm text-premium-gray-500 dark:text-gray-400 mb-1">
+          <span>{formatTime(currentTime)}</span>
+          <span>{formatTime(duration)}</span>
+        </div>
+        <div className="w-full bg-premium-gray-200 dark:bg-gray-700 rounded-full h-2">
+          <div 
+            className="bg-az-red h-2 rounded-full transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="flex items-center justify-center gap-2 mb-4">
+        <Button
+          onClick={skipBackward}
+          disabled={!isPlaying && !isPaused}
+          variant="ghost"
+          size="sm"
+          className="text-az-red hover:bg-az-red/10"
+        >
+          <SkipBack className="w-4 h-4" />
+        </Button>
+
+        <Button
+          onClick={isPlaying ? pause : handlePlay}
+          disabled={isLoading}
+          variant="default"
+          size="sm"
+          className="bg-az-red hover:bg-red-700 text-white px-6"
+        >
+          {isLoading ? (
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : isPlaying ? (
+            <Pause className="w-4 h-4" />
+          ) : (
+            <Play className="w-4 h-4" />
+          )}
+        </Button>
+
+        <Button
+          onClick={stop}
+          disabled={!isPlaying && !isPaused}
+          variant="ghost"
+          size="sm"
+          className="text-az-red hover:bg-az-red/10"
+        >
+          <Square className="w-4 h-4" />
+        </Button>
+
+        <Button
+          onClick={skipForward}
+          disabled={!isPlaying && !isPaused}
+          variant="ghost"
+          size="sm"
+          className="text-az-red hover:bg-az-red/10"
+        >
+          <SkipForward className="w-4 h-4" />
+        </Button>
+      </div>
+
+      {/* Speed and Volume Controls */}
+      <div className="flex items-center gap-6 text-sm">
+        {/* Speed Control */}
+        <div className="flex items-center gap-2">
+          <span className="text-premium-gray-600 dark:text-gray-300 min-w-fit">Snelheid:</span>
+          <Select value={speed.toString()} onValueChange={(value) => setSpeedState(Number(value))}>
+            <SelectTrigger className="w-20">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="0.75">0.75x</SelectItem>
+              <SelectItem value="1">1x</SelectItem>
+              <SelectItem value="1.25">1.25x</SelectItem>
+              <SelectItem value="1.5">1.5x</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Volume Control */}
+        <div className="flex items-center gap-2 flex-1">
+          <Volume2 className="w-4 h-4 text-premium-gray-600 dark:text-gray-300" />
+          <Slider
+            value={[volume]}
+            onValueChange={(values) => setVolumeState(values[0])}
+            max={1}
+            min={0}
+            step={0.1}
+            className="flex-1"
+          />
+        </div>
+      </div>
+
+      {/* Error Display */}
+      {error && (
+        <div className="mt-3 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-sm text-red-700 dark:text-red-300">
+          {error}
+        </div>
+      )}
+
+      {/* Loading Text */}
+      {isLoading && (
+        <div className="mt-3 text-center text-sm text-premium-gray-500 dark:text-gray-400">
+          Audio wordt gegenereerd...
+        </div>
+      )}
+    </div>
+  );
+};

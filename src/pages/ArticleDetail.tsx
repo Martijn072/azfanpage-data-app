@@ -9,6 +9,8 @@ import { BottomNavigation } from "@/components/BottomNavigation";
 import { WordPressComments } from "@/components/WordPressComments";
 import { ShareBar } from "@/components/ShareBar";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
+import { TTSButton } from "@/components/TTSButton";
+import { AudioPlayer } from "@/components/AudioPlayer";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { useOfflineDetection } from "@/hooks/useOfflineDetection";
 import { articleCache } from "@/services/articleCache";
@@ -19,6 +21,7 @@ const ArticleDetail = () => {
   const { data: article, isLoading, error, refetch } = useArticleDetail(id!);
   const [activeTab, setActiveTab] = useState("news");
   const [cachedArticle, setCachedArticle] = useState(null);
+  const [showAudioPlayer, setShowAudioPlayer] = useState(false);
   
   const { isSyncing, handleManualSync, isOnline } = useOfflineSync();
   
@@ -339,15 +342,40 @@ const ArticleDetail = () => {
             )}
           </div>
 
-          <h1 className="headline-premium text-headline-xl mb-4 text-az-black dark:text-white">
-            {displayArticle.title}
-          </h1>
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <h1 className="headline-premium text-headline-xl text-az-black dark:text-white flex-1">
+              {displayArticle.title}
+            </h1>
+            
+            <div className="flex gap-2 flex-shrink-0">
+              <TTSButton 
+                text={`${displayArticle.title}. ${displayArticle.content || displayArticle.excerpt}`}
+                title={displayArticle.title}
+              />
+              <button
+                onClick={() => setShowAudioPlayer(!showAudioPlayer)}
+                className="text-az-red hover:text-red-700 text-sm underline"
+              >
+                {showAudioPlayer ? 'Verberg' : 'Meer opties'}
+              </button>
+            </div>
+          </div>
 
           {/* Meta info - Compact layout with author and date only */}
           <div className="text-premium-gray-600 dark:text-gray-300 text-sm border-b border-premium-gray-200 dark:border-gray-700 pb-4">
             <span>{displayArticle.author} • {displayArticle.publishedAt}</span>
           </div>
         </header>
+
+        {/* Audio Player */}
+        {showAudioPlayer && !isShowingCachedContent && (
+          <div className="mb-6">
+            <AudioPlayer 
+              text={`${displayArticle.title}. ${displayArticle.content || displayArticle.excerpt}`}
+              title={displayArticle.title}
+            />
+          </div>
+        )}
 
         {/* Article content with enhanced styling and debug info */}
         <div 
