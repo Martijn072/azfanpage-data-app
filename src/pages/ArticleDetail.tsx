@@ -354,7 +354,7 @@ const ArticleDetail = () => {
               />
               <button
                 onClick={() => setShowAudioPlayer(!showAudioPlayer)}
-                className="text-az-red hover:text-red-700 text-sm underline"
+                className="text-az-red hover:text-red-700 text-sm underline font-medium"
               >
                 {showAudioPlayer ? 'Verberg' : 'Meer opties'}
               </button>

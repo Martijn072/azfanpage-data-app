@@ -66,8 +66,8 @@ export const useTTS = () => {
       const { data, error } = await supabase.functions.invoke('text-to-speech', {
         body: {
           text,
-          voice: options.voice || 'nl-NL-Standard-A',
-          speed: options.speed || 1.0
+          voice: 'nl-NL-Standard-B', // Fixed male voice
+          speed: options.speed || 0.9
         }
       });
 

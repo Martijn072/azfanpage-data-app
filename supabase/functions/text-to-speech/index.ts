@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { text, voice = 'nl-NL-Standard-A', speed = 1.0 } = await req.json();
+    const { text, voice = 'nl-NL-Standard-B', speed = 0.9 } = await req.json();
 
     if (!text) {
       throw new Error('Text is required');
@@ -82,12 +82,14 @@ serve(async (req) => {
             voice: {
               languageCode: voice.substring(0, 5), // nl-NL
               name: voice,
+              ssmlGender: 'MALE',
             },
             audioConfig: {
               audioEncoding: 'MP3',
               speakingRate: speed,
-              pitch: 0,
+              pitch: -3.0,
               volumeGainDb: 0,
+              sampleRateHertz: 24000,
             },
           }),
         }

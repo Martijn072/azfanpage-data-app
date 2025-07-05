@@ -8,11 +8,10 @@ import { useTTS } from '@/hooks/useTTS';
 interface AudioPlayerProps {
   text: string;
   title: string;
-  voice?: string;
   className?: string;
 }
 
-export const AudioPlayer = ({ text, title, voice = 'nl-NL-Standard-A', className = '' }: AudioPlayerProps) => {
+export const AudioPlayer = ({ text, title, className = '' }: AudioPlayerProps) => {
   const {
     isLoading,
     isPlaying,
@@ -30,9 +29,8 @@ export const AudioPlayer = ({ text, title, voice = 'nl-NL-Standard-A', className
     skipBackward
   } = useTTS();
 
-  const [speed, setSpeedState] = useState(1);
+  const [speed, setSpeedState] = useState(0.9);
   const [volume, setVolumeState] = useState(0.8);
-  const [selectedVoice, setSelectedVoice] = useState(voice);
 
   useEffect(() => {
     setSpeed(speed);
@@ -52,7 +50,7 @@ export const AudioPlayer = ({ text, title, voice = 'nl-NL-Standard-A', className
     if (isPaused) {
       resume();
     } else {
-      speak(text, { voice: selectedVoice, speed });
+      speak(text, { speed });
     }
   };
 
@@ -66,24 +64,11 @@ export const AudioPlayer = ({ text, title, voice = 'nl-NL-Standard-A', className
           <Volume2 className="w-5 h-5 text-az-red" />
           <span className="font-medium text-az-black dark:text-white">Audio Artikel</span>
         </div>
-        
-        {/* Voice Selection */}
-        <Select value={selectedVoice} onValueChange={setSelectedVoice}>
-          <SelectTrigger className="w-32">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="nl-NL-Standard-A">Vrouw A</SelectItem>
-            <SelectItem value="nl-NL-Standard-B">Man B</SelectItem>
-            <SelectItem value="nl-NL-Standard-C">Vrouw C</SelectItem>
-            <SelectItem value="nl-NL-Standard-D">Man D</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Progress Bar */}
       <div className="mb-4">
-        <div className="flex items-center justify-between text-sm text-premium-gray-500 dark:text-gray-400 mb-1">
+        <div className="flex items-center justify-between text-sm text-az-black dark:text-gray-300 mb-1">
           <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>
@@ -102,7 +87,7 @@ export const AudioPlayer = ({ text, title, voice = 'nl-NL-Standard-A', className
           disabled={!isPlaying && !isPaused}
           variant="ghost"
           size="sm"
-          className="text-az-red hover:bg-az-red/10"
+          className="text-az-red hover:bg-az-red/10 hover:text-az-red"
         >
           <SkipBack className="w-4 h-4" />
         </Button>
@@ -128,7 +113,7 @@ export const AudioPlayer = ({ text, title, voice = 'nl-NL-Standard-A', className
           disabled={!isPlaying && !isPaused}
           variant="ghost"
           size="sm"
-          className="text-az-red hover:bg-az-red/10"
+          className="text-az-red hover:bg-az-red/10 hover:text-az-red"
         >
           <Square className="w-4 h-4" />
         </Button>
@@ -138,7 +123,7 @@ export const AudioPlayer = ({ text, title, voice = 'nl-NL-Standard-A', className
           disabled={!isPlaying && !isPaused}
           variant="ghost"
           size="sm"
-          className="text-az-red hover:bg-az-red/10"
+          className="text-az-red hover:bg-az-red/10 hover:text-az-red"
         >
           <SkipForward className="w-4 h-4" />
         </Button>
@@ -148,31 +133,36 @@ export const AudioPlayer = ({ text, title, voice = 'nl-NL-Standard-A', className
       <div className="flex items-center gap-6 text-sm">
         {/* Speed Control */}
         <div className="flex items-center gap-2">
-          <span className="text-premium-gray-600 dark:text-gray-300 min-w-fit">Snelheid:</span>
-          <Select value={speed.toString()} onValueChange={(value) => setSpeedState(Number(value))}>
-            <SelectTrigger className="w-20">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0.75">0.75x</SelectItem>
-              <SelectItem value="1">1x</SelectItem>
-              <SelectItem value="1.25">1.25x</SelectItem>
-              <SelectItem value="1.5">1.5x</SelectItem>
-            </SelectContent>
-          </Select>
+          <span className="text-az-black dark:text-gray-300 min-w-fit">Snelheid:</span>
+          <div className="relative">
+            <Select value={speed.toString()} onValueChange={(value) => setSpeedState(Number(value))}>
+              <SelectTrigger className="w-20 bg-az-red text-white border-az-red hover:bg-red-700">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0.75">0.75x</SelectItem>
+                <SelectItem value="0.9">0.9x</SelectItem>
+                <SelectItem value="1">1x</SelectItem>
+                <SelectItem value="1.25">1.25x</SelectItem>
+                <SelectItem value="1.5">1.5x</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Volume Control */}
         <div className="flex items-center gap-2 flex-1">
-          <Volume2 className="w-4 h-4 text-premium-gray-600 dark:text-gray-300" />
-          <Slider
-            value={[volume]}
-            onValueChange={(values) => setVolumeState(values[0])}
-            max={1}
-            min={0}
-            step={0.1}
-            className="flex-1"
-          />
+          <Volume2 className="w-4 h-4 text-az-black dark:text-gray-300" />
+          <div className="flex-1">
+            <Slider
+              value={[volume]}
+              onValueChange={(values) => setVolumeState(values[0])}
+              max={1}
+              min={0}
+              step={0.1}
+              className="flex-1 [&_.slider-thumb]:bg-az-red [&_.slider-track]:bg-az-red"
+            />
+          </div>
         </div>
       </div>
 
@@ -185,7 +175,7 @@ export const AudioPlayer = ({ text, title, voice = 'nl-NL-Standard-A', className
 
       {/* Loading Text */}
       {isLoading && (
-        <div className="mt-3 text-center text-sm text-premium-gray-500 dark:text-gray-400">
+        <div className="mt-3 text-center text-sm text-az-black dark:text-gray-400">
           Audio wordt gegenereerd...
         </div>
       )}
