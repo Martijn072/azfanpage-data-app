@@ -25,7 +25,6 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
     if (location.pathname === "/nieuws") return "news";
     if (location.pathname === "/programma") return "programma";
     if (location.pathname === "/eredivisie") return "eredivisie";
-    if (location.pathname === "/forum") return "forum";
     
     // More sheet routes
     if (
