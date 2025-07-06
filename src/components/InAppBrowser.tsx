@@ -15,6 +15,7 @@ export const InAppBrowser = ({ url, isOpen, onClose, title }: InAppBrowserProps)
   const [currentUrl, setCurrentUrl] = useState(url);
   const [canGoBack, setCanGoBack] = useState(false);
   const [canGoForward, setCanGoForward] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { toast } = useToast();
 
@@ -29,6 +30,7 @@ export const InAppBrowser = ({ url, isOpen, onClose, title }: InAppBrowserProps)
 
   const handleIframeLoad = () => {
     setIsLoading(false);
+    setLoadError(false);
     // Try to access iframe history (may be blocked by CORS)
     try {
       if (iframeRef.current?.contentWindow) {
@@ -37,6 +39,11 @@ export const InAppBrowser = ({ url, isOpen, onClose, title }: InAppBrowserProps)
     } catch (error) {
       // Silently handle CORS errors
     }
+  };
+
+  const handleIframeError = () => {
+    setIsLoading(false);
+    setLoadError(true);
   };
 
   const handleGoBack = () => {
@@ -205,14 +212,34 @@ export const InAppBrowser = ({ url, isOpen, onClose, title }: InAppBrowserProps)
 
       {/* Content */}
       <div className="flex-1 relative" style={{ height: 'calc(100vh - 120px)' }}>
-        <iframe
-          ref={iframeRef}
-          src={currentUrl}
-          className="w-full h-full border-0"
-          onLoad={handleIframeLoad}
-          title={title || "Externe website"}
-          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-        />
+        {loadError ? (
+          <div className="flex items-center justify-center h-full p-8">
+            <div className="text-center max-w-md">
+              <h3 className="text-lg font-semibold text-premium-gray-600 dark:text-gray-300 mb-4">
+                Website kan niet worden geladen
+              </h3>
+              <p className="text-premium-gray-500 dark:text-gray-400 mb-6 text-sm">
+                Deze website blokkeert iframe loading om veiligheidsredenen. Dit is normaal voor social media en veel nieuwssites.
+              </p>
+              <Button 
+                onClick={handleOpenExternal}
+                className="bg-az-red hover:bg-red-700 text-white"
+              >
+                Open in externe browser
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <iframe
+            ref={iframeRef}
+            src={currentUrl}
+            className="w-full h-full border-0"
+            onLoad={handleIframeLoad}
+            onError={handleIframeError}
+            title={title || "Externe website"}
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+          />
+        )}
         
         {isLoading && (
           <div className="absolute inset-0 bg-white dark:bg-gray-900 flex items-center justify-center">
