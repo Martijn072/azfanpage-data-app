@@ -12,24 +12,6 @@ export const MoreSheet = ({ children }: MoreSheetProps) => {
 
   const menuItems = [
     {
-      icon: MessageSquare,
-      label: "AZ Forum",
-      path: "/forum",
-      description: "Discussieer met andere AZ fans"
-    },
-    {
-      icon: Users,
-      label: "Speler Statistieken",
-      path: "/spelers",
-      description: "Bekijk de laatste AZ speler stats"
-    },
-    {
-      icon: Trophy,
-      label: "Conference League",
-      path: "/conference-league",
-      description: "Stand en wedstrijden Conference League"
-    },
-    {
       icon: Users,
       label: "Community",
       path: "/community",
