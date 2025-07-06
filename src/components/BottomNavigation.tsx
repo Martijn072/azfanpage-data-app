@@ -27,11 +27,19 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
     if (location.pathname === "/programma") return "programma";
     if (location.pathname === "/eredivisie") return "eredivisie";
     if (location.pathname === "/forum") return "forum";
-    if (location.pathname === "/notificaties") return "notifications";
+    
     // More sheet routes
-    if (location.pathname === "/spelers" || location.pathname === "/conference-league" || location.pathname === "/community") return "meer";
-    // For "more" pages, don't highlight any main tab
-    if (location.pathname === "/spelers" || location.pathname === "/conference-league") return "meer";
+    if (
+      location.pathname === "/spelers" || 
+      location.pathname === "/conference-league" || 
+      location.pathname === "/community" ||
+      location.pathname === "/partners" ||
+      location.pathname.startsWith("/partner/") ||
+      location.pathname === "/notificaties"
+    ) {
+      return "meer";
+    }
+    
     return activeTab;
   };
 
