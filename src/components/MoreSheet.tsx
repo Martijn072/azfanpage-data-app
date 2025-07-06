@@ -12,6 +12,12 @@ export const MoreSheet = ({ children }: MoreSheetProps) => {
 
   const menuItems = [
     {
+      icon: MessageSquare,
+      label: "Forum",
+      path: "/forum",
+      description: "Discussie en community"
+    },
+    {
       icon: Users,
       label: "Speler Statistieken",
       path: "/spelers",

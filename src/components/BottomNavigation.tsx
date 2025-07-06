@@ -16,7 +16,6 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
     { id: "home", label: "Home", icon: House, path: "/" },
     { id: "news", label: "Nieuws", icon: Bell, path: "/nieuws" },
     { id: "programma", label: "Programma", icon: Calendar, path: "/programma" },
-    { id: "forum", label: "Forum", icon: MessageSquare, path: "/forum" },
     { id: "eredivisie", label: "Stand", icon: Table, path: "/eredivisie" },
   ];
 
@@ -30,6 +29,7 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
     
     // More sheet routes
     if (
+      location.pathname === "/forum" ||
       location.pathname === "/spelers" || 
       location.pathname === "/conference-league" || 
       location.pathname === "/community" ||
