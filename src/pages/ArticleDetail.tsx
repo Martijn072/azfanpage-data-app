@@ -14,7 +14,6 @@ import { TTSButton } from "@/components/TTSButton";
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { useOfflineDetection } from "@/hooks/useOfflineDetection";
-import { useInAppBrowserContext } from "@/contexts/InAppBrowserContext";
 import { articleCache } from "@/services/articleCache";
 
 const ArticleDetail = () => {
@@ -26,7 +25,6 @@ const ArticleDetail = () => {
   const [showAudioPlayer, setShowAudioPlayer] = useState(false);
   
   const { isSyncing, handleManualSync, isOnline } = useOfflineSync();
-  const { processExternalLinks } = useInAppBrowserContext();
   
   // Check for cached version
   useEffect(() => {
@@ -305,9 +303,6 @@ const ArticleDetail = () => {
         // Add new listener
         link.addEventListener('click', handleClick);
       });
-
-      // Process external links for in-app browser
-      processExternalLinks(articleContent as HTMLElement);
     };
 
     // Run setup after a small delay to ensure DOM is updated
@@ -326,7 +321,7 @@ const ArticleDetail = () => {
         });
       }
     };
-  }, [displayArticle, processedContent, navigate, processExternalLinks]);
+  }, [displayArticle, processedContent, navigate]);
 
   // Handle clicks on internal links (fallback)
   const handleContentClick = (e: React.MouseEvent) => {

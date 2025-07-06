@@ -1,11 +1,8 @@
 import { Instagram, Facebook, X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { useInAppBrowserContext } from "@/contexts/InAppBrowserContext";
 
 export const SocialMediaPromo = () => {
-  const { openBrowser } = useInAppBrowserContext();
-  
   const socialMediaLinks = [
     {
       name: "Instagram",
@@ -75,12 +72,11 @@ export const SocialMediaPromo = () => {
                     </p>
                   </div>
 
-                  <Button 
-                    onClick={() => openBrowser(platform.url, `${platform.name} - ${platform.handle}`)}
-                    className="w-full bg-az-red hover:bg-red-700 text-white text-sm py-2 group-hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
-                  >
-                    Volgen
-                    <ExternalLink className="w-3 h-3" />
+                  <Button asChild className="w-full bg-az-red hover:bg-red-700 text-white text-sm py-2 group-hover:scale-105 transition-all duration-200">
+                    <a href={platform.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
+                      Volgen
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
                   </Button>
                 </div>
               </CarouselItem>
