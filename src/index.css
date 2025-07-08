@@ -244,7 +244,7 @@
   }
 
   .article-content a {
-    @apply text-az-red hover:underline font-medium;
+    @apply text-az-red hover:underline font-medium dark:text-red-400;
   }
 
   .article-content strong, .article-content b {
