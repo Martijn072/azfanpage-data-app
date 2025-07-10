@@ -15,7 +15,6 @@ import ConferenceLeague from "./pages/ConferenceLeague";
 import Notifications from "./pages/Notifications";
 import WedstrijdDetail from "./pages/WedstrijdDetail";
 import SpelerProfiel from "./pages/SpelerProfiel";
-import Community from "./pages/Community";
 import Forum from "./pages/Forum";
 import Partners from "./pages/Partners";
 import PartnerDetail from "./pages/PartnerDetail";
@@ -39,7 +38,6 @@ const App = () => (
             <Route path="/spelers" element={<SpelerStatistieken />} />
             <Route path="/conference-league" element={<ConferenceLeague />} />
             <Route path="/notificaties" element={<Notifications />} />
-            <Route path="/community" element={<Community />} />
             <Route path="/forum" element={<Forum />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/partner/:partnerId" element={<PartnerDetail />} />
