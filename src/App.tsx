@@ -13,6 +13,7 @@ import AZProgramma from "./pages/AZProgramma";
 import SpelerStatistieken from "./pages/SpelerStatistieken";
 import ConferenceLeague from "./pages/ConferenceLeague";
 import Notifications from "./pages/Notifications";
+import NotificationSettings from "./pages/NotificationSettings";
 import WedstrijdDetail from "./pages/WedstrijdDetail";
 import SpelerProfiel from "./pages/SpelerProfiel";
 import Forum from "./pages/Forum";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/spelers" element={<SpelerStatistieken />} />
             <Route path="/conference-league" element={<ConferenceLeague />} />
             <Route path="/notificaties" element={<Notifications />} />
+            <Route path="/instellingen/notificaties" element={<NotificationSettings />} />
             <Route path="/forum" element={<Forum />} />
             <Route path="/wedstrijd/:fixtureId" element={<WedstrijdDetail />} />
             <Route path="/speler/:playerId" element={<SpelerProfiel />} />

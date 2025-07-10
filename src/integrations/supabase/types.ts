@@ -234,7 +234,12 @@ export type Database = {
           id: string
           in_app_notifications: boolean | null
           push_comment_replies: boolean | null
+          push_live_matches: boolean | null
+          push_new_articles: boolean | null
           push_new_comments: boolean | null
+          push_social_media: boolean | null
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
           updated_at: string | null
           user_id: string
         }
@@ -245,7 +250,12 @@ export type Database = {
           id?: string
           in_app_notifications?: boolean | null
           push_comment_replies?: boolean | null
+          push_live_matches?: boolean | null
+          push_new_articles?: boolean | null
           push_new_comments?: boolean | null
+          push_social_media?: boolean | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -256,7 +266,12 @@ export type Database = {
           id?: string
           in_app_notifications?: boolean | null
           push_comment_replies?: boolean | null
+          push_live_matches?: boolean | null
+          push_new_articles?: boolean | null
           push_new_comments?: boolean | null
+          push_social_media?: boolean | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
           updated_at?: string | null
           user_id?: string
         }
@@ -328,6 +343,36 @@ export type Database = {
           article_url?: string | null
           id?: string
           processed_at?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth_key: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh_key: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auth_key: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh_key: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auth_key?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh_key?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

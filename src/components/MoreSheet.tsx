@@ -31,9 +31,9 @@ export const MoreSheet = ({ children }: MoreSheetProps) => {
     },
     {
       icon: Bell,
-      label: "Notificaties",
-      path: "/notificaties",
-      description: "Beheer je notificatie-instellingen"
+      label: "Notificatie-instellingen",
+      path: "/instellingen/notificaties",
+      description: "Beheer je notificatie-voorkeuren"
     }
   ];
 
