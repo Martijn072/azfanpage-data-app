@@ -2,7 +2,6 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Bell, MessageSquare, Info, Users, Trophy, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useWordPressAuth } from "@/contexts/WordPressAuthContext";
 
 interface MoreSheetProps {
   children: React.ReactNode;
@@ -10,7 +9,6 @@ interface MoreSheetProps {
 
 export const MoreSheet = ({ children }: MoreSheetProps) => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useWordPressAuth();
 
   const mainMenuItems = [
     {
@@ -33,14 +31,12 @@ export const MoreSheet = ({ children }: MoreSheetProps) => {
     }
   ];
 
-  const settingsItems = [
-    ...(isAuthenticated ? [{
-      icon: Bell,
-      label: "Notificatie-instellingen",
-      path: "/instellingen/notificaties",
-      description: "Beheer je notificatie-voorkeuren"
-    }] : [])
-  ];
+  const settingsItems = [{
+    icon: Bell,
+    label: "Notificatie-instellingen",
+    path: "/instellingen/notificaties",
+    description: "Beheer je notificatie-voorkeuren"
+  }];
 
   const infoItems = [
     {

@@ -9,7 +9,6 @@ import { formatDistanceToNow } from 'date-fns';
 import { nl } from 'date-fns/locale';
 import { Header } from '@/components/Header';
 import { BottomNavigation } from '@/components/BottomNavigation';
-import { useWordPressAuth } from '@/contexts/WordPressAuthContext';
 import NotificationSettingsCTA from '@/components/NotificationSettingsCTA';
 
 const Notifications = () => {
@@ -18,7 +17,7 @@ const Notifications = () => {
   const markAsRead = useMarkAsRead();
   const clearAll = useClearAllNotifications();
   const deleteNotification = useDeleteNotification();
-  const { isAuthenticated } = useWordPressAuth();
+  const isAuthenticated = false; // No authentication
 
   const handleNotificationClick = async (notification: Notification) => {
     // Mark as read

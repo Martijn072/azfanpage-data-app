@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useNotificationSettings } from "@/hooks/useNotificationSettings";
 import { usePushSubscription } from "@/hooks/usePushSubscription";
-import { useWordPressAuth } from "@/contexts/WordPressAuthContext";
 import AccountBenefitsCard from "@/components/AccountBenefitsCard";
 
 const NotificationSettings = () => {
@@ -17,7 +16,7 @@ const NotificationSettings = () => {
   const { toast } = useToast();
   const { settings, isLoading, updateSettings } = useNotificationSettings();
   const { isSupported, isSubscribed, subscribe, unsubscribe } = usePushSubscription();
-  const { isAuthenticated } = useWordPressAuth();
+  const isAuthenticated = false; // No authentication
 
   const [localSettings, setLocalSettings] = useState({
     email_new_comments: true,
