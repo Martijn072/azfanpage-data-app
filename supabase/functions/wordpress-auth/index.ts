@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -126,11 +125,14 @@ serve(async (req: Request) => {
       });
 
     } else if (action === 'register') {
+      console.log('🚀 Starting WordPress registration process...');
+      console.log('📝 Registration data:', { username, email, display_name });
+
       // Get admin credentials from environment
       const adminToken = Deno.env.get('WORDPRESS_ADMIN_TOKEN');
       
       if (!adminToken) {
-        console.error('WORDPRESS_ADMIN_TOKEN not configured');
+        console.error('❌ WORDPRESS_ADMIN_TOKEN not configured');
         return new Response(JSON.stringify({
           success: false,
           message: 'Server configuratie fout'
@@ -140,9 +142,11 @@ serve(async (req: Request) => {
         });
       }
 
+      console.log('🔑 Admin token found, length:', adminToken.length);
+
       // Check if token is in username:password format
       if (!adminToken.includes(':')) {
-        console.error('WORDPRESS_ADMIN_TOKEN must be in format username:password');
+        console.error('❌ WORDPRESS_ADMIN_TOKEN must be in format username:password');
         return new Response(JSON.stringify({
           success: false,
           message: 'Server configuratie fout - ongeldige token format'
@@ -154,8 +158,43 @@ serve(async (req: Request) => {
 
       // Create Basic Authentication header
       const basicAuthHeader = `Basic ${btoa(adminToken)}`;
+      console.log('🔐 Basic auth header created successfully');
       
-      console.log('Attempting WordPress user registration with Basic auth...');
+      // First, test if the WordPress REST API is accessible
+      console.log('🔍 Testing WordPress REST API accessibility...');
+      try {
+        const testResponse = await fetch(`${WORDPRESS_API_BASE}/users`, {
+          method: 'GET',
+          headers: {
+            'Authorization': basicAuthHeader
+          }
+        });
+        
+        console.log('📊 REST API test response status:', testResponse.status);
+        console.log('📊 REST API test response headers:', Object.fromEntries(testResponse.headers.entries()));
+        
+        if (!testResponse.ok) {
+          const testError = await testResponse.text();
+          console.log('❌ REST API test failed:', testError);
+        } else {
+          console.log('✅ REST API is accessible');
+        }
+      } catch (testError) {
+        console.error('💥 REST API test error:', testError);
+      }
+
+      console.log('🔄 Attempting WordPress user registration...');
+
+      // Prepare registration payload
+      const registrationPayload = {
+        username: username,
+        email: email,
+        password: password,
+        name: display_name || username,
+        roles: ['subscriber']
+      };
+      
+      console.log('📦 Registration payload:', registrationPayload);
 
       // Register new user in WordPress
       const registerResponse = await fetch(`${WORDPRESS_API_BASE}/users`, {
@@ -164,19 +203,18 @@ serve(async (req: Request) => {
           'Content-Type': 'application/json',
           'Authorization': basicAuthHeader
         },
-        body: JSON.stringify({
-          username: username,
-          email: email,
-          password: password,
-          name: display_name || username,
-          roles: ['subscriber'] // Default role
-        })
+        body: JSON.stringify(registrationPayload)
       });
 
+      console.log('📡 WordPress API response status:', registerResponse.status);
+      console.log('📡 WordPress API response headers:', Object.fromEntries(registerResponse.headers.entries()));
+
       const registerData = await registerResponse.json();
+      console.log('📄 WordPress API full response:', JSON.stringify(registerData, null, 2));
 
       if (!registerResponse.ok) {
-        console.log('WordPress registration failed:', registerData);
+        console.log('❌ WordPress registration failed with status:', registerResponse.status);
+        console.log('❌ WordPress error details:', registerData);
         
         // Provide more specific error messages
         let errorMessage = 'Registratie mislukt';
@@ -187,20 +225,66 @@ serve(async (req: Request) => {
           errorMessage = 'Dit e-mailadres is al geregistreerd';
         } else if (registerData.code === 'rest_user_invalid_email') {
           errorMessage = 'Ongeldig e-mailadres';
+        } else if (registerData.code === 'rest_cannot_create_user') {
+          errorMessage = 'Geen toestemming om gebruikers aan te maken. Controleer WordPress instellingen en gebruikersrechten.';
         } else if (registerData.message) {
           errorMessage = registerData.message;
         }
         
         return new Response(JSON.stringify({
           success: false,
-          message: errorMessage
+          message: errorMessage,
+          debug: {
+            status: registerResponse.status,
+            wordpress_error: registerData
+          }
         }), {
           status: 400,
           headers: { 'Content-Type': 'application/json', ...corsHeaders }
         });
       }
 
-      console.log('WordPress registration successful:', registerData);
+      console.log('✅ WordPress registration successful:', registerData);
+
+      // After successful registration, automatically log the user in
+      console.log('🔄 Auto-login after registration...');
+      
+      try {
+        const loginResponse = await fetch(`${WORDPRESS_AUTH_BASE}/token`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: email,
+            password: password
+          })
+        });
+
+        if (loginResponse.ok) {
+          const loginData = await loginResponse.json();
+          console.log('✅ Auto-login successful');
+          
+          return new Response(JSON.stringify({
+            success: true,
+            message: 'Account succesvol aangemaakt en ingelogd',
+            user: {
+              id: registerData.id,
+              username: registerData.username,
+              display_name: registerData.name,
+              email: registerData.email,
+              token: loginData.token
+            }
+          }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        } else {
+          console.log('⚠️ Auto-login failed, but registration successful');
+        }
+      } catch (loginError) {
+        console.error('💥 Auto-login error:', loginError);
+      }
 
       return new Response(JSON.stringify({
         success: true,
@@ -220,10 +304,11 @@ serve(async (req: Request) => {
     });
 
   } catch (error: any) {
-    console.error('WordPress auth error:', error);
+    console.error('💥 WordPress auth error:', error);
     return new Response(JSON.stringify({
       success: false,
-      message: 'Server fout'
+      message: 'Server fout',
+      debug: error.message
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
