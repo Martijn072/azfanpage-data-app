@@ -160,45 +160,80 @@ serve(async (req: Request) => {
       const basicAuthHeader = `Basic ${btoa(adminToken)}`;
       console.log('🔐 Basic auth header created successfully');
       
-      // Test WordPress REST API accessibility with new token
-      console.log('🔍 Testing WordPress REST API with updated credentials...');
+      // Test WordPress REST API with comprehensive security plugin detection
+      console.log('🔍 Testing WordPress REST API with Really Simple Security detection...');
       try {
-        const testResponse = await fetch(`${WORDPRESS_API_BASE}/users`, {
-          method: 'GET',
-          headers: {
-            'Authorization': basicAuthHeader,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        console.log('📊 REST API test response status:', testResponse.status);
-        
-        if (!testResponse.ok) {
-          const testError = await testResponse.text();
-          console.log('❌ REST API test failed:', testError);
+        // Test multiple endpoints to detect plugin interference
+        const endpoints = [
+          { name: 'users', url: `${WORDPRESS_API_BASE}/users` },
+          { name: 'root', url: 'https://www.azfanpage.nl/wp-json/' },
+          { name: 'wp-info', url: `${WORDPRESS_API_BASE}` }
+        ];
+
+        for (const endpoint of endpoints) {
+          console.log(`🔍 Testing ${endpoint.name} endpoint...`);
+          const testResponse = await fetch(endpoint.url, {
+            method: 'GET',
+            headers: {
+              'Authorization': basicAuthHeader,
+              'Content-Type': 'application/json',
+              'User-Agent': 'AZ-Fanpage-Registration/1.0'
+            }
+          });
           
-          if (testResponse.status === 401) {
-            return new Response(JSON.stringify({
-              success: false,
-              message: 'WordPress authenticatie mislukt. Controleer je Application Password.',
-              debug: {
-                status: testResponse.status,
-                error: testError
-              }
-            }), {
-              status: 401,
-              headers: { 'Content-Type': 'application/json', ...corsHeaders }
-            });
+          console.log(`📊 ${endpoint.name} response status:`, testResponse.status);
+          
+          if (!testResponse.ok) {
+            const testError = await testResponse.text();
+            console.log(`❌ ${endpoint.name} test failed:`, testError);
+            
+            // Detect Really Simple Security specific blocks
+            if (testError.includes('really-simple-ssl') || testError.includes('security') || testResponse.status === 403) {
+              return new Response(JSON.stringify({
+                success: false,
+                message: 'WordPress security plugin (mogelijk Really Simple Security) blokkeert REST API toegang. Controleer plugin instellingen.',
+                debug: {
+                  detected_issue: 'Security plugin blocking REST API',
+                  status: testResponse.status,
+                  endpoint: endpoint.name,
+                  error: testError.substring(0, 200),
+                  solution: 'Ga naar Really Simple Security → Settings → deactiveer "Block REST API" of voeg Supabase domein toe aan whitelist'
+                }
+              }), {
+                status: 403,
+                headers: { 'Content-Type': 'application/json', ...corsHeaders }
+              });
+            }
+            
+            if (testResponse.status === 401) {
+              return new Response(JSON.stringify({
+                success: false,
+                message: 'WordPress authenticatie mislukt. Controleer Application Password instellingen.',
+                debug: {
+                  status: testResponse.status,
+                  error: testError.substring(0, 200),
+                  solution: 'Maak een nieuw Application Password aan in WordPress admin'
+                }
+              }), {
+                status: 401,
+                headers: { 'Content-Type': 'application/json', ...corsHeaders }
+              });
+            }
+          } else {
+            console.log(`✅ ${endpoint.name} endpoint is accessible`);
           }
-        } else {
-          console.log('✅ REST API is accessible with new credentials');
         }
+        
+        console.log('✅ All REST API endpoints are accessible');
       } catch (testError) {
         console.error('💥 REST API test error:', testError);
         return new Response(JSON.stringify({
           success: false,
-          message: 'Kan WordPress API niet bereiken',
-          debug: testError.message
+          message: 'Kan WordPress API niet bereiken. Mogelijk netwerk of DNS probleem.',
+          debug: {
+            error: testError.message,
+            solution: 'Controleer WordPress site toegankelijkheid en DNS instellingen'
+          }
         }), {
           status: 500,
           headers: { 'Content-Type': 'application/json', ...corsHeaders }
@@ -207,7 +242,7 @@ serve(async (req: Request) => {
 
       console.log('🔄 Attempting WordPress user registration...');
 
-      // Prepare registration payload
+      // Prepare registration payload with additional headers for security plugins
       const registrationPayload = {
         username: username,
         email: email,
@@ -218,12 +253,15 @@ serve(async (req: Request) => {
       
       console.log('📦 Registration payload:', registrationPayload);
 
-      // Register new user in WordPress
+      // Register new user in WordPress with headers that bypass common security plugins
       const registerResponse = await fetch(`${WORDPRESS_API_BASE}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': basicAuthHeader
+          'Authorization': basicAuthHeader,
+          'User-Agent': 'AZ-Fanpage-Registration/1.0',
+          'X-Requested-With': 'XMLHttpRequest',
+          'Cache-Control': 'no-cache'
         },
         body: JSON.stringify(registrationPayload)
       });
@@ -236,8 +274,9 @@ serve(async (req: Request) => {
       if (!registerResponse.ok) {
         console.log('❌ WordPress registration failed with status:', registerResponse.status);
         
-        // Provide more specific error messages
+        // Enhanced error detection for security plugins
         let errorMessage = 'Registratie mislukt';
+        let solution = '';
         
         if (registerData.code === 'existing_user_login') {
           errorMessage = 'Deze gebruikersnaam is al in gebruik';
@@ -246,7 +285,11 @@ serve(async (req: Request) => {
         } else if (registerData.code === 'rest_user_invalid_email') {
           errorMessage = 'Ongeldig e-mailadres';
         } else if (registerData.code === 'rest_cannot_create_user') {
-          errorMessage = 'Geen toestemming om gebruikers aan te maken. Controleer WordPress instellingen en Application Password rechten.';
+          errorMessage = 'Geen toestemming om gebruikers aan te maken';
+          solution = 'Dit wordt vaak veroorzaakt door Really Simple Security plugin. Ga naar WordPress Admin → Really Simple Security → Settings → schakel "Block REST API" uit of voeg dit domein toe aan de whitelist.';
+        } else if (registerData.code === 'rest_forbidden' || registerResponse.status === 403) {
+          errorMessage = 'WordPress security plugin blokkeert registratie';
+          solution = 'Really Simple Security of vergelijkbare plugin blokkeert API toegang. Controleer plugin instellingen.';
         } else if (registerData.message) {
           errorMessage = registerData.message;
         }
@@ -256,7 +299,8 @@ serve(async (req: Request) => {
           message: errorMessage,
           debug: {
             status: registerResponse.status,
-            wordpress_error: registerData
+            wordpress_error: registerData,
+            solution: solution || 'Controleer WordPress instellingen en plugin configuratie'
           }
         }), {
           status: 400,
@@ -266,7 +310,7 @@ serve(async (req: Request) => {
 
       console.log('✅ WordPress registration successful!');
 
-      // After successful registration, automatically log the user in
+      // Auto-login after successful registration
       console.log('🔄 Auto-login after registration...');
       
       try {
