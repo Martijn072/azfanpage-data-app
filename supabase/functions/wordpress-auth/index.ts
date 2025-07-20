@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -125,12 +126,43 @@ serve(async (req: Request) => {
       });
 
     } else if (action === 'register') {
+      // Get admin credentials from environment
+      const adminToken = Deno.env.get('WORDPRESS_ADMIN_TOKEN');
+      
+      if (!adminToken) {
+        console.error('WORDPRESS_ADMIN_TOKEN not configured');
+        return new Response(JSON.stringify({
+          success: false,
+          message: 'Server configuratie fout'
+        }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
+      // Check if token is in username:password format
+      if (!adminToken.includes(':')) {
+        console.error('WORDPRESS_ADMIN_TOKEN must be in format username:password');
+        return new Response(JSON.stringify({
+          success: false,
+          message: 'Server configuratie fout - ongeldige token format'
+        }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
+      // Create Basic Authentication header
+      const basicAuthHeader = `Basic ${btoa(adminToken)}`;
+      
+      console.log('Attempting WordPress user registration with Basic auth...');
+
       // Register new user in WordPress
       const registerResponse = await fetch(`${WORDPRESS_API_BASE}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Deno.env.get('WORDPRESS_ADMIN_TOKEN')}` // Need admin token for user creation
+          'Authorization': basicAuthHeader
         },
         body: JSON.stringify({
           username: username,
@@ -145,14 +177,30 @@ serve(async (req: Request) => {
 
       if (!registerResponse.ok) {
         console.log('WordPress registration failed:', registerData);
+        
+        // Provide more specific error messages
+        let errorMessage = 'Registratie mislukt';
+        
+        if (registerData.code === 'existing_user_login') {
+          errorMessage = 'Deze gebruikersnaam is al in gebruik';
+        } else if (registerData.code === 'existing_user_email') {
+          errorMessage = 'Dit e-mailadres is al geregistreerd';
+        } else if (registerData.code === 'rest_user_invalid_email') {
+          errorMessage = 'Ongeldig e-mailadres';
+        } else if (registerData.message) {
+          errorMessage = registerData.message;
+        }
+        
         return new Response(JSON.stringify({
           success: false,
-          message: registerData.message || 'Registratie mislukt'
+          message: errorMessage
         }), {
           status: 400,
           headers: { 'Content-Type': 'application/json', ...corsHeaders }
         });
       }
+
+      console.log('WordPress registration successful:', registerData);
 
       return new Response(JSON.stringify({
         success: true,
