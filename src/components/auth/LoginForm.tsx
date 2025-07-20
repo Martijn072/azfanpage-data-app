@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useWordPressAuth } from '@/contexts/WordPressAuthContext';
 import { toast } from 'sonner';
-import { Loader2, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Loader2, Mail, Lock } from 'lucide-react';
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
@@ -95,19 +95,15 @@ export const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
           </Button>
         </form>
 
-        {/* Registratie tijdelijk uitgeschakeld melding */}
-        <div className="mt-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-500 mt-0.5 flex-shrink-0" />
-            <div className="text-sm">
-              <p className="font-medium text-yellow-800 dark:text-yellow-200 mb-1">
-                Registratie tijdelijk niet beschikbaar
-              </p>
-              <p className="text-yellow-700 dark:text-yellow-300">
-                We werken aan het oplossen van een technisch probleem. Log in met je bestaande account of probeer het later opnieuw.
-              </p>
-            </div>
-          </div>
+        <div className="mt-4 text-center">
+          <Button 
+            variant="link" 
+            onClick={onSwitchToRegister}
+            disabled={isLoading}
+            className="text-sm text-muted-foreground hover:text-primary"
+          >
+            Nog geen account? Registreer hier
+          </Button>
         </div>
       </CardContent>
     </Card>

@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail, Smartphone, Clock, Bell, User, Shield, AlertCircle } from "lucide-react";
+import { Mail, Smartphone, Clock, Bell, User, Shield } from "lucide-react";
 
 const AccountBenefitsCard = () => {
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ const AccountBenefitsCard = () => {
     <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl text-primary">
-          Log in met je account
+          Maak een account aan
         </CardTitle>
         <CardDescription className="text-lg">
           Ontgrendel alle notificatie-opties en personaliseer je ervaring
@@ -66,23 +66,13 @@ const AccountBenefitsCard = () => {
           })}
         </div>
         
-        {/* Tijdelijke melding over registratie */}
-        <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-          <div className="flex items-start gap-2">
-            <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-500 mt-0.5 flex-shrink-0" />
-            <p className="text-xs text-yellow-700 dark:text-yellow-300">
-              Nieuwe account aanmaken is tijdelijk niet beschikbaar. Log in met je bestaande account.
-            </p>
-          </div>
-        </div>
-        
         <div className="text-center space-y-4">
           <Button 
             onClick={() => navigate('/auth')}
             size="lg"
             className="w-full max-w-xs"
           >
-            Inloggen
+            Account aanmaken
           </Button>
         </div>
       </CardContent>
