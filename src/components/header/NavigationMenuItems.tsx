@@ -2,18 +2,15 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   DropdownMenuItem,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Home, Bell, Calendar, Table, MessageSquare, Users, Trophy } from "lucide-react";
+import { Home, Bell, Calendar, Table } from "lucide-react";
 
+// Simplified navigation menu - only core navigation items that are also in bottom nav
 const menuItems = [
   { id: "home", label: "Home", icon: Home, path: "/" },
   { id: "news", label: "Nieuws", icon: Bell, path: "/nieuws" },
   { id: "programma", label: "Programma", icon: Calendar, path: "/programma" },
-  { id: "forum", label: "Forum", icon: MessageSquare, path: "/forum" },
   { id: "eredivisie", label: "Eredivisie Stand", icon: Table, path: "/eredivisie" },
-  { id: "spelers", label: "Speler Stats", icon: Users, path: "/spelers" },
-  { id: "conference", label: "Conference League", icon: Trophy, path: "/conference-league" },
 ];
 
 export const NavigationMenuItems = () => {

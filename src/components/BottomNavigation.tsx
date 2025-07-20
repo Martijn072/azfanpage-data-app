@@ -1,5 +1,5 @@
 
-import { Bell, Calendar, House, Table, MessageSquare, MoreHorizontal } from "lucide-react";
+import { Bell, Calendar, House, Table, MoreHorizontal } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MoreSheet } from "./MoreSheet";
 
@@ -26,12 +26,12 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
     if (location.pathname === "/programma") return "programma";
     if (location.pathname === "/eredivisie") return "eredivisie";
     
-    // More sheet routes
+    // More sheet routes - all routes that are in the "Meer" menu
     if (
       location.pathname === "/forum" ||
       location.pathname === "/spelers" || 
       location.pathname === "/conference-league" || 
-      location.pathname === "/notificaties"
+      location.pathname === "/instellingen/notificaties"
     ) {
       return "meer";
     }

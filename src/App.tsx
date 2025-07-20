@@ -18,6 +18,7 @@ import NotificationSettings from "./pages/NotificationSettings";
 import WedstrijdDetail from "./pages/WedstrijdDetail";
 import SpelerProfiel from "./pages/SpelerProfiel";
 import Forum from "./pages/Forum";
+import Over from "./pages/Over";
 import NotFound from "./pages/NotFound";
 import { Auth } from "./pages/Auth";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/notificaties" element={<Notifications />} />
             <Route path="/instellingen/notificaties" element={<NotificationSettings />} />
             <Route path="/forum" element={<Forum />} />
+            <Route path="/over" element={<Over />} />
             <Route path="/wedstrijd/:fixtureId" element={<WedstrijdDetail />} />
             <Route path="/speler/:playerId" element={<SpelerProfiel />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
