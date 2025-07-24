@@ -1,13 +1,22 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useAZTeamId, useNextAZFixture } from '@/hooks/useFootballApi';
+import { useLiveAZFixture } from '@/hooks/useFixtureHooks';
+import { useFixtureEvents } from '@/hooks/useFixtureEvents';
 import { Calendar, Clock } from 'lucide-react';
 
 export const NextMatchWidget = () => {
   const { data: teamId, isLoading: teamLoading, error: teamError } = useAZTeamId();
   const { data: nextFixture, isLoading: fixtureLoading, error: fixtureError } = useNextAZFixture(teamId);
+  const { data: liveFixture, isLoading: liveLoading } = useLiveAZFixture(teamId);
+  const { data: events } = useFixtureEvents(liveFixture?.fixture.id.toString() || null);
 
-  const isLoading = teamLoading || fixtureLoading;
+  // Live fixture has priority over next fixture
+  const displayFixture = liveFixture || nextFixture;
+  const isLive = !!liveFixture;
+  
+  const isLoading = teamLoading || fixtureLoading || liveLoading;
   const hasError = teamError || fixtureError;
 
   if (isLoading) {
@@ -42,7 +51,7 @@ export const NextMatchWidget = () => {
     );
   }
 
-  if (hasError || !nextFixture) {
+  if (hasError || !displayFixture) {
     return (
       <div className="mb-6">
         <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4 animate-fade-in">
@@ -54,7 +63,14 @@ export const NextMatchWidget = () => {
     );
   }
 
-  const matchDate = new Date(nextFixture.fixture.date);
+  const matchDate = new Date(displayFixture.fixture.date);
+  
+  // Get latest event for live matches
+  const latestEvent = events && events.length > 0 
+    ? events
+        .filter(event => ['Goal', 'Card', 'subst'].includes(event.type))
+        .sort((a, b) => b.time.elapsed - a.time.elapsed)[0]
+    : null;
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('nl-NL', {
@@ -72,9 +88,20 @@ export const NextMatchWidget = () => {
     });
   };
 
-  const isAZHome = nextFixture.teams.home.id === teamId;
-  const azTeam = isAZHome ? nextFixture.teams.home : nextFixture.teams.away;
-  const opponentTeam = isAZHome ? nextFixture.teams.away : nextFixture.teams.home;
+  const isAZHome = displayFixture.teams.home.id === teamId;
+  const azTeam = isAZHome ? displayFixture.teams.home : displayFixture.teams.away;
+  const opponentTeam = isAZHome ? displayFixture.teams.away : displayFixture.teams.home;
+  
+  // Format event for display
+  const formatLatestEvent = (event: any) => {
+    if (!event) return null;
+    
+    const eventIcon = event.type === 'Goal' ? '⚽' : 
+                     event.type === 'Card' ? (event.detail.includes('Yellow') ? '🟨' : '🟥') : 
+                     '🔄';
+    
+    return `${eventIcon} ${event.player.name} ${event.time.elapsed}'`;
+  };
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement;
@@ -85,20 +112,29 @@ export const NextMatchWidget = () => {
     }
   };
 
-  return (
+  const widgetContent = (
     <div className="mb-6">
       <section 
-        className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4 hover:shadow-lg transition-all duration-300 animate-fade-in transform hover:scale-[1.01]"
+        className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4 hover:shadow-lg transition-all duration-300 animate-fade-in transform hover:scale-[1.01] cursor-pointer relative"
         role="region"
         aria-labelledby="next-match-title"
         aria-describedby="next-match-details"
       >
+        {/* Live Badge */}
+        {isLive && (
+          <div className="absolute top-2 right-2 z-10">
+            <div className="bg-az-red text-white rounded-full px-2 py-1 text-xs font-medium animate-pulse flex items-center gap-1">
+              <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
+              LIVE
+            </div>
+          </div>
+        )}
         <h2 id="next-match-title" className="sr-only">Volgende AZ wedstrijd</h2>
         
         {/* Competitie naam */}
         <div className="text-center mb-4">
           <p className="text-sm text-premium-gray-600 dark:text-gray-400">
-            {nextFixture.league.name}
+            {displayFixture.league.name}
           </p>
         </div>
 
@@ -153,26 +189,51 @@ export const NextMatchWidget = () => {
           </div>
         </div>
 
-        {/* Datum en tijd */}
+        {/* Live Score or Date/Time */}
         <div className="text-center mb-4">
-          <div className="flex items-center justify-center space-x-4 text-premium-gray-600 dark:text-gray-400">
-            <div 
-              className="flex items-center space-x-1 transform transition-transform duration-200 hover:scale-105"
-              role="text"
-              aria-label={`Wedstrijddatum: ${formatDate(matchDate)}`}
-            >
-              <Calendar size={14} aria-hidden="true" />
-              <span className="text-sm">{formatDate(matchDate)}</span>
+          {isLive ? (
+            <div className="space-y-2">
+              {/* Live Score */}
+              <div className="text-2xl font-bold text-az-black dark:text-white">
+                <span className={isAZHome ? 'text-az-red' : ''}>{displayFixture.goals?.home || 0}</span>
+                <span className="mx-2">-</span>
+                <span className={!isAZHome ? 'text-az-red' : ''}>{displayFixture.goals?.away || 0}</span>
+              </div>
+              
+              {/* Play Time */}
+              {displayFixture.fixture.status.elapsed && (
+                <div className="text-az-red font-medium">
+                  {displayFixture.fixture.status.elapsed}'
+                </div>
+              )}
+              
+              {/* Latest Event */}
+              {latestEvent && (
+                <div className="text-sm text-premium-gray-600 dark:text-gray-400">
+                  {formatLatestEvent(latestEvent)}
+                </div>
+              )}
             </div>
-            <div 
-              className="flex items-center space-x-1 transform transition-transform duration-200 hover:scale-105"
-              role="text" 
-              aria-label={`Aanvangstijd: ${formatTime(matchDate)}`}
-            >
-              <Clock size={14} aria-hidden="true" />
-              <span className="text-sm">{formatTime(matchDate)}</span>
+          ) : (
+            <div className="flex items-center justify-center space-x-4 text-premium-gray-600 dark:text-gray-400">
+              <div 
+                className="flex items-center space-x-1 transform transition-transform duration-200 hover:scale-105"
+                role="text"
+                aria-label={`Wedstrijddatum: ${formatDate(matchDate)}`}
+              >
+                <Calendar size={14} aria-hidden="true" />
+                <span className="text-sm">{formatDate(matchDate)}</span>
+              </div>
+              <div 
+                className="flex items-center space-x-1 transform transition-transform duration-200 hover:scale-105"
+                role="text" 
+                aria-label={`Aanvangstijd: ${formatTime(matchDate)}`}
+              >
+                <Clock size={14} aria-hidden="true" />
+                <span className="text-sm">{formatTime(matchDate)}</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Powered by - nu klikbaar */}
@@ -183,6 +244,7 @@ export const NextMatchWidget = () => {
             rel="noopener noreferrer"
             className="text-xs text-premium-gray-400 dark:text-gray-500 hover:text-az-red dark:hover:text-az-red hover:underline cursor-pointer transition-all duration-200 transform hover:scale-105 focus:ring-2 focus:ring-az-red focus:ring-offset-2 rounded"
             aria-label="Externe link naar 072DESIGN website"
+            onClick={(e) => e.stopPropagation()}
           >
             Powered by 072DESIGN
           </a>
@@ -190,4 +252,15 @@ export const NextMatchWidget = () => {
       </section>
     </div>
   );
+
+  // Wrap in Link if fixture exists
+  if (displayFixture) {
+    return (
+      <Link to={`/wedstrijd/${displayFixture.fixture.id}`} className="block">
+        {widgetContent}
+      </Link>
+    );
+  }
+
+  return widgetContent;
 };
