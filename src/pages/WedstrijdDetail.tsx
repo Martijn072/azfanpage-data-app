@@ -351,11 +351,11 @@ const WedstrijdDetail = () => {
 
         {/* Match Details Tabs */}
         <Tabs value={selectedMatchTab} onValueChange={setSelectedMatchTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-premium-gray-100 dark:bg-gray-800">
-            <TabsTrigger value="overzicht">Overzicht</TabsTrigger>
-            <TabsTrigger value="live">Live</TabsTrigger>
-            <TabsTrigger value="opstellingen">Opstellingen</TabsTrigger>
-            <TabsTrigger value="statistieken">Statistieken</TabsTrigger>
+          <TabsList className="flex w-full bg-premium-gray-100 dark:bg-gray-800">
+            <TabsTrigger value="overzicht" className="flex-1 text-xs sm:text-sm">Overzicht</TabsTrigger>
+            <TabsTrigger value="live" className="flex-1 text-xs sm:text-sm">Live</TabsTrigger>
+            <TabsTrigger value="opstellingen" className="flex-1 text-xs sm:text-sm">Opstellingen</TabsTrigger>
+            <TabsTrigger value="statistieken" className="flex-1 text-xs sm:text-sm">Statistieken</TabsTrigger>
           </TabsList>
 
           {/* Overzicht Tab */}

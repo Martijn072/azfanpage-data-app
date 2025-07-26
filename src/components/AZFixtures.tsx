@@ -58,6 +58,30 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
+  // Fetch recent played fixtures for current season
+  const { data: recentFixtures, isLoading: recentLoading, error: recentError } = useQuery({
+    queryKey: ['az-recent-fixtures', teamId],
+    queryFn: async () => {
+      if (!teamId || selectedSeason !== currentSeason) return [];
+      
+      console.log('📊 Fetching recent AZ fixtures...');
+      const params: Record<string, string> = {
+        team: teamId.toString(),
+        last: '20', // Get last 20 fixtures
+        timezone: 'Europe/Amsterdam'
+      };
+
+      const response: FootballApiResponse<Fixture> = await callFootballApi('/fixtures', params);
+      
+      console.log('📊 Recent Fixtures Response:', response);
+      return response.response || [];
+    },
+    enabled: !!teamId && selectedSeason === currentSeason,
+    staleTime: 1000 * 60 * 15,
+    retry: 2,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
+
   // Fetch historical fixtures for non-current seasons
   const { data: historicalFixtures, isLoading: historicalLoading, error: historicalError } = useQuery({
     queryKey: ['az-historical-fixtures', teamId, selectedSeason],
@@ -149,13 +173,13 @@ export const AZFixtures = ({ teamId, isLoadingTeamId }: AZFixturesProps) => {
   };
 
   const isCurrentSeason = selectedSeason === currentSeason;
-  const isLoading = isCurrentSeason ? (upcomingLoading || historicalLoading) : historicalLoading;
-  const error = upcomingError || historicalError;
+  const isLoading = isCurrentSeason ? (upcomingLoading || recentLoading || historicalLoading) : historicalLoading;
+  const error = upcomingError || recentError || historicalError;
 
   // Separate upcoming and played fixtures for current season
   const upcoming = upcomingFixtures || [];
   const played = isCurrentSeason 
-    ? historicalFixtures?.filter(fixture => 
+    ? recentFixtures?.filter(fixture => 
         fixture.goals.home !== null && fixture.goals.away !== null
       ) || []
     : historicalFixtures || []; // For historical seasons, show all fixtures
