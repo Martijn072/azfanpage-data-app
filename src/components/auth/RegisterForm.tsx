@@ -50,8 +50,14 @@ export const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
     
     if (result.success) {
       toast.success('Account succesvol aangemaakt!');
+      onSwitchToLogin();
     } else {
-      toast.error(result.error || 'Registratie mislukt');
+      if (result.error?.includes('al geregistreerd')) {
+        toast.error('Dit e-mailadres is al geregistreerd. Probeer in te loggen.');
+        onSwitchToLogin();
+      } else {
+        toast.error(result.error || 'Registratie mislukt');
+      }
     }
     
     setIsLoading(false);

@@ -128,6 +128,75 @@ serve(async (req: Request) => {
       console.log('🚀 Starting optimized registration process...');
       console.log('📝 Registration data:', { username, email, display_name });
 
+      // First check if user already exists
+      const { data: existingUsers, error: checkError } = await supabase.auth.admin.listUsers();
+      const existingUser = existingUsers?.users?.find(user => user.email === email);
+      
+      if (existingUser) {
+        console.log('⚠️ User already exists in Supabase:', existingUser.id);
+        
+        // Check if WordPress mapping exists
+        const { data: wpMapping } = await supabase
+          .from('wordpress_users')
+          .select('*')
+          .eq('supabase_user_id', existingUser.id)
+          .single();
+        
+        if (!wpMapping) {
+          console.log('🔄 Repairing partial registration - adding WordPress mapping...');
+          // Try to create WordPress mapping for existing account
+          const adminToken = Deno.env.get('WORDPRESS_ADMIN_TOKEN');
+          if (adminToken && adminToken.includes(':')) {
+            try {
+              const registrationPayload = {
+                username: username || email.split('@')[0],
+                email: email,
+                password: Math.random().toString(36),
+                name: display_name || username || email.split('@')[0],
+                roles: ['subscriber']
+              };
+
+              const registerResponse = await fetch(`${WORDPRESS_API_BASE}/users`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Basic ${btoa(adminToken)}`,
+                  'User-Agent': 'AZ-Fanpage-App/1.0'
+                },
+                body: JSON.stringify(registrationPayload)
+              });
+
+              if (registerResponse.ok) {
+                const registerData = await registerResponse.json();
+                await supabase
+                  .from('wordpress_users')
+                  .upsert({
+                    wordpress_user_id: registerData.id,
+                    supabase_user_id: existingUser.id,
+                    username: registerData.username,
+                    display_name: registerData.name,
+                    email: registerData.email,
+                    avatar_url: registerData.avatar_urls?.['96'] || null,
+                    last_login_at: new Date().toISOString()
+                  });
+                console.log('✅ WordPress mapping repaired successfully');
+              }
+            } catch (wpError) {
+              console.log('⚠️ WordPress repair failed (continuing with existing account):', wpError);
+            }
+          }
+        }
+        
+        return new Response(JSON.stringify({
+          success: false,
+          message: 'Dit e-mailadres is al geregistreerd. Probeer in te loggen.',
+          shouldLogin: true
+        }), {
+          status: 409,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
       // PRIORITY 1: Create Supabase account first (always reliable)
       console.log('🔄 Creating Supabase account as primary registration method...');
       
