@@ -217,20 +217,12 @@ export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: Conference
                     <Calendar className="w-4 h-4" />
                     <span className="font-medium">{formatDate(fixture.fixture.date)}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      variant="outline"
-                      className="text-xs font-semibold bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
-                    >
-                      {participation?.competitionName}
-                    </Badge>
-                    <Badge 
-                      variant="outline"
-                      className="text-xs font-semibold bg-green-600 text-white hover:bg-green-700 border-green-600"
-                    >
-                      {getStatusText(fixture.fixture.status.short)}
-                    </Badge>
-                  </div>
+                  <Badge 
+                    variant="outline"
+                    className="text-xs font-semibold bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
+                  >
+                    {participation?.competitionName}
+                  </Badge>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -273,17 +265,9 @@ export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: Conference
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-3 text-sm">
-                  <div className="flex items-center gap-2 text-premium-gray-600 dark:text-gray-300">
-                    <MapPin className="w-3 h-3" />
-                    <span>{fixture.fixture.venue?.name || 'Locatie onbekend'}</span>
-                  </div>
-                  <Badge 
-                    variant="outline" 
-                    className="text-xs bg-premium-gray-50 dark:bg-gray-700 border-premium-gray-200 dark:border-gray-600 text-premium-gray-700 dark:text-gray-300"
-                  >
-                    {fixture.league.round}
-                  </Badge>
+                <div className="flex items-center gap-2 text-sm text-premium-gray-600 dark:text-gray-300 mt-3">
+                  <MapPin className="w-3 h-3" />
+                  <span>{fixture.fixture.venue?.name || 'Locatie onbekend'}</span>
                 </div>
               </div>
             ))}
@@ -309,20 +293,12 @@ export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: Conference
                     <Calendar className="w-4 h-4" />
                     <span className="font-medium">{formatDate(fixture.fixture.date)}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      variant="outline"
-                      className="text-xs font-semibold bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
-                    >
-                      {participation?.competitionName}
-                    </Badge>
-                    <Badge 
-                      variant="outline"
-                      className="text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 border-blue-600"
-                    >
-                      {getStatusText(fixture.fixture.status.short)}
-                    </Badge>
-                  </div>
+                  <Badge 
+                    variant="outline"
+                    className="text-xs font-semibold bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
+                  >
+                    {participation?.competitionName}
+                  </Badge>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -365,17 +341,9 @@ export const ConferenceLeagueFixtures = ({ teamId, isLoadingTeamId }: Conference
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-3 text-sm">
-                  <div className="flex items-center gap-2 text-premium-gray-600 dark:text-gray-300">
-                    <MapPin className="w-3 h-3" />
-                    <span>{fixture.fixture.venue?.name || 'Locatie onbekend'}</span>
-                  </div>
-                  <Badge 
-                    variant="outline" 
-                    className="text-xs bg-premium-gray-50 dark:bg-gray-700 border-premium-gray-200 dark:border-gray-600 text-premium-gray-700 dark:text-gray-300"
-                  >
-                    {fixture.league.round}
-                  </Badge>
+                <div className="flex items-center gap-2 text-sm text-premium-gray-600 dark:text-gray-300 mt-3">
+                  <MapPin className="w-3 h-3" />
+                  <span>{fixture.fixture.venue?.name || 'Locatie onbekend'}</span>
                 </div>
               </div>
             ))}
