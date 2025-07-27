@@ -6,10 +6,9 @@ const navigationItems = [
   { id: 'news', label: 'Nieuws', icon: Bell, path: '/nieuws' },
   { id: 'programma', label: 'Programma', icon: Calendar, path: '/programma' },
   { id: 'eredivisie', label: 'Stand', icon: Table, path: '/eredivisie' },
-  { id: 'spelers', label: 'Spelers', icon: Users, path: '/spelers' },
-  { id: 'over', label: 'Over ons', icon: Info, path: '/over' },
+  { id: 'spelers', label: 'Partners', icon: Users, path: '/partners' },
+  { id: 'geschiedenis', label: 'Geschiedenis', icon: Info, path: '/geschiedenis' },
   { id: 'forum', label: 'Forum', icon: MessageSquare, path: '/forum' },
-  { id: 'contact', label: 'Contact', icon: Mail, path: '/contact' },
 ];
 
 export const DesktopNavigation = () => {

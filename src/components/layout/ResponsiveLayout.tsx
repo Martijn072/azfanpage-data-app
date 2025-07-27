@@ -5,6 +5,7 @@ import { BottomNavigation } from '@/components/BottomNavigation';
 import { DesktopNavigation } from './DesktopNavigation';
 import { Breadcrumb } from './Breadcrumb';
 import { DynamicSidebar } from './DynamicSidebar';
+import { Footer } from '@/components/Footer';
 
 interface ResponsiveLayoutProps {
   children: ReactNode;
@@ -63,6 +64,9 @@ export const ResponsiveLayout = ({
           </aside>
         )}
       </div>
+      
+      {/* Footer - Desktop only */}
+      {isDesktop && <Footer />}
       
       {/* Tablet still has bottom navigation */}
       {isTablet && (

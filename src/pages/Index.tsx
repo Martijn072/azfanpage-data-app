@@ -98,27 +98,23 @@ const Index = () => {
             <>
               {/* Hero Article */}
               <div className="mb-8 animate-fade-in">
-                <h2 className="text-2xl font-bold text-foreground mb-4">Hoofdnieuws</h2>
                 <div className="bg-card rounded-lg overflow-hidden shadow-sm border">
                   <NewsCard article={articles[0]} />
                 </div>
               </div>
 
-              {/* Secondary Articles */}
+              {/* Secondary Articles - 2 columns */}
               {articles.length > 1 && (
-                <div className="mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-                  <h3 className="text-xl font-semibold text-foreground mb-4">Belangrijk Nieuws</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {articles.slice(1, 3).map((article, index) => (
-                      <div 
-                        key={article.id} 
-                        className="bg-card rounded-lg overflow-hidden shadow-sm border animate-fade-in"
-                        style={{ animationDelay: `${0.2 + (index * 0.1)}s` }}
-                      >
-                        <NewsCard article={article} />
-                      </div>
-                    ))}
-                  </div>
+                <div className="mb-8 animate-fade-in grid grid-cols-1 md:grid-cols-2 gap-6" style={{ animationDelay: '0.1s' }}>
+                  {articles.slice(1, 3).map((article, index) => (
+                    <div 
+                      key={article.id} 
+                      className="bg-card rounded-lg overflow-hidden shadow-sm border animate-fade-in"
+                      style={{ animationDelay: `${0.2 + (index * 0.1)}s` }}
+                    >
+                      <NewsCard article={article} />
+                    </div>
+                  ))}
                 </div>
               )}
             </>
@@ -126,9 +122,11 @@ const Index = () => {
 
           {/* News Section */}
           <section className="mb-12">
-            <h2 className="headline-premium text-headline-lg text-az-black dark:text-white font-bold mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              {isMobile ? 'Laatste Nieuws' : 'Meer Nieuws'}
-            </h2>
+            {isMobile && (
+              <h2 className="headline-premium text-headline-lg text-az-black dark:text-white font-bold mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                Laatste Nieuws
+              </h2>
+            )}
             
             {isLoading ? (
               <div className={`grid gap-6 ${
@@ -144,18 +142,80 @@ const Index = () => {
               </div>
             ) : (
               <>
-                <div className={`grid gap-6 mb-8 ${
-                  isMobile ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'
-                }`}>
-                  {(isMobile ? articles : articles.slice(3)).map((article, index) => (
-                    <div 
-                      key={article.id}
-                      className="bg-card rounded-lg overflow-hidden shadow-sm border animate-fade-in"
-                      style={{ animationDelay: `${0.2 + (index * 0.1)}s` }}
-                    >
-                      <NewsCard article={article} />
-                    </div>
-                  ))}
+                {/* Dynamic Grid Layout for Desktop */}
+                <div className={isMobile ? 'space-y-6 mb-8' : 'space-y-8 mb-8'}>
+                  {(isMobile ? articles : articles.slice(3)).map((article, index) => {
+                    if (isMobile) {
+                      return (
+                        <div 
+                          key={article.id}
+                          className="bg-card rounded-lg overflow-hidden shadow-sm border animate-fade-in"
+                          style={{ animationDelay: `${0.2 + (index * 0.1)}s` }}
+                        >
+                          <NewsCard article={article} />
+                        </div>
+                      );
+                    }
+
+                    // Desktop dynamic layout: alternating pattern
+                    const isFullWidth = (index + 1) % 3 === 0; // Every 3rd article is full width
+                    
+                    if (isFullWidth) {
+                      return (
+                        <div 
+                          key={article.id}
+                          className="bg-card rounded-lg overflow-hidden shadow-sm border animate-fade-in"
+                          style={{ animationDelay: `${0.2 + (index * 0.1)}s` }}
+                        >
+                          <NewsCard article={article} />
+                        </div>
+                      );
+                    } else {
+                      // Check if this is the start of a pair
+                      const nextArticle = (isMobile ? articles : articles.slice(3))[index + 1];
+                      const isNextFullWidth = nextArticle && ((index + 2) % 3 === 0);
+                      
+                      if (!isNextFullWidth && nextArticle) {
+                        // Render pair of articles
+                        return (
+                          <div key={`pair-${index}`} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div 
+                              className="bg-card rounded-lg overflow-hidden shadow-sm border animate-fade-in"
+                              style={{ animationDelay: `${0.2 + (index * 0.1)}s` }}
+                            >
+                              <NewsCard article={article} />
+                            </div>
+                            <div 
+                              className="bg-card rounded-lg overflow-hidden shadow-sm border animate-fade-in"
+                              style={{ animationDelay: `${0.2 + ((index + 1) * 0.1)}s` }}
+                            >
+                              <NewsCard article={nextArticle} />
+                            </div>
+                          </div>
+                        );
+                      } else {
+                        // Single article
+                        return (
+                          <div 
+                            key={article.id}
+                            className="bg-card rounded-lg overflow-hidden shadow-sm border animate-fade-in"
+                            style={{ animationDelay: `${0.2 + (index * 0.1)}s` }}
+                          >
+                            <NewsCard article={article} />
+                          </div>
+                        );
+                      }
+                    }
+                  }).filter((item, index, array) => {
+                    // Filter out duplicate articles that were rendered in pairs
+                    if (isMobile) return true;
+                    const articleIndex = index;
+                    const isInPair = (articleIndex % 3 !== 2) && (articleIndex % 2 === 0) && 
+                                    array[articleIndex + 1] && ((articleIndex + 2) % 3 !== 0);
+                    const isPairSecond = (articleIndex % 3 !== 2) && (articleIndex % 2 === 1) && 
+                                        array[articleIndex - 1] && ((articleIndex + 1) % 3 !== 0);
+                    return !isPairSecond;
+                  })}
                 </div>
                 
                 {hasNextPage && (

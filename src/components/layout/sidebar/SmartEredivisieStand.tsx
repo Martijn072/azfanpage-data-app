@@ -8,7 +8,7 @@ export const SmartEredivisieStand = () => {
   if (isLoading) {
     return (
       <div className="bg-card rounded-lg border p-4">
-        <h3 className="text-lg font-semibold mb-4">Eredivisie Positie</h3>
+        <h3 className="text-lg font-semibold mb-4">Stand Eredivisie</h3>
         <div className="space-y-2">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="flex items-center space-x-3 animate-pulse">
@@ -26,7 +26,7 @@ export const SmartEredivisieStand = () => {
   if (error || !standings) {
     return (
       <div className="bg-card rounded-lg border p-4">
-        <h3 className="text-lg font-semibold mb-4">Eredivisie Positie</h3>
+        <h3 className="text-lg font-semibold mb-4">Stand Eredivisie</h3>
         <p className="text-sm text-muted-foreground">Kon stand niet laden</p>
       </div>
     );
@@ -68,7 +68,7 @@ export const SmartEredivisieStand = () => {
   return (
     <div className="bg-card rounded-lg border p-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">Eredivisie Positie</h3>
+        <h3 className="text-lg font-semibold">Stand Eredivisie</h3>
         <Link 
           to="/eredivisie"
           className="text-az-red hover:text-az-red/80 transition-colors"

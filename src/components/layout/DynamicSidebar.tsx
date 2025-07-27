@@ -1,7 +1,7 @@
 import { NextMatchWidget } from '@/components/NextMatchWidget';
 import { SmartEredivisieStand } from './sidebar/SmartEredivisieStand';
-import { ForumActivityWidget } from './sidebar/ForumActivityWidget';
-import { SocialMediaPromo } from '@/components/SocialMediaPromo';
+import { ForumRSSWidget } from './sidebar/ForumRSSWidget';
+import { SocialMediaSidebar } from './sidebar/SocialMediaSidebar';
 
 export const DynamicSidebar = () => {
   // TODO: Add logic to detect live AZ match and transform to Live Dashboard
@@ -29,13 +29,11 @@ export const DynamicSidebar = () => {
       {/* Smart Eredivisie Stand */}
       <SmartEredivisieStand />
 
-      {/* Forum Activity */}
-      <ForumActivityWidget />
+      {/* Forum RSS Feed */}
+      <ForumRSSWidget />
 
-      {/* Social Media Promo */}
-      <div className="bg-card rounded-lg border overflow-hidden">
-        <SocialMediaPromo />
-      </div>
+      {/* Social Media */}
+      <SocialMediaSidebar />
     </div>
   );
 };
