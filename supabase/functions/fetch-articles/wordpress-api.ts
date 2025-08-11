@@ -1,4 +1,3 @@
-
 import { WordPressPost, WordPressCategory, Article } from './types.ts';
 import { formatPublishedDate, cleanHtmlContent, getExcludedCategoryIds } from './utils.ts';
 
@@ -33,16 +32,14 @@ export const transformPost = (post: WordPressPost): Article => {
   );
   const category = categoryTerms?.find(term => term.taxonomy === 'category')?.name || 'Nieuws';
   
-  // Check if it's breaking news (based on tags or recent publication)
+  // Check if it's breaking news - only based on explicit 'breaking' tag
   const tagTerms = post._embedded?.['wp:term']?.find(termGroup => 
     termGroup.some(term => term.taxonomy === 'post_tag')
   );
   const tags = tagTerms?.filter(term => term.taxonomy === 'post_tag').map(term => term.name) || [];
   const isBreaking = tags.some(tag => 
-    tag.toLowerCase().includes('breaking') || 
-    tag.toLowerCase().includes('laatste') ||
-    tag.toLowerCase().includes('urgent')
-  ) || (new Date().getTime() - new Date(post.date).getTime()) < 2 * 60 * 60 * 1000; // 2 hours
+    tag.toLowerCase().includes('breaking')
+  );
 
   // Clean excerpt HTML
   const excerpt = cleanHtmlContent(post.excerpt.rendered);

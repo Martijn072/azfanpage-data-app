@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { fetchWordPressCategories, fetchWordPressArticles, fetchSingleWordPressArticle } from './wordpress-api.ts';
@@ -57,20 +56,16 @@ serve(async (req) => {
         console.log(`📝 Creating notification for article: ${article.title}`);
 
         try {
-          // Determine if it's breaking news
-          const isBreaking = article.isBreaking;
-          const notificationType = isBreaking ? 'breaking' : 'article';
-
-          // Create notification
+          // Create notification - always use article title without prefix
           const { error: notificationError } = await supabaseClient
             .from('notifications')
             .insert({
-              type: notificationType,
-              title: isBreaking ? `🔥 BREAKING: ${article.title}` : article.title,
+              type: article.isBreaking ? 'breaking' : 'article',
+              title: article.title, // No prefix, just the clean title
               description: article.excerpt.length > 150 
                 ? article.excerpt.substring(0, 147) + '...'
                 : article.excerpt,
-              icon: isBreaking ? '🚨' : '📰',
+              icon: article.isBreaking ? '🚨' : '📰',
               article_id: article.id.toString(),
               thumbnail_url: article.imageUrl,
               read: false

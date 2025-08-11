@@ -10,6 +10,9 @@ serve(async (req) => {
   }
 
   try {
+    const body = await req.json().catch(() => ({}));
+    const { action } = body;
+
     console.log('🧹 Notification cleanup starting...')
     console.log('🕐 Timestamp:', new Date().toISOString())
     
@@ -18,6 +21,49 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
+    if (action === 'fix-titles') {
+      // Clean up notification titles by removing BREAKING prefix
+      console.log('🔧 Fixing notification titles...')
+      
+      const { data: notificationsToFix } = await supabaseClient
+        .from('notifications')
+        .select('id, title')
+        .like('title', '🔥 BREAKING:%');
+
+      console.log(`Found ${notificationsToFix?.length || 0} notifications with BREAKING prefix to fix`);
+
+      let fixedCount = 0;
+      for (const notification of notificationsToFix || []) {
+        const cleanTitle = notification.title.replace(/^🔥 BREAKING:\s*/, '');
+        
+        const { error } = await supabaseClient
+          .from('notifications')
+          .update({ title: cleanTitle })
+          .eq('id', notification.id);
+
+        if (!error) {
+          fixedCount++;
+          console.log(`✅ Fixed title: "${notification.title}" → "${cleanTitle}"`);
+        } else {
+          console.error(`❌ Error fixing notification ${notification.id}:`, error);
+        }
+      }
+
+      return new Response(
+        JSON.stringify({ 
+          success: true,
+          action: 'fix-titles',
+          fixed_count: fixedCount,
+          timestamp: new Date().toISOString()
+        }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200 
+        }
+      );
+    }
+
+    // Default action: cleanup old notifications
     // Calculate cutoff date (7 days ago)
     const cutoffDate = new Date()
     cutoffDate.setDate(cutoffDate.getDate() - 7)
@@ -51,6 +97,7 @@ serve(async (req) => {
 
     const result = {
       success: true,
+      action: 'cleanup',
       deleted_count: deletedCount,
       cutoff_date: cutoffISOString,
       timestamp: new Date().toISOString()
