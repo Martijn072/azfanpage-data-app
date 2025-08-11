@@ -9,5 +9,14 @@ export {
 } from './useFixtureHooks';
 export { useEredivisieStandings } from './useStandingHooks';
 
+// Jong AZ specific hooks
+export { 
+  useJongAZTeamId,
+  useJongAZFixtures,
+  useJongAZNextFixtures,
+  useJongAZStatistics,
+  useEersteDivisieStandings
+} from './useJongAZHooks';
+
 // Export types for convenience
 export type { FootballApiResponse, Team, Fixture, Standing } from '@/types/footballApi';

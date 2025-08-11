@@ -1,49 +1,96 @@
 
-import { useNavigate, useLocation } from 'react-router-dom';
-import { 
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Home, Bell, Calendar, Table } from "lucide-react";
-
-// Simplified navigation menu - only core navigation items that are also in bottom nav
-const menuItems = [
-  { id: "home", label: "Home", icon: Home, path: "/" },
-  { id: "news", label: "Nieuws", icon: Bell, path: "/nieuws" },
-  { id: "programma", label: "Programma", icon: Calendar, path: "/programma" },
-  { id: "eredivisie", label: "Eredivisie Stand", icon: Table, path: "/eredivisie" },
-];
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 export const NavigationMenuItems = () => {
-  const navigate = useNavigate();
   const location = useLocation();
 
-  const handleMenuClick = (path: string) => {
-    navigate(path);
+  const isActiveLink = (path: string) => {
+    return location.pathname === path;
   };
 
   return (
-    <>
-      {menuItems.map((item) => {
-        const Icon = item.icon;
-        const isActive = location.pathname === item.path;
-        
-        return (
-          <DropdownMenuItem
-            key={item.id}
-            onClick={() => handleMenuClick(item.path)}
-            className={`flex items-center gap-3 px-3 py-2 cursor-pointer transition-colors focus:ring-2 focus:ring-az-red ${
-              isActive 
-                ? 'bg-az-red/10 text-az-red dark:bg-az-red/20' 
-                : 'hover:bg-az-red/5 dark:hover:bg-az-red/10 text-premium-gray-700 dark:text-gray-200 hover:text-az-red dark:hover:text-az-red'
-            }`}
-          >
-            <Icon className={`w-4 h-4 ${isActive ? 'text-az-red' : ''}`} />
-            <span className={`font-medium ${isActive ? 'text-az-red' : ''}`}>
-              {item.label}
-            </span>
-          </DropdownMenuItem>
-        );
-      })}
-    </>
+    <nav className="hidden md:flex items-center space-x-8">
+      <Link
+        to="/"
+        className={`text-sm font-medium transition-colors ${
+          isActiveLink('/') 
+            ? 'text-az-red' 
+            : 'text-az-black hover:text-az-red dark:text-white dark:hover:text-az-red'
+        }`}
+      >
+        Home
+      </Link>
+      <Link
+        to="/news"
+        className={`text-sm font-medium transition-colors ${
+          isActiveLink('/news') 
+            ? 'text-az-red' 
+            : 'text-az-black hover:text-az-red dark:text-white dark:hover:text-az-red'
+        }`}
+      >
+        Nieuws
+      </Link>
+      <Link
+        to="/eredivisie"
+        className={`text-sm font-medium transition-colors ${
+          isActiveLink('/eredivisie') 
+            ? 'text-az-red' 
+            : 'text-az-black hover:text-az-red dark:text-white dark:hover:text-az-red'
+        }`}
+      >
+        Eredivisie
+      </Link>
+      <Link
+        to="/programma"
+        className={`text-sm font-medium transition-colors ${
+          isActiveLink('/programma') 
+            ? 'text-az-red' 
+            : 'text-az-black hover:text-az-red dark:text-white dark:hover:text-az-red'
+        }`}
+      >
+        Programma
+      </Link>
+      <Link
+        to="/jong-az"
+        className={`text-sm font-medium transition-colors ${
+          isActiveLink('/jong-az') 
+            ? 'text-az-red' 
+            : 'text-az-black hover:text-az-red dark:text-white dark:hover:text-az-red'
+        }`}
+      >
+        Jong AZ
+      </Link>
+      <Link
+        to="/spelers"
+        className={`text-sm font-medium transition-colors ${
+          isActiveLink('/spelers') 
+            ? 'text-az-red' 
+            : 'text-az-black hover:text-az-red dark:text-white dark:hover:text-az-red'
+        }`}
+      >
+        Spelers
+      </Link>
+      <Link
+        to="/conference-league"
+        className={`text-sm font-medium transition-colors ${
+          isActiveLink('/conference-league') 
+            ? 'text-az-red' 
+            : 'text-az-black hover:text-az-red dark:text-white dark:hover:text-az-red'
+        }`}
+      >
+        Conference League
+      </Link>
+      <Link
+        to="/forum"
+        className={`text-sm font-medium transition-colors ${
+          isActiveLink('/forum') 
+            ? 'text-az-red' 
+            : 'text-az-black hover:text-az-red dark:text-white dark:hover:text-az-red'
+        }`}
+      >
+        Forum
+      </Link>
+    </nav>
   );
 };
