@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { X, Trash2, CheckCheck, Bell, Goal, Newspaper, Trophy, AlertTriangle, Instagram, Twitter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -46,10 +45,11 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, 
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'article': return <Newspaper className="w-5 h-5 text-az-red flex-shrink-0" />;
+      case 'article':
+      case 'breaking': // Map breaking to article icon
+        return <Newspaper className="w-5 h-5 text-az-red flex-shrink-0" />;
       case 'goal': return <Goal className="w-5 h-5 text-az-red flex-shrink-0" />;
       case 'match': return <Trophy className="w-5 h-5 text-az-red flex-shrink-0" />;
-      case 'breaking': return <AlertTriangle className="w-5 h-5 text-az-red flex-shrink-0" />;
       case 'instagram': return <Instagram className="w-5 h-5 text-pink-500 flex-shrink-0" />;
       case 'twitter': return <Twitter className="w-5 h-5 text-gray-800 dark:text-white flex-shrink-0" />;
       default: return <Bell className="w-5 h-5 text-az-red flex-shrink-0" />;
@@ -58,10 +58,11 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, 
 
   const getTypeBadge = (type: string) => {
     switch (type) {
-      case 'article': return 'Artikel';
+      case 'article':
+      case 'breaking': // Map breaking to Artikel
+        return 'Artikel';
       case 'goal': return 'Goal';
       case 'match': return 'Wedstrijd';
-      case 'breaking': return 'Breaking';
       case 'instagram': return 'Instagram';
       case 'twitter': return 'Tweet';
       default: return 'Notificatie';
