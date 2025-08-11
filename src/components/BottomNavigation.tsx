@@ -14,7 +14,7 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
 
   const tabs = [
     { id: "home", label: "Home", icon: House, path: "/" },
-    { id: "news", label: "Nieuws", icon: Bell, path: "/nieuws" },
+    { id: "news", label: "Nieuws", icon: Bell, path: "/news" },
     { id: "programma", label: "Programma", icon: Calendar, path: "/programma" },
     { id: "eredivisie", label: "Stand", icon: Table, path: "/eredivisie" },
   ];
@@ -22,7 +22,7 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
   // Determine active tab based on current route
   const getActiveTab = () => {
     if (location.pathname === "/") return "home";
-    if (location.pathname === "/nieuws") return "news";
+    if (location.pathname === "/news") return "news";
     if (location.pathname === "/programma") return "programma";
     if (location.pathname === "/eredivisie") return "eredivisie";
     
@@ -31,7 +31,8 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
       location.pathname === "/forum" ||
       location.pathname === "/spelers" || 
       location.pathname === "/conference-league" || 
-      location.pathname === "/instellingen/notificaties"
+      location.pathname === "/jong-az" ||
+      location.pathname === "/notification-settings"
     ) {
       return "meer";
     }

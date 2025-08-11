@@ -14,6 +14,12 @@ export const MoreSheet = ({ children }: MoreSheetProps) => {
 
   const mainMenuItems = [
     {
+      icon: Users,
+      label: "Jong AZ",
+      path: "/jong-az",
+      description: "Jong AZ team informatie en resultaten"
+    },
+    {
       icon: Trophy,
       label: "AZ in Europa",
       path: "/conference-league",
@@ -37,7 +43,7 @@ export const MoreSheet = ({ children }: MoreSheetProps) => {
     ...(isAuthenticated ? [{
       icon: Bell,
       label: "Notificatie-instellingen",
-      path: "/instellingen/notificaties",
+      path: "/notification-settings",
       description: "Beheer je notificatie-voorkeuren"
     }] : [])
   ];

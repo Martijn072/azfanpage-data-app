@@ -4,6 +4,7 @@ import { Bell, Search, Moon, Sun, User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "@/contexts/DarkModeContext";
 import { HeaderMenu } from "./HeaderMenu";
+import { NavigationMenuItems } from "./header/NavigationMenuItems";
 import { SearchOverlay } from "./SearchOverlay";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useWordPressAuth } from "@/contexts/WordPressAuthContext";
@@ -34,7 +35,7 @@ export const Header = () => {
   };
 
   const handleNotificationClick = () => {
-    navigate("/notificaties");
+    navigate("/notifications");
   };
 
   const handleLogin = () => {
@@ -61,6 +62,13 @@ export const Header = () => {
                 role="img"
               />
             </div>
+
+            {/* Desktop Navigation */}
+            {!isMobile && (
+              <div className="flex-1 flex justify-center">
+                <NavigationMenuItems />
+              </div>
+            )}
 
             {/* Mobile Actions - User avatar, notifications, dark mode, and hamburger menu */}
             {isMobile ? (

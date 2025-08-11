@@ -3,14 +3,16 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useWordPressAuth } from "@/contexts/WordPressAuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { NavigationMenuItems } from "./header/NavigationMenuItems";
 import { AuthenticatedMenuItems } from "./header/AuthenticatedMenuItems";
 import { MobileMenuUtilities } from "./header/MobileMenuUtilities";
+import { Link, useLocation } from 'react-router-dom';
 
 interface HeaderMenuProps {
   onSearchClick?: () => void;
@@ -19,6 +21,22 @@ interface HeaderMenuProps {
 export const HeaderMenu = ({ onSearchClick }: HeaderMenuProps) => {
   const { isAuthenticated } = useWordPressAuth();
   const isMobile = useIsMobile();
+  const location = useLocation();
+
+  const isActiveLink = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const navigationItems = [
+    { path: "/", label: "Home" },
+    { path: "/news", label: "Nieuws" },
+    { path: "/eredivisie", label: "Eredivisie" },
+    { path: "/programma", label: "Programma" },
+    { path: "/jong-az", label: "Jong AZ" },
+    { path: "/spelers", label: "Spelers" },
+    { path: "/conference-league", label: "Conference League" },
+    { path: "/forum", label: "Forum" },
+  ];
 
   return (
     <DropdownMenu>
@@ -40,8 +58,26 @@ export const HeaderMenu = ({ onSearchClick }: HeaderMenuProps) => {
           <MobileMenuUtilities onSearchClick={onSearchClick} />
         )}
 
-        {/* Navigation items */}
-        <NavigationMenuItems />
+        {/* Navigation items for mobile */}
+        {isMobile && (
+          <>
+            <DropdownMenuSeparator />
+            {navigationItems.map((item) => (
+              <DropdownMenuItem key={item.path} asChild>
+                <Link
+                  to={item.path}
+                  className={`cursor-pointer ${
+                    isActiveLink(item.path) 
+                      ? 'text-az-red bg-az-red/10' 
+                      : 'text-az-black dark:text-white hover:text-az-red'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              </DropdownMenuItem>
+            ))}
+          </>
+        )}
         
         {/* Authenticated user menu items */}
         {isAuthenticated && <AuthenticatedMenuItems />}
