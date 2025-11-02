@@ -1,6 +1,6 @@
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Bell, MessageSquare, Info, Users, Trophy, Settings } from "lucide-react";
+import { Bell, MessageSquare, Info, Users, Trophy, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useWordPressAuth } from "@/contexts/WordPressAuthContext";
 
@@ -14,6 +14,12 @@ export const MoreSheet = ({ children }: MoreSheetProps) => {
 
   const mainMenuItems = [
     {
+      icon: Calendar,
+      label: "Programma",
+      path: "/programma",
+      description: "AZ wedstrijdschema en resultaten"
+    },
+    {
       icon: Users,
       label: "Jong AZ",
       path: "/jong-az",
@@ -21,15 +27,9 @@ export const MoreSheet = ({ children }: MoreSheetProps) => {
     },
     {
       icon: Trophy,
-      label: "AZ in Europa",
+      label: "Europa",
       path: "/conference-league",
       description: "Europese wedstrijden en voortgang"
-    },
-    {
-      icon: Users,
-      label: "Speler Stats",
-      path: "/spelers",
-      description: "Statistieken en profielen van AZ spelers"
     },
     {
       icon: MessageSquare,

@@ -166,17 +166,27 @@ const News = () => {
         
         {((data && !isLoading && !error) || shouldShowOfflineContent) && (
           <>
-            {/* News Feed */}
-            <div className="space-y-6 max-w-full">
-              {displayArticles.map((article, index) => (
-                <div 
-                  key={article.id}
-                  className="animate-fade-in"
-                  style={{ animationDelay: `${0.2 + (index * 0.05)}s` }}
-                >
-                  <NewsCard article={article} />
-                </div>
-              ))}
+            {/* News Feed - Grid Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-full">
+              {displayArticles.map((article, index) => {
+                const isBreaking = article.isBreaking;
+                
+                return (
+                  <div 
+                    key={article.id}
+                    className={`animate-fade-in ${isBreaking ? 'md:col-span-2 lg:col-span-3' : ''}`}
+                    style={{ animationDelay: `${0.2 + (index * 0.05)}s` }}
+                  >
+                    {isBreaking && (
+                      <div className="mb-2 flex items-center gap-2 text-az-red animate-pulse">
+                        <div className="w-2 h-2 bg-az-red rounded-full"></div>
+                        <span className="text-xs font-bold uppercase tracking-wider">Breaking Nieuws</span>
+                      </div>
+                    )}
+                    <NewsCard article={article} />
+                  </div>
+                );
+              })}
             </div>
 
             {displayArticles.length === 0 && (

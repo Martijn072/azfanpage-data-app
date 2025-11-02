@@ -1,6 +1,8 @@
 
 import { NewsCard } from "@/components/NewsCard";
 import { NextMatchWidget } from "@/components/NextMatchWidget";
+import { LastMatchWidget } from "@/components/LastMatchWidget";
+import { MiniEredivisieStandings } from "@/components/MiniEredivisieStandings";
 import { SocialMediaPromo } from "@/components/SocialMediaPromo";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
@@ -13,6 +15,7 @@ import { LoadMoreSkeleton } from "@/components/LoadMoreSkeleton";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { articleCache } from "@/services/articleCache";
+import { TrendingUp } from "lucide-react";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("home");
@@ -97,14 +100,25 @@ const Index = () => {
       
       <main className="pb-20">
         <div className="container mx-auto px-4 py-8">
-          {/* Next Match Widget */}
-          <div className="animate-fade-in">
-            <NextMatchWidget />
+          {/* Match Widgets - Side by Side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="animate-fade-in">
+              <NextMatchWidget />
+            </div>
+            <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <LastMatchWidget />
+            </div>
+          </div>
+          
+          {/* Eredivisie Mini Stand */}
+          <div className="mb-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <MiniEredivisieStandings />
           </div>
           
           {/* News Section */}
           <section className="mb-12">
-            <h2 className="headline-premium text-headline-lg text-az-black dark:text-white font-bold mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <h2 className="headline-premium text-headline-lg text-az-black dark:text-white font-bold mb-6 animate-fade-in flex items-center gap-2" style={{ animationDelay: '0.3s' }}>
+              <TrendingUp className="w-6 h-6 text-az-red" />
               Laatste Nieuws
             </h2>
             
@@ -121,15 +135,25 @@ const Index = () => {
             ) : (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                  {articles.map((article, index) => (
-                    <div 
-                      key={article.id}
-                      className="animate-fade-in"
-                      style={{ animationDelay: `${0.2 + (index * 0.1)}s` }}
-                    >
-                      <NewsCard article={article} />
-                    </div>
-                  ))}
+                  {articles.map((article, index) => {
+                    const isBreaking = article.isBreaking;
+                    
+                    return (
+                      <div 
+                        key={article.id}
+                        className={`animate-fade-in ${isBreaking ? 'md:col-span-2 lg:col-span-3' : ''}`}
+                        style={{ animationDelay: `${0.4 + (index * 0.05)}s` }}
+                      >
+                        {isBreaking && (
+                          <div className="mb-2 flex items-center gap-2 text-az-red animate-pulse">
+                            <div className="w-2 h-2 bg-az-red rounded-full"></div>
+                            <span className="text-xs font-bold uppercase tracking-wider">Breaking Nieuws</span>
+                          </div>
+                        )}
+                        <NewsCard article={article} />
+                      </div>
+                    );
+                  })}
                 </div>
                 
                 {hasNextPage && (
