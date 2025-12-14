@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { DarkModeProvider } from "@/contexts/DarkModeContext";
 import { WordPressAuthProvider } from "@/contexts/WordPressAuthContext";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
@@ -15,12 +15,10 @@ import NotFound from "./pages/NotFound";
 const ArticleDetail = lazy(() => import('./pages/ArticleDetail'));
 const SpelerProfiel = lazy(() => import('./pages/SpelerProfiel'));
 const SpelerStatistieken = lazy(() => import('./pages/SpelerStatistieken'));
-const Eredivisie = lazy(() => import('./pages/Eredivisie'));
+const Standen = lazy(() => import('./pages/Standen'));
+const Wedstrijden = lazy(() => import('./pages/Wedstrijden'));
 const TeamDetail = lazy(() => import('./pages/TeamDetail'));
-const AZProgramma = lazy(() => import('./pages/AZProgramma'));
-const ConferenceLeague = lazy(() => import('./pages/ConferenceLeague'));
 const WedstrijdDetail = lazy(() => import('./pages/WedstrijdDetail'));
-const JongAZ = lazy(() => import('./pages/JongAZ'));
 const Forum = lazy(() => import('./pages/Forum'));
 const Over = lazy(() => import('./pages/Over'));
 const Auth = lazy(() => import('./pages/Auth').then(m => ({ default: m.Auth })));
@@ -40,22 +38,40 @@ function App() {
             <BrowserRouter>
               <Suspense fallback={<PageSkeleton />}>
                 <Routes>
+                  {/* Home */}
                   <Route path="/" element={<Index />} />
-                  <Route path="/news" element={<News />} />
+                  
+                  {/* Nieuws */}
+                  <Route path="/nieuws" element={<News />} />
+                  <Route path="/news" element={<Navigate to="/nieuws" replace />} />
                   <Route path="/artikel/:id" element={<ArticleDetail />} />
-                  <Route path="/speler/:playerId" element={<SpelerProfiel />} />
-                  <Route path="/spelers" element={<SpelerStatistieken />} />
-                  <Route path="/eredivisie" element={<Eredivisie />} />
-                  <Route path="/team/:teamId" element={<TeamDetail />} />
-                  <Route path="/programma" element={<AZProgramma />} />
-                  <Route path="/conference-league" element={<ConferenceLeague />} />
+                  
+                  {/* Wedstrijden */}
+                  <Route path="/wedstrijden" element={<Wedstrijden />} />
+                  <Route path="/programma" element={<Navigate to="/wedstrijden" replace />} />
                   <Route path="/wedstrijd/:fixtureId" element={<WedstrijdDetail />} />
-                  <Route path="/jong-az" element={<JongAZ />} />
+                  
+                  {/* Standen */}
+                  <Route path="/standen" element={<Standen />} />
+                  <Route path="/eredivisie" element={<Navigate to="/standen?tab=eredivisie" replace />} />
+                  <Route path="/conference-league" element={<Navigate to="/standen?tab=europa" replace />} />
+                  <Route path="/jong-az" element={<Navigate to="/standen?tab=jong-az" replace />} />
+                  
+                  {/* Selectie */}
+                  <Route path="/selectie" element={<SpelerStatistieken />} />
+                  <Route path="/spelers" element={<Navigate to="/selectie" replace />} />
+                  <Route path="/selectie/:playerId" element={<SpelerProfiel />} />
+                  <Route path="/speler/:playerId" element={<SpelerProfiel />} />
+                  
+                  {/* Overig */}
                   <Route path="/forum" element={<Forum />} />
                   <Route path="/over" element={<Over />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/notifications" element={<Notifications />} />
                   <Route path="/notification-settings" element={<NotificationSettings />} />
+                  <Route path="/team/:teamId" element={<TeamDetail />} />
+                  
+                  {/* 404 */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>

@@ -1,6 +1,6 @@
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Bell, MessageSquare, Info, Users, Trophy, Settings } from "lucide-react";
+import { Bell, MessageSquare, Info, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useWordPressAuth } from "@/contexts/WordPressAuthContext";
 
@@ -15,21 +15,9 @@ export const MoreSheet = ({ children }: MoreSheetProps) => {
   const mainMenuItems = [
     {
       icon: Users,
-      label: "Jong AZ",
-      path: "/jong-az",
-      description: "Jong AZ team informatie en resultaten"
-    },
-    {
-      icon: Trophy,
-      label: "AZ in Europa",
-      path: "/conference-league",
-      description: "Europese wedstrijden en voortgang"
-    },
-    {
-      icon: Users,
-      label: "Speler Stats",
-      path: "/spelers",
-      description: "Statistieken en profielen van AZ spelers"
+      label: "Selectie",
+      path: "/selectie",
+      description: "Spelers en statistieken van AZ"
     },
     {
       icon: MessageSquare,
@@ -102,7 +90,7 @@ export const MoreSheet = ({ children }: MoreSheetProps) => {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[80vh]">
+      <SheetContent side="bottom" className="h-[60vh]">
         <SheetHeader className="mb-6">
           <SheetTitle className="text-left text-xl font-bold text-az-black dark:text-white">
             Meer opties

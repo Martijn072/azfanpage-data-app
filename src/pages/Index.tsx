@@ -1,5 +1,5 @@
 import { NewsCard } from "@/components/NewsCard";
-import { NextMatchWidget } from "@/components/NextMatchWidget";
+import { NextMatchCard } from "@/components/NextMatchCard";
 import { SocialMediaPromo } from "@/components/SocialMediaPromo";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { H2 } from "@/components/ui/typography";
 import { useState, useEffect } from "react";
 import { articleCache } from "@/services/articleCache";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("home");
@@ -97,16 +99,34 @@ const Index = () => {
       
       <main className="pb-20">
         <div className="container mx-auto px-s py-m md:py-l">
-          {/* Next Match Widget */}
-          <div className="animate-fade-in">
-            <NextMatchWidget />
+          {/* Next Match Card */}
+          <div className="animate-fade-in mb-m">
+            <NextMatchCard />
+            <div className="text-center mt-2">
+              <Link 
+                to="/wedstrijden" 
+                className="inline-flex items-center text-sm text-az-red hover:text-az-red/80 transition-colors"
+              >
+                Bekijk alle wedstrijden
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Link>
+            </div>
           </div>
           
           {/* News Section */}
           <section className="mb-xl">
-            <H2 className="text-az-black dark:text-white mb-m animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              Laatste Nieuws
-            </H2>
+            <div className="flex items-center justify-between mb-m">
+              <H2 className="text-az-black dark:text-white animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                Laatste Nieuws
+              </H2>
+              <Link 
+                to="/nieuws" 
+                className="inline-flex items-center text-sm text-az-red hover:text-az-red/80 transition-colors"
+              >
+                Alle nieuws
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Link>
+            </div>
             
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-m">

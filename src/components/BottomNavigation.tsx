@@ -1,5 +1,5 @@
 
-import { Bell, Calendar, House, Table, MoreHorizontal } from "lucide-react";
+import { Bell, Calendar, House, Trophy, MoreHorizontal, Newspaper } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MoreSheet } from "./MoreSheet";
 
@@ -14,25 +14,27 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
 
   const tabs = [
     { id: "home", label: "Home", icon: House, path: "/" },
-    { id: "news", label: "Nieuws", icon: Bell, path: "/news" },
-    { id: "programma", label: "Programma", icon: Calendar, path: "/programma" },
-    { id: "eredivisie", label: "Stand", icon: Table, path: "/eredivisie" },
+    { id: "nieuws", label: "Nieuws", icon: Newspaper, path: "/nieuws" },
+    { id: "wedstrijden", label: "Wedstrijden", icon: Calendar, path: "/wedstrijden" },
+    { id: "standen", label: "Standen", icon: Trophy, path: "/standen" },
   ];
 
   // Determine active tab based on current route
   const getActiveTab = () => {
     if (location.pathname === "/") return "home";
-    if (location.pathname === "/news") return "news";
-    if (location.pathname === "/programma") return "programma";
-    if (location.pathname === "/eredivisie") return "eredivisie";
+    if (location.pathname === "/nieuws" || location.pathname === "/news" || location.pathname.startsWith("/artikel/")) return "nieuws";
+    if (location.pathname === "/wedstrijden" || location.pathname === "/programma" || location.pathname.startsWith("/wedstrijd/")) return "wedstrijden";
+    if (location.pathname === "/standen" || location.pathname === "/eredivisie" || location.pathname === "/conference-league" || location.pathname === "/jong-az") return "standen";
     
-    // More sheet routes - all routes that are in the "Meer" menu
+    // More sheet routes
     if (
       location.pathname === "/forum" ||
-      location.pathname === "/spelers" || 
-      location.pathname === "/conference-league" || 
-      location.pathname === "/jong-az" ||
-      location.pathname === "/notification-settings"
+      location.pathname === "/selectie" || 
+      location.pathname === "/spelers" ||
+      location.pathname.startsWith("/speler/") ||
+      location.pathname.startsWith("/selectie/") ||
+      location.pathname === "/notification-settings" ||
+      location.pathname === "/over"
     ) {
       return "meer";
     }
