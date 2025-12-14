@@ -139,49 +139,59 @@ const Index = () => {
                 </>
               ) : (
                 <>
-                  {/* Hero Article - Artikel 1 */}
-                  {articles.length > 0 && (
-                    <div className="animate-fade-in">
-                      <HeroNewsCard article={articles[0]} />
-                    </div>
-                  )}
-                  
-                  {/* 2x2 Grid - Artikelen 2-5 */}
-                  {articles.length > 1 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                      {articles.slice(1, 5).map((article, index) => (
-                        <div 
-                          key={article.id}
-                          className="animate-fade-in"
-                          style={{ animationDelay: `${0.1 + index * 0.05}s` }}
-                        >
-                          <NewsCard article={article} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {/* Secondary Hero - Artikel 6 */}
-                  {articles[5] && (
-                    <div className="animate-fade-in mt-6" style={{ animationDelay: '0.3s' }}>
-                      <HeroNewsCard article={articles[5]} />
-                    </div>
-                  )}
-                  
-                  {/* 2 Column Grid - Artikelen 7-8 */}
-                  {articles.length > 6 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                      {articles.slice(6, 8).map((article, index) => (
-                        <div 
-                          key={article.id}
-                          className="animate-fade-in"
-                          style={{ animationDelay: `${0.4 + index * 0.05}s` }}
-                        >
-                          <NewsCard article={article} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  {/* Repeating Pattern: Hero → 4 Grid → Hero → 2 Grid (per 8 articles) */}
+                  {Array.from({ length: Math.ceil(articles.length / 8) }).map((_, blockIndex) => {
+                    const startIndex = blockIndex * 8;
+                    const blockArticles = articles.slice(startIndex, startIndex + 8);
+                    
+                    return (
+                      <div key={blockIndex} className={blockIndex > 0 ? "mt-6" : ""}>
+                        {/* Hero Article */}
+                        {blockArticles[0] && (
+                          <div className="animate-fade-in">
+                            <HeroNewsCard article={blockArticles[0]} />
+                          </div>
+                        )}
+                        
+                        {/* 2x2 Grid - 4 articles */}
+                        {blockArticles.length > 1 && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                            {blockArticles.slice(1, 5).map((article, index) => (
+                              <div 
+                                key={article.id}
+                                className="animate-fade-in"
+                                style={{ animationDelay: `${0.1 + index * 0.05}s` }}
+                              >
+                                <NewsCard article={article} />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {/* Secondary Hero */}
+                        {blockArticles[5] && (
+                          <div className="animate-fade-in mt-6" style={{ animationDelay: '0.3s' }}>
+                            <HeroNewsCard article={blockArticles[5]} />
+                          </div>
+                        )}
+                        
+                        {/* 2 Column Grid - 2 articles */}
+                        {blockArticles.length > 6 && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                            {blockArticles.slice(6, 8).map((article, index) => (
+                              <div 
+                                key={article.id}
+                                className="animate-fade-in"
+                                style={{ animationDelay: `${0.4 + index * 0.05}s` }}
+                              >
+                                <NewsCard article={article} />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                   
                   {/* Load More */}
                   {hasNextPage && (
