@@ -108,20 +108,33 @@ const Index = () => {
             <div className="lg:col-span-2">
               
               {/* Loading State */}
-              {isLoading ? (
+{isLoading ? (
                 <>
                   {/* Hero Skeleton */}
                   <div className="aspect-[4/3] lg:aspect-[16/9] bg-muted rounded-xl animate-pulse mb-6" />
                   
-                  {/* Grid Skeleton */}
+                  {/* Grid Skeleton - 2 columns first */}
                   <div className="mt-6">
                     <div className="h-8 w-48 bg-muted rounded mb-4" />
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {[...Array(6)].map((_, i) => (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                      {[...Array(2)].map((_, i) => (
                         <div key={i} className="animate-pulse">
                           <div className="aspect-video bg-muted rounded-lg mb-2" />
                           <div className="h-4 bg-muted rounded mb-1 w-3/4" />
                           <div className="h-4 bg-muted rounded w-1/2" />
+                        </div>
+                      ))}
+                    </div>
+                    {/* Then 1 column horizontal */}
+                    <div className="space-y-4">
+                      {[...Array(4)].map((_, i) => (
+                        <div key={i} className="animate-pulse flex flex-col sm:flex-row gap-4 bg-muted/30 rounded-xl p-2">
+                          <div className="w-full sm:w-1/3 aspect-video sm:aspect-auto sm:h-32 bg-muted rounded-lg" />
+                          <div className="flex-1 py-2">
+                            <div className="h-5 bg-muted rounded mb-2 w-3/4" />
+                            <div className="h-4 bg-muted rounded mb-1 w-full" />
+                            <div className="h-3 bg-muted rounded w-1/2 mt-3" />
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -136,20 +149,34 @@ const Index = () => {
                     </div>
                   )}
                   
-                  {/* Articles Grid */}
+                  {/* Articles Grid - Varied Pattern */}
                   <section className="mt-6">
                     <H2 className="text-foreground mb-4 animate-fade-in" style={{ animationDelay: '0.1s' }}>
                       Laatste Nieuws
                     </H2>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {articles.slice(1, 7).map((article, index) => (
+                    {/* First row: 2 columns */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                      {articles.slice(1, 3).map((article, index) => (
                         <div 
                           key={article.id}
                           className="animate-fade-in"
                           style={{ animationDelay: `${0.2 + index * 0.05}s` }}
                         >
                           <NewsCard article={article} />
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Rest: 1 column, horizontal layout */}
+                    <div className="space-y-4">
+                      {articles.slice(3, 7).map((article, index) => (
+                        <div 
+                          key={article.id}
+                          className="animate-fade-in"
+                          style={{ animationDelay: `${0.3 + index * 0.05}s` }}
+                        >
+                          <NewsCard article={article} variant="horizontal" />
                         </div>
                       ))}
                     </div>
@@ -173,12 +200,14 @@ const Index = () => {
                     )}
                     
                     {isFetchingNextPage && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                      <div className="space-y-4 mt-4">
                         {[...Array(3)].map((_, i) => (
-                          <div key={i} className="animate-pulse">
-                            <div className="aspect-video bg-muted rounded-lg mb-2" />
-                            <div className="h-4 bg-muted rounded mb-1 w-3/4" />
-                            <div className="h-4 bg-muted rounded w-1/2" />
+                          <div key={i} className="animate-pulse flex flex-col sm:flex-row gap-4 bg-muted/30 rounded-xl p-2">
+                            <div className="w-full sm:w-1/3 aspect-video sm:aspect-auto sm:h-32 bg-muted rounded-lg" />
+                            <div className="flex-1 py-2">
+                              <div className="h-5 bg-muted rounded mb-2 w-3/4" />
+                              <div className="h-4 bg-muted rounded w-full" />
+                            </div>
                           </div>
                         ))}
                       </div>
