@@ -12,7 +12,6 @@ import { useInfiniteArticles } from "@/hooks/useInfiniteArticles";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { Button } from "@/components/ui/button";
-import { H2 } from "@/components/ui/typography";
 import { useState, useEffect } from "react";
 import { articleCache } from "@/services/articleCache";
 
@@ -113,11 +112,98 @@ const Index = () => {
                   {/* Hero Skeleton */}
                   <div className="aspect-[4/3] lg:aspect-[16/9] bg-muted rounded-xl animate-pulse mb-6" />
                   
-                  {/* Grid Skeleton - 2 columns first */}
-                  <div className="mt-6">
-                    <div className="h-8 w-48 bg-muted rounded mb-4" />
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-                      {[...Array(2)].map((_, i) => (
+                  {/* 2x2 Grid Skeleton */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                    {[...Array(4)].map((_, i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="aspect-video bg-muted rounded-lg mb-2" />
+                        <div className="h-4 bg-muted rounded mb-1 w-3/4" />
+                        <div className="h-4 bg-muted rounded w-1/2" />
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Secondary Hero Skeleton */}
+                  <div className="aspect-[4/3] lg:aspect-[16/9] bg-muted rounded-xl animate-pulse mt-6" />
+                  
+                  {/* 2 Column Skeleton */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                    {[...Array(2)].map((_, i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="aspect-video bg-muted rounded-lg mb-2" />
+                        <div className="h-4 bg-muted rounded mb-1 w-3/4" />
+                        <div className="h-4 bg-muted rounded w-1/2" />
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Hero Article - Artikel 1 */}
+                  {articles.length > 0 && (
+                    <div className="animate-fade-in">
+                      <HeroNewsCard article={articles[0]} />
+                    </div>
+                  )}
+                  
+                  {/* 2x2 Grid - Artikelen 2-5 */}
+                  {articles.length > 1 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                      {articles.slice(1, 5).map((article, index) => (
+                        <div 
+                          key={article.id}
+                          className="animate-fade-in"
+                          style={{ animationDelay: `${0.1 + index * 0.05}s` }}
+                        >
+                          <NewsCard article={article} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Secondary Hero - Artikel 6 */}
+                  {articles[5] && (
+                    <div className="animate-fade-in mt-6" style={{ animationDelay: '0.3s' }}>
+                      <HeroNewsCard article={articles[5]} />
+                    </div>
+                  )}
+                  
+                  {/* 2 Column Grid - Artikelen 7-8 */}
+                  {articles.length > 6 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                      {articles.slice(6, 8).map((article, index) => (
+                        <div 
+                          key={article.id}
+                          className="animate-fade-in"
+                          style={{ animationDelay: `${0.4 + index * 0.05}s` }}
+                        >
+                          <NewsCard article={article} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Load More */}
+                  {hasNextPage && (
+                    <div className="text-center mt-8 animate-fade-in">
+                      <Button
+                        onClick={() => fetchNextPage()}
+                        disabled={isFetchingNextPage || (!isOnline && !articles.length)}
+                        className="bg-az-red hover:bg-az-red/90 text-white px-6 py-3 text-base"
+                      >
+                        {isFetchingNextPage ? 'Laden...' : 'Laad meer nieuws'}
+                      </Button>
+                      {!isOnline && (
+                        <p className="text-sm text-muted-foreground mt-2">
+                          Internetverbinding vereist voor meer artikelen
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  
+                  {isFetchingNextPage && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                      {[...Array(4)].map((_, i) => (
                         <div key={i} className="animate-pulse">
                           <div className="aspect-video bg-muted rounded-lg mb-2" />
                           <div className="h-4 bg-muted rounded mb-1 w-3/4" />
@@ -125,94 +211,7 @@ const Index = () => {
                         </div>
                       ))}
                     </div>
-                    {/* Then 1 column horizontal */}
-                    <div className="space-y-4">
-                      {[...Array(4)].map((_, i) => (
-                        <div key={i} className="animate-pulse flex flex-col sm:flex-row gap-4 bg-muted/30 rounded-xl p-2">
-                          <div className="w-full sm:w-1/3 aspect-video sm:aspect-auto sm:h-32 bg-muted rounded-lg" />
-                          <div className="flex-1 py-2">
-                            <div className="h-5 bg-muted rounded mb-2 w-3/4" />
-                            <div className="h-4 bg-muted rounded mb-1 w-full" />
-                            <div className="h-3 bg-muted rounded w-1/2 mt-3" />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* Hero Article */}
-                  {articles.length > 0 && (
-                    <div className="animate-fade-in mb-6">
-                      <HeroNewsCard article={articles[0]} />
-                    </div>
                   )}
-                  
-                  {/* Articles Grid - Varied Pattern */}
-                  <section className="mt-6">
-                    <H2 className="text-foreground mb-4 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-                      Laatste Nieuws
-                    </H2>
-                    
-                    {/* First row: 2 columns */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-                      {articles.slice(1, 3).map((article, index) => (
-                        <div 
-                          key={article.id}
-                          className="animate-fade-in"
-                          style={{ animationDelay: `${0.2 + index * 0.05}s` }}
-                        >
-                          <NewsCard article={article} />
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {/* Rest: 1 column, horizontal layout */}
-                    <div className="space-y-4">
-                      {articles.slice(3, 7).map((article, index) => (
-                        <div 
-                          key={article.id}
-                          className="animate-fade-in"
-                          style={{ animationDelay: `${0.3 + index * 0.05}s` }}
-                        >
-                          <NewsCard article={article} variant="horizontal" />
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {/* Load More */}
-                    {hasNextPage && (
-                      <div className="text-center mt-6 animate-fade-in">
-                        <Button
-                          onClick={() => fetchNextPage()}
-                          disabled={isFetchingNextPage || (!isOnline && !articles.length)}
-                          className="bg-az-red hover:bg-az-red/90 text-white px-6 py-3 text-base"
-                        >
-                          {isFetchingNextPage ? 'Laden...' : 'Laad meer nieuws'}
-                        </Button>
-                        {!isOnline && (
-                          <p className="text-sm text-muted-foreground mt-2">
-                            Internetverbinding vereist voor meer artikelen
-                          </p>
-                        )}
-                      </div>
-                    )}
-                    
-                    {isFetchingNextPage && (
-                      <div className="space-y-4 mt-4">
-                        {[...Array(3)].map((_, i) => (
-                          <div key={i} className="animate-pulse flex flex-col sm:flex-row gap-4 bg-muted/30 rounded-xl p-2">
-                            <div className="w-full sm:w-1/3 aspect-video sm:aspect-auto sm:h-32 bg-muted rounded-lg" />
-                            <div className="flex-1 py-2">
-                              <div className="h-5 bg-muted rounded mb-2 w-3/4" />
-                              <div className="h-4 bg-muted rounded w-full" />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </section>
                   
                   {/* Mobile: Social + Forum after articles */}
                   <div className="lg:hidden mt-8 space-y-4">
