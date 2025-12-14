@@ -14,6 +14,18 @@ serve(async (req) => {
   }
 
   try {
+    // Validate service role key - this is an internal-only scheduler function
+    const authHeader = req.headers.get('Authorization');
+    const expectedServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    
+    if (!authHeader || !authHeader.includes(expectedServiceKey || '')) {
+      console.log('🚫 Unauthorized attempt to access scheduler');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Service role required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
     console.log('📅 Notification Scheduler starting...')
     console.log('🕐 Timestamp:', new Date().toISOString())
     

@@ -19,7 +19,20 @@ serve(async (req) => {
     const { articleId, articleSlug, page = 1, perPage = 20, search = '', category = '', mode } = body;
 
     // Handle notifications mode - check for new articles and create notifications
+    // This mode requires service role authentication (internal use only)
     if (mode === 'notifications') {
+      // Validate service role key for internal notification operations
+      const authHeader = req.headers.get('Authorization');
+      const expectedServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+      
+      if (!authHeader || !authHeader.includes(expectedServiceKey || '')) {
+        console.log('🚫 Unauthorized attempt to access notifications mode');
+        return new Response(
+          JSON.stringify({ error: 'Unauthorized - Service role required for notifications mode' }),
+          { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
       console.log('🔔 Running in notifications mode - checking for new articles...');
       console.log('🕐 Timestamp:', new Date().toISOString());
       

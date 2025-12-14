@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -653,7 +653,7 @@ export type Database = {
           action_type: string
           created_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           user_id: string
           window_start: string | null
         }
@@ -662,7 +662,7 @@ export type Database = {
           action_type: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_id: string
           window_start?: string | null
         }
@@ -671,7 +671,7 @@ export type Database = {
           action_type?: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_id?: string
           window_start?: string | null
         }
@@ -729,19 +729,28 @@ export type Database = {
     Functions: {
       check_rate_limit: {
         Args: {
-          p_user_id: string
-          p_ip_address: unknown
           p_action_type: string
+          p_ip_address: unknown
           p_max_actions: number
+          p_user_id: string
           p_window_minutes: number
         }
         Returns: boolean
       }
+      get_wordpress_public_profile: {
+        Args: { p_wordpress_user_id: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          username: string
+          wordpress_user_id: number
+        }[]
+      }
       record_rate_limit_action: {
         Args: {
-          p_user_id: string
-          p_ip_address: unknown
           p_action_type: string
+          p_ip_address: unknown
+          p_user_id: string
         }
         Returns: undefined
       }
