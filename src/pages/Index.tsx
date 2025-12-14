@@ -5,6 +5,7 @@ import { SidebarStandings } from "@/components/SidebarStandings";
 import { SidebarSocialLinks } from "@/components/SidebarSocialLinks";
 import { PopularArticles } from "@/components/PopularArticles";
 import { ForumPostsWidget } from "@/components/ForumPostsWidget";
+import { SidebarBanner } from "@/components/SidebarBanner";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
@@ -243,24 +244,26 @@ const Index = () => {
                 <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
                   <NextMatchWidget />
                 </div>
+                <div className="animate-fade-in" style={{ animationDelay: '0.12s' }}>
+                  <SidebarBanner slot="sidebar-1" />
+                </div>
                 <div className="animate-fade-in" style={{ animationDelay: '0.15s' }}>
                   <SidebarStandings />
                 </div>
-                <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                  <SidebarSocialLinks />
+                <div className="animate-fade-in" style={{ animationDelay: '0.17s' }}>
+                  <SidebarBanner slot="sidebar-2" />
                 </div>
-                <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
                   <PopularArticles articles={articles.slice(1, 6)} />
                 </div>
-                <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
+                <div className="animate-fade-in" style={{ animationDelay: '0.25s' }}>
                   <ForumPostsWidget />
                 </div>
-                {/* Banner Slot */}
-                <div 
-                  className="aspect-[300/250] bg-muted rounded-xl flex items-center justify-center text-muted-foreground text-sm animate-fade-in"
-                  style={{ animationDelay: '0.5s' }}
-                >
-                  Banner ruimte
+                <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                  <SidebarBanner slot="sidebar-3" />
+                </div>
+                <div className="animate-fade-in" style={{ animationDelay: '0.35s' }}>
+                  <SidebarSocialLinks />
                 </div>
               </div>
             </aside>
