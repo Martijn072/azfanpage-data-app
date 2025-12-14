@@ -6,7 +6,7 @@ import { ChevronRight, Trophy } from "lucide-react";
 import { Standing } from "@/types/footballApi";
 import { getCurrentActiveSeason } from "@/utils/seasonUtils";
 
-const AZ_TEAM_ID = 197;
+const AZ_TEAM_ID = 201;
 
 export const SidebarStandings = () => {
   const { data: standings, isLoading, error } = useEredivisieStandings();
