@@ -6,6 +6,7 @@ import { SidebarSocialLinks } from "@/components/SidebarSocialLinks";
 import { PopularArticles } from "@/components/PopularArticles";
 import { ForumPostsWidget } from "@/components/ForumPostsWidget";
 import { SidebarBanner } from "@/components/SidebarBanner";
+import { SocialMediaPromo } from "@/components/SocialMediaPromo";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
@@ -164,9 +165,16 @@ const Index = () => {
                                 className="animate-fade-in"
                                 style={{ animationDelay: `${0.1 + index * 0.05}s` }}
                               >
-                                <NewsCard article={article} />
+                              <NewsCard article={article} />
                               </div>
                             ))}
+                          </div>
+                        )}
+                        
+                        {/* Social Media Promo - alleen bij eerste blok */}
+                        {blockIndex === 0 && blockArticles.length > 1 && (
+                          <div className="animate-fade-in mt-6" style={{ animationDelay: '0.25s' }}>
+                            <SocialMediaPromo />
                           </div>
                         )}
                         
