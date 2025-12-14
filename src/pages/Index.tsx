@@ -1,5 +1,5 @@
 import { NewsCard } from "@/components/NewsCard";
-import { NextMatchCard } from "@/components/NextMatchCard";
+import { NextMatchWidget } from "@/components/NextMatchWidget";
 import { SocialMediaPromo } from "@/components/SocialMediaPromo";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
@@ -101,7 +101,7 @@ const Index = () => {
         <div className="container mx-auto px-s py-m md:py-l">
           {/* Next Match Card */}
           <div className="animate-fade-in mb-m">
-            <NextMatchCard />
+            <NextMatchWidget />
           </div>
           
           {/* News Section */}
