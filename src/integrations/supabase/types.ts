@@ -759,6 +759,15 @@ export type Database = {
           wordpress_user_id: number
         }[]
       }
+      get_wordpress_safe_profile: {
+        Args: { p_wordpress_user_id: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          username: string
+          wordpress_user_id: number
+        }[]
+      }
       record_rate_limit_action: {
         Args: {
           p_action_type: string
