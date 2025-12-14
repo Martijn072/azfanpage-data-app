@@ -15,9 +15,14 @@ interface ShareBarProps {
 export const ShareBar = ({ article, showBackButton = false, onBack, className = "" }: ShareBarProps) => {
   const { toast } = useToast();
 
+  // Generate main site URL for sharing (all shares go to azfanpage.nl, not app.azfanpage.nl)
+  const getMainSiteUrl = () => {
+    return `https://www.azfanpage.nl/${article.slug}`;
+  };
+
   const handleCopyLink = async () => {
     try {
-      const url = window.location.href;
+      const url = getMainSiteUrl();
       await navigator.clipboard.writeText(url);
       toast({
         title: "Link gekopieerd!",
@@ -34,21 +39,21 @@ export const ShareBar = ({ article, showBackButton = false, onBack, className = 
   };
 
   const handleWhatsAppShare = () => {
-    const url = window.location.href;
+    const url = getMainSiteUrl();
     const text = `${article.title} - ${url}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const handleTwitterShare = () => {
-    const url = window.location.href;
+    const url = getMainSiteUrl();
     const text = `${article.title}`;
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(twitterUrl, '_blank');
   };
 
   const handleFacebookShare = () => {
-    const url = window.location.href;
+    const url = getMainSiteUrl();
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
     window.open(facebookUrl, '_blank');
   };

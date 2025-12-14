@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { DarkModeProvider } from "@/contexts/DarkModeContext";
 import { WordPressAuthProvider } from "@/contexts/WordPressAuthContext";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
+import { CanonicalTag } from "@/components/CanonicalTag";
 import Index from "./pages/Index";
 import News from "./pages/News";
 import NotFound from "./pages/NotFound";
@@ -36,6 +37,7 @@ function App() {
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <CanonicalTag />
               <Suspense fallback={<PageSkeleton />}>
                 <Routes>
                   {/* Home */}
