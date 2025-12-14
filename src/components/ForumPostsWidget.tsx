@@ -17,7 +17,7 @@ export const ForumPostsWidget = () => {
 
   if (isLoading) {
     return (
-      <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4">
+      <div className="card-premium p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-az-red" />
@@ -38,7 +38,7 @@ export const ForumPostsWidget = () => {
 
   if (error || !posts || posts.length === 0) {
     return (
-      <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4">
+      <div className="card-premium p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-az-red" />
@@ -62,7 +62,7 @@ export const ForumPostsWidget = () => {
   }
 
   return (
-    <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4">
+    <div className="card-premium p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-az-red" />

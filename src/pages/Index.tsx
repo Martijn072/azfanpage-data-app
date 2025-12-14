@@ -6,7 +6,6 @@ import { SidebarSocialLinks } from "@/components/SidebarSocialLinks";
 import { PopularArticles } from "@/components/PopularArticles";
 import { ForumPostsWidget } from "@/components/ForumPostsWidget";
 import { SidebarBanner } from "@/components/SidebarBanner";
-import { SocialMediaPromo } from "@/components/SocialMediaPromo";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { PullToRefreshIndicator } from "@/components/PullToRefreshIndicator";
@@ -110,7 +109,7 @@ const Index = () => {
             <div className="lg:col-span-2">
               
               {/* Loading State */}
-{isLoading ? (
+              {isLoading ? (
                 <>
                   {/* Hero Skeleton */}
                   <div className="aspect-[4/3] lg:aspect-[16/9] bg-muted rounded-xl animate-pulse mb-6" />
@@ -165,22 +164,15 @@ const Index = () => {
                                 className="animate-fade-in"
                                 style={{ animationDelay: `${0.1 + index * 0.05}s` }}
                               >
-                              <NewsCard article={article} />
+                                <NewsCard article={article} />
                               </div>
                             ))}
                           </div>
                         )}
                         
-                        {/* Social Media Promo - alleen bij eerste blok */}
-                        {blockIndex === 0 && blockArticles.length > 1 && (
-                          <div className="animate-fade-in mt-6" style={{ animationDelay: '0.25s' }}>
-                            <SocialMediaPromo />
-                          </div>
-                        )}
-                        
                         {/* Secondary Hero */}
                         {blockArticles[5] && (
-                          <div className="animate-fade-in mt-6" style={{ animationDelay: '0.3s' }}>
+                          <div className="animate-fade-in mt-6" style={{ animationDelay: '0.2s' }}>
                             <HeroNewsCard article={blockArticles[5]} />
                           </div>
                         )}
@@ -192,7 +184,7 @@ const Index = () => {
                               <div 
                                 key={article.id}
                                 className="animate-fade-in"
-                                style={{ animationDelay: `${0.4 + index * 0.05}s` }}
+                                style={{ animationDelay: `${0.1 + index * 0.05}s` }}
                               >
                                 <NewsCard article={article} />
                               </div>
@@ -235,10 +227,10 @@ const Index = () => {
                   
                   {/* Mobile: Social + Forum after articles */}
                   <div className="lg:hidden mt-8 space-y-4">
-                    <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                    <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
                       <SidebarSocialLinks />
                     </div>
-                    <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
+                    <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
                       <ForumPostsWidget />
                     </div>
                   </div>
@@ -249,28 +241,29 @@ const Index = () => {
             {/* Sidebar - 1/3, Desktop Only */}
             <aside className="hidden lg:block">
               <div className="sticky top-20 space-y-4">
+                {/* Group 1: Primary - no delay */}
+                <NextMatchWidget />
+                <SidebarBanner slot="sidebar-1" />
+                
+                {/* Group 2: Secondary - 0.1s */}
                 <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
-                  <NextMatchWidget />
-                </div>
-                <div className="animate-fade-in" style={{ animationDelay: '0.12s' }}>
-                  <SidebarBanner slot="sidebar-1" />
-                </div>
-                <div className="animate-fade-in" style={{ animationDelay: '0.15s' }}>
                   <SidebarStandings />
                 </div>
-                <div className="animate-fade-in" style={{ animationDelay: '0.17s' }}>
+                <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
                   <SidebarBanner slot="sidebar-2" />
                 </div>
+                
+                {/* Group 3: Tertiary - 0.2s */}
                 <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
                   <PopularArticles articles={articles.slice(1, 6)} />
                 </div>
-                <div className="animate-fade-in" style={{ animationDelay: '0.25s' }}>
+                <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
                   <ForumPostsWidget />
                 </div>
-                <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
                   <SidebarBanner slot="sidebar-3" />
                 </div>
-                <div className="animate-fade-in" style={{ animationDelay: '0.35s' }}>
+                <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
                   <SidebarSocialLinks />
                 </div>
               </div>

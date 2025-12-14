@@ -1,4 +1,3 @@
-import { Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { articleCache } from "@/services/articleCache";
 import { OptimizedImage } from "@/components/ui/optimized-image";
@@ -60,22 +59,15 @@ export const HeroNewsCard = ({ article }: HeroNewsCardProps) => {
           {article.category}
         </span>
 
-        {/* Headline */}
-        <h2 className="text-white font-headline text-xl lg:text-3xl xl:text-4xl font-bold leading-tight line-clamp-3 mb-3">
+        {/* Headline - larger sizes */}
+        <h2 className="text-white font-headline text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight line-clamp-3 mb-3">
           {article.title}
         </h2>
 
-        {/* Meta Info */}
-        <div className="flex items-center gap-4 text-white/70 text-sm">
-          <span>{article.author}</span>
-          <span>•</span>
-          <div className="flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5" />
-            <span>{article.readTime}</span>
-          </div>
-          <span>•</span>
-          <span>{article.publishedAt}</span>
-        </div>
+        {/* Meta Info - simplified */}
+        <p className="text-white/70 text-sm">
+          {article.author} • {article.readTime} leestijd • {article.publishedAt}
+        </p>
       </div>
     </article>
   );

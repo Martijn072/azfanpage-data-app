@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Loader2 } from 'lucide-react';
 
@@ -22,7 +21,7 @@ export const DisqusContainer = ({
 }: DisqusContainerProps) => {
   return (
     <>
-      <h3 className="headline-premium text-headline-sm mb-4 text-az-black dark:text-white flex items-center gap-2">
+      <h3 className="headline-premium text-headline-sm mb-4 text-foreground flex items-center gap-2">
         <MessageCircle className="w-5 h-5 text-az-red" />
         Reacties
         {currentIdentifier && (
@@ -34,7 +33,7 @@ export const DisqusContainer = ({
       
       {!isLoaded && !isLoading && !error && (
         <div className="text-center py-8">
-          <p className="body-premium text-body-md text-premium-gray-600 dark:text-gray-300 mb-4">
+          <p className="body-premium text-body-md text-muted-foreground mb-4">
             Deel je mening over dit artikel met je medesupporters en doe dat op respectvolle wijze.
           </p>
           <Button 
@@ -49,7 +48,7 @@ export const DisqusContainer = ({
 
       {error && (
         <div className="text-center py-8">
-          <p className="body-premium text-body-md text-red-600 dark:text-red-400 mb-4">
+          <p className="body-premium text-body-md text-destructive mb-4">
             {error}
           </p>
           <Button 
@@ -64,11 +63,11 @@ export const DisqusContainer = ({
 
       {/* Simple neutral Disqus container - let Disqus handle its own theme */}
       {(isLoading || isLoaded) && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-premium-gray-100 dark:border-gray-700 overflow-hidden">
+        <div className="bg-card rounded-lg border border-border overflow-hidden">
           {isLoading && (
             <div className="text-center py-8">
               <Loader2 className="w-8 h-8 animate-spin text-az-red mx-auto mb-4" />
-              <p className="body-premium text-body-sm text-premium-gray-600 dark:text-gray-300">
+              <p className="body-premium text-body-sm text-muted-foreground">
                 Reacties laden...
               </p>
             </div>
@@ -83,7 +82,7 @@ export const DisqusContainer = ({
       {/* Debug info when loaded */}
       {isLoaded && currentIdentifier && (
         <div className="text-center mt-4">
-          <p className="text-xs text-premium-gray-400 dark:text-gray-500">
+          <p className="text-xs text-muted-foreground/50">
             Powered by Disqus • Identifier: {currentIdentifier}
           </p>
         </div>

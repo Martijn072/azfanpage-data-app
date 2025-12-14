@@ -101,8 +101,7 @@
 
   /* Premium typography classes optimized for Dutch readability */
   .headline-premium {
-    @apply font-headline font-bold tracking-tight text-az-black;
-    font-feature-settings: "ss01" 1;
+    @apply font-headline font-semibold tracking-tight text-foreground;
     letter-spacing: -0.02em;
   }
 

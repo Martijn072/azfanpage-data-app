@@ -32,7 +32,7 @@ const socialLinks = [
 
 export const SidebarSocialLinks = () => {
   return (
-    <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4">
+    <div className="card-premium p-4">
       <h3 className="font-headline text-lg font-semibold text-foreground mb-4">
         Volg AZFanpage
       </h3>
@@ -44,7 +44,7 @@ export const SidebarSocialLinks = () => {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 p-3 rounded-lg hover:bg-az-red/10 dark:hover:bg-az-red/20 transition-colors group"
+            className="flex items-center gap-2 p-3 rounded-lg hover:bg-az-red/10 transition-colors group"
           >
             <span className="text-az-red">
               <link.icon />
