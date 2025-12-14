@@ -3,137 +3,111 @@ import { useQuery } from '@tanstack/react-query';
 import { callFootballApi } from '@/utils/footballApiClient';
 import { FootballApiResponse, Team, Fixture, Standing } from '@/types/footballApi';
 import { getCurrentActiveSeason } from '@/utils/seasonUtils';
-import { useLeagueIdByName } from './useLeagueId';
 
-// Hook to find Jong AZ team ID
+// Constants for Jong AZ - these are stable IDs
+const JONG_AZ_TEAM_ID = 418;
+const EERSTE_DIVISIE_ID = 89;
+
+// Hook to find Jong AZ team ID - now returns stable ID directly
 export const useJongAZTeamId = () => {
   return useQuery({
     queryKey: ['jong-az-team-id'],
     queryFn: async () => {
-      console.log('🔍 Searching for Jong AZ team ID...');
-      const response: FootballApiResponse<{ team: Team }> = await callFootballApi('/teams', {
-        name: 'Jong AZ',
-        country: 'Netherlands'
-      });
-      
-      console.log('📊 Jong AZ Teams API Response:', response);
-      
-      const jongAZTeam = response.response.find(item => 
-        item.team.name.toLowerCase().includes('jong') && 
-        item.team.name.toLowerCase().includes('az')
-      );
-      
-      let teamId = jongAZTeam ? jongAZTeam.team.id : null;
-      
-      // Fallback to known ID if API doesn't return Jong AZ for some reason
-      if (!teamId) {
-        console.warn('⚠️ Jong AZ not found via API, falling back to static ID 418');
-        teamId = 418; // API-Football ID for Jong AZ
-      }
-      
-      console.log('🆔 Jong AZ Team ID found:', teamId);
-      
-      return teamId;
+      console.log('🆔 Using stable Jong AZ Team ID:', JONG_AZ_TEAM_ID);
+      return JONG_AZ_TEAM_ID;
     },
-    staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
-    retry: 2,
-    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: Infinity, // Never stale - it's a constant
   });
 };
 
-// Hook for Jong AZ fixtures (recent)
+// Hook for Jong AZ fixtures (recent) - uses stable league ID
 export const useJongAZFixtures = (teamId: number | null, last: number = 5) => {
   const seasonInfo = getCurrentActiveSeason();
-  const { data: leagueData } = useLeagueIdByName('Netherlands', 'Eerste Divisie');
   
   return useQuery({
-    queryKey: ['jong-az-fixtures', teamId, last, seasonInfo.currentSeason, leagueData?.id],
+    queryKey: ['jong-az-fixtures', teamId, last, seasonInfo.currentSeason, EERSTE_DIVISIE_ID],
     queryFn: async () => {
-      if (!teamId || !leagueData?.id) {
-        console.log('⏸️ No Jong AZ team ID or league ID available for fixtures');
+      if (!teamId) {
+        console.log('⏸️ No Jong AZ team ID available for fixtures');
         return [];
       }
       
       console.log('📅 Fetching Jong AZ fixtures...', { 
         teamId, 
         last, 
-        leagueId: leagueData.id, 
-        leagueName: leagueData.name 
+        leagueId: EERSTE_DIVISIE_ID
       });
       
       const response: FootballApiResponse<Fixture> = await callFootballApi('/fixtures', {
         team: teamId.toString(),
         last: last.toString(),
         season: seasonInfo.currentSeason,
-        league: leagueData.id.toString(),
+        league: EERSTE_DIVISIE_ID.toString(),
         timezone: 'Europe/Amsterdam'
       });
       
       console.log('📊 Jong AZ Fixtures API Response:', response);
       return response.response || [];
     },
-    enabled: !!teamId && !!leagueData?.id,
+    enabled: !!teamId,
     staleTime: 1000 * 60 * 15, // Cache for 15 minutes
     retry: 2,
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 };
 
-// Hook for Jong AZ upcoming fixtures
+// Hook for Jong AZ upcoming fixtures - uses stable league ID
 export const useJongAZNextFixtures = (teamId: number | null, next: number = 3) => {
   const seasonInfo = getCurrentActiveSeason();
-  const { data: leagueData } = useLeagueIdByName('Netherlands', 'Eerste Divisie');
   
   return useQuery({
-    queryKey: ['jong-az-next-fixtures', teamId, next, seasonInfo.currentSeason, leagueData?.id],
+    queryKey: ['jong-az-next-fixtures', teamId, next, seasonInfo.currentSeason, EERSTE_DIVISIE_ID],
     queryFn: async () => {
-      if (!teamId || !leagueData?.id) {
-        console.log('⏸️ No Jong AZ team ID or league ID available for next fixtures');
+      if (!teamId) {
+        console.log('⏸️ No Jong AZ team ID available for next fixtures');
         return [];
       }
       
       console.log('🔮 Fetching upcoming Jong AZ fixtures...', { 
         teamId, 
         next, 
-        leagueId: leagueData.id, 
-        leagueName: leagueData.name 
+        leagueId: EERSTE_DIVISIE_ID
       });
       
       const response: FootballApiResponse<Fixture> = await callFootballApi('/fixtures', {
         team: teamId.toString(),
         next: next.toString(),
         season: seasonInfo.currentSeason,
-        league: leagueData.id.toString(),
+        league: EERSTE_DIVISIE_ID.toString(),
         timezone: 'Europe/Amsterdam'
       });
       
       console.log('📊 Jong AZ Next Fixtures API Response:', response);
       return response.response || [];
     },
-    enabled: !!teamId && !!leagueData?.id,
+    enabled: !!teamId,
     staleTime: 1000 * 60 * 30, // Cache for 30 minutes
     retry: 2,
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 };
 
-// Hook for Jong AZ team statistics
+// Hook for Jong AZ team statistics - uses stable league ID
 export const useJongAZStatistics = (teamId: number | null) => {
   const seasonInfo = getCurrentActiveSeason();
-  const { data: leagueData } = useLeagueIdByName('Netherlands', 'Eerste Divisie');
   
   return useQuery({
-    queryKey: ['jong-az-statistics', teamId, seasonInfo.currentSeason, leagueData?.id],
+    queryKey: ['jong-az-statistics', teamId, seasonInfo.currentSeason, EERSTE_DIVISIE_ID],
     queryFn: async () => {
-      if (!teamId || !leagueData?.id) {
-        console.log('⏸️ No Jong AZ team ID or league ID available for statistics');
+      if (!teamId) {
+        console.log('⏸️ No Jong AZ team ID available for statistics');
         return null;
       }
       
-      console.log(`📊 Fetching Jong AZ statistics for ${leagueData.name} (ID: ${leagueData.id}) season ${seasonInfo.currentSeason}...`);
+      console.log(`📊 Fetching Jong AZ statistics for Eerste Divisie (ID: ${EERSTE_DIVISIE_ID}) season ${seasonInfo.currentSeason}...`);
       
       const response: FootballApiResponse<any> = await callFootballApi('/teams/statistics', {
-        league: leagueData.id.toString(),
+        league: EERSTE_DIVISIE_ID.toString(),
         season: seasonInfo.currentSeason,
         team: teamId.toString()
       });
@@ -144,14 +118,13 @@ export const useJongAZStatistics = (teamId: number | null) => {
     staleTime: 1000 * 60 * 60, // Cache for 1 hour
     retry: 2,
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
-    enabled: !!teamId && !!leagueData?.id,
+    enabled: !!teamId,
   });
 };
 
-// Hook for Eerste Divisie standings - Direct league ID 89 for stability
+// Hook for Eerste Divisie standings - uses stable league ID
 export const useEersteDivisieStandings = () => {
   const seasonInfo = getCurrentActiveSeason();
-  const EERSTE_DIVISIE_ID = 89; // Keuken Kampioen Divisie / Eerste Divisie
   
   return useQuery({
     queryKey: ['eerste-divisie-standings', seasonInfo.currentSeason, EERSTE_DIVISIE_ID],
