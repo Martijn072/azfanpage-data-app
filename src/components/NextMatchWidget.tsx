@@ -26,7 +26,7 @@ export const NextMatchWidget = ({ className }: NextMatchWidgetProps) => {
   if (isLoading) {
     return (
       <div className={className}>
-        <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-3 animate-pulse">
+        <div className="card-premium p-4 animate-pulse">
           <div className="text-center mb-2">
             <div className="h-3 bg-muted rounded w-28 mx-auto"></div>
           </div>
@@ -58,7 +58,7 @@ export const NextMatchWidget = ({ className }: NextMatchWidgetProps) => {
   if (hasError || !displayFixture) {
     return (
       <div className={className}>
-        <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-3 animate-fade-in">
+        <div className="card-premium p-4 animate-fade-in">
           <p className="text-muted-foreground text-center text-sm">
             Geen wedstrijd gepland
           </p>
@@ -113,7 +113,7 @@ export const NextMatchWidget = ({ className }: NextMatchWidgetProps) => {
     <div className={className}>
       <section 
         className={cn(
-          "card-premium dark:bg-gray-800 dark:border-gray-700 p-3 hover:shadow-lg transition-all duration-300 animate-fade-in transform hover:scale-[1.01] cursor-pointer relative",
+          "card-premium p-4 hover:shadow-md transition-shadow duration-300 animate-fade-in cursor-pointer relative",
           isLive && "ring-2 ring-az-red/50"
         )}
         role="region"
@@ -141,7 +141,7 @@ export const NextMatchWidget = ({ className }: NextMatchWidgetProps) => {
         {/* Teams met Logo's */}
         <div className="flex items-center justify-center space-x-6 mb-2" id="next-match-details">
           {/* AZ Logo */}
-          <div className="flex flex-col items-center transform transition-transform duration-300 hover:scale-110">
+          <div className="flex flex-col items-center">
             <div className="relative w-10 h-10 lg:w-12 lg:h-12">
               <img
                 src={azTeam.logo}
@@ -159,10 +159,10 @@ export const NextMatchWidget = ({ className }: NextMatchWidgetProps) => {
             </div>
           </div>
 
-          {/* VS */}
+          {/* VS - no animate-pulse */}
           <div className="flex flex-col items-center">
             <span 
-              className="text-lg font-bold text-muted-foreground animate-pulse"
+              className="text-lg font-semibold text-muted-foreground"
               aria-label="tegen"
             >
               VS
@@ -170,7 +170,7 @@ export const NextMatchWidget = ({ className }: NextMatchWidgetProps) => {
           </div>
 
           {/* Opponent Logo */}
-          <div className="flex flex-col items-center transform transition-transform duration-300 hover:scale-110">
+          <div className="flex flex-col items-center">
             <div className="relative w-10 h-10 lg:w-12 lg:h-12">
               <img
                 src={opponentTeam.logo}

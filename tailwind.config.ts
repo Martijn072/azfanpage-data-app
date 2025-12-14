@@ -91,11 +91,11 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
-			fontFamily: {
-				'headline': ['Playfair Display', 'serif'],
-				'body': ['Source Sans Pro', 'system-ui', 'sans-serif'],
-				'sans': ['Source Sans Pro', 'system-ui', 'sans-serif'],
-			},
+		fontFamily: {
+			'headline': ['Outfit', 'system-ui', 'sans-serif'],
+			'body': ['Inter', 'system-ui', 'sans-serif'],
+			'sans': ['Inter', 'system-ui', 'sans-serif'],
+		},
 			fontSize: {
 				'headline-xl': ['2.5rem', { lineHeight: '1.25', fontWeight: '700' }],
 				'headline-lg': ['2rem', { lineHeight: '1.3', fontWeight: '700' }],

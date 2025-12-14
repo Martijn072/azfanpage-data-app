@@ -11,18 +11,24 @@ export const SidebarBanner = ({
   aspectRatio = "300/250", 
   className 
 }: SidebarBannerProps) => {
+  // In production, return null (AdSense will be added later)
+  // In development, show subtle placeholder
+  const isDevelopment = import.meta.env.DEV;
+  
+  if (!isDevelopment) {
+    return null;
+  }
+
   return (
     <div 
       data-ad-slot={slot}
       className={cn(
-        "bg-muted/30 rounded-xl border-2 border-dashed border-muted-foreground/20",
-        "flex items-center justify-center text-muted-foreground/40 text-xs font-medium",
-        "transition-colors hover:bg-muted/40",
+        "aspect-[300/250] bg-muted/50 rounded-xl flex items-center justify-center",
         className
       )}
       style={{ aspectRatio }}
     >
-      <span>Advertentie</span>
+      <span className="text-xs text-muted-foreground/50">{slot}</span>
     </div>
   );
 };

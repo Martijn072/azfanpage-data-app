@@ -56,7 +56,7 @@ export const PopularArticles = ({ articles }: PopularArticlesProps) => {
   };
 
   return (
-    <div className="card-premium dark:bg-gray-800 dark:border-gray-700 p-4">
+    <div className="card-premium p-4">
       {/* Tabs */}
       <div className="flex gap-1 mb-4 bg-muted rounded-lg p-1">
         <button

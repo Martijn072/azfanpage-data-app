@@ -1,4 +1,3 @@
-import { Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { articleCache } from "@/services/articleCache";
 import { OptimizedImage } from "@/components/ui/optimized-image";
@@ -29,7 +28,7 @@ export const NewsCard = ({ article }: NewsCardProps) => {
 
   return (
     <article 
-      className="card-premium dark:bg-gray-800 dark:border-gray-700 overflow-hidden w-full group transform transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer"
+      className="card-premium overflow-hidden w-full group transition-shadow duration-300 hover:shadow-md cursor-pointer"
       onClick={handleClick}
     >
       {/* Image */}
@@ -55,8 +54,8 @@ export const NewsCard = ({ article }: NewsCardProps) => {
       </div>
 
       {/* Content */}
-      <div className="p-3">
-        <h2 className="font-headline text-base font-semibold mb-2 line-clamp-2 text-foreground group-hover:text-az-red transition-colors duration-300">
+      <div className="p-4">
+        <h2 className="font-headline text-base font-semibold mb-2 line-clamp-2 text-foreground transition-colors duration-300">
           {article.title}
         </h2>
         
@@ -64,17 +63,10 @@ export const NewsCard = ({ article }: NewsCardProps) => {
           {article.excerpt}
         </p>
 
-        {/* Meta info */}
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>{article.author}</span>
-          <span>•</span>
-          <div className="flex items-center gap-1">
-            <Clock className="w-3 h-3" />
-            <span>{article.readTime}</span>
-          </div>
-          <span>•</span>
-          <span>{article.publishedAt}</span>
-        </div>
+        {/* Meta info - simplified */}
+        <p className="text-xs text-muted-foreground">
+          {article.author} • {article.publishedAt}
+        </p>
       </div>
     </article>
   );

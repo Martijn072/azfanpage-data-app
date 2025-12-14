@@ -30,7 +30,7 @@ export const CategoryFilter = ({ selectedCategory, onCategoryChange }: CategoryF
             className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 ${
               selectedCategory === category
                 ? 'bg-az-red text-white shadow-md'
-                : 'bg-white dark:bg-gray-800 text-premium-gray-600 dark:text-gray-300 hover:bg-premium-gray-100 dark:hover:bg-gray-700 border border-premium-gray-200 dark:border-gray-600'
+                : 'bg-card text-muted-foreground hover:bg-muted border border-border'
             }`}
           >
             {category}
