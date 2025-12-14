@@ -35,6 +35,18 @@ serve(async (req) => {
   }
 
   try {
+    // Validate service role key - this is an internal-only function
+    const authHeader = req.headers.get('Authorization');
+    const expectedServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    
+    if (!authHeader || !authHeader.includes(expectedServiceKey || '')) {
+      console.log('🚫 Unauthorized attempt to send push notification');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Service role required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
     const payload: PushNotificationPayload = await req.json();
     console.log('📨 Sending push notification:', payload);
 
