@@ -80,15 +80,16 @@ export const Header = () => {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 rounded-full p-0"
+                        aria-label="Gebruikersmenu openen"
                       >
                         {user.avatar_url ? (
                           <img
                             src={user.avatar_url}
-                            alt={user.display_name}
+                            alt={`Profielfoto van ${user.display_name}`}
                             className="h-8 w-8 rounded-full object-cover"
                           />
                         ) : (
-                          <User className="h-5 w-5" />
+                          <User className="h-5 w-5" aria-hidden="true" />
                         )}
                       </Button>
                     </DropdownMenuTrigger>
@@ -177,15 +178,16 @@ export const Header = () => {
                         variant="ghost"
                         size="icon"
                         className="h-10 w-10 rounded-full"
+                        aria-label="Gebruikersmenu openen"
                       >
                         {user.avatar_url ? (
                           <img
                             src={user.avatar_url}
-                            alt={user.display_name}
+                            alt={`Profielfoto van ${user.display_name}`}
                             className="h-8 w-8 rounded-full object-cover"
                           />
                         ) : (
-                          <User className="h-5 w-5" />
+                          <User className="h-5 w-5" aria-hidden="true" />
                         )}
                       </Button>
                     </DropdownMenuTrigger>

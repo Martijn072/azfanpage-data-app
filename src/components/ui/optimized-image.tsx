@@ -4,10 +4,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   fallback?: string;
+  fetchPriority?: 'high' | 'low' | 'auto';
+  sizes?: string;
 }
 
 export const OptimizedImage = React.forwardRef<HTMLImageElement, OptimizedImageProps>(
-  ({ className, src, alt, fallback = "/placeholder.svg", onError, onLoad, ...props }, ref) => {
+  ({ className, src, alt, fallback = "/placeholder.svg", onError, onLoad, fetchPriority, sizes, ...props }, ref) => {
     const [isLoading, setIsLoading] = React.useState(true);
     const [hasError, setHasError] = React.useState(false);
     const [imageSrc, setImageSrc] = React.useState(src);
@@ -39,8 +41,10 @@ export const OptimizedImage = React.forwardRef<HTMLImageElement, OptimizedImageP
           ref={ref}
           src={hasError ? fallback : imageSrc}
           alt={alt}
-          loading="lazy"
-          decoding="async"
+          loading={fetchPriority === 'high' ? 'eager' : 'lazy'}
+          decoding={fetchPriority === 'high' ? 'sync' : 'async'}
+          fetchPriority={fetchPriority}
+          sizes={sizes}
           onLoad={handleLoad}
           onError={handleError}
           className={cn(

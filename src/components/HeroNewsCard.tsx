@@ -31,12 +31,14 @@ export const HeroNewsCard = ({ article }: HeroNewsCardProps) => {
       className="relative rounded-xl overflow-hidden cursor-pointer group"
       onClick={handleClick}
     >
-      {/* Image */}
+      {/* Image - LCP optimization with fetchPriority */}
       <div className="aspect-[4/3] lg:aspect-[16/9] overflow-hidden">
         <OptimizedImage 
           src={article.imageUrl} 
           alt={article.title}
           className="w-full h-full group-hover:scale-105 transition-transform duration-700"
+          fetchPriority="high"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw"
         />
       </div>
 
