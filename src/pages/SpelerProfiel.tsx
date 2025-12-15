@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useAZTeamId } from "@/hooks/useTeamHooks";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, Calendar, User, MapPin, Trophy } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ArrowLeft, Trophy, Target, Users, Clock, Square, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { callFootballApi } from '@/utils/footballApiClient';
@@ -114,28 +115,105 @@ const translatePosition = (position: string): string => {
     'Midfielder': 'Middenvelder',
     'Attacker': 'Aanvaller'
   };
-  
   return positionMap[position] || position;
 };
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('nl-NL', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric'
-  });
+// Rating badge component with color coding
+const RatingBadge = ({ rating }: { rating: number | null }) => {
+  if (!rating) return <span className="text-muted-foreground text-sm">-</span>;
+  
+  const getColorClass = () => {
+    if (rating >= 7.5) return 'bg-green-500 text-white';
+    if (rating >= 6.5) return 'bg-yellow-500 text-white';
+    return 'bg-red-500 text-white';
+  };
+  
+  return (
+    <span className={`${getColorClass()} px-2 py-0.5 rounded-full text-xs font-bold`}>
+      {rating.toFixed(1)}
+    </span>
+  );
+};
+
+// Competition stat card component
+const CompetitionCard = ({ 
+  stat, 
+  showDetails,
+  onToggleDetails 
+}: { 
+  stat: any;
+  showDetails: boolean;
+  onToggleDetails: () => void;
+}) => {
+  const rating = stat.games?.rating ? parseFloat(stat.games.rating) : null;
+  
+  return (
+    <Card className="bg-card border border-border">
+      <CardContent className="p-4">
+        <div className="flex items-start gap-3">
+          <img 
+            src={stat.league.logo} 
+            alt={stat.league.name}
+            className="w-10 h-10 object-contain flex-shrink-0"
+          />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <h4 className="font-semibold text-foreground truncate">{stat.league.name}</h4>
+              <RatingBadge rating={rating} />
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              {stat.games?.appearences || 0} wedstrijden • {stat.goals?.total || 0} goals • {stat.goals?.assists || 0} assists
+            </p>
+            
+            {/* Toggle details */}
+            <button
+              onClick={onToggleDetails}
+              className="text-xs text-primary hover:underline mt-2 flex items-center gap-1"
+            >
+              {showDetails ? (
+                <>Minder details <ChevronUp className="w-3 h-3" /></>
+              ) : (
+                <>Meer details <ChevronDown className="w-3 h-3" /></>
+              )}
+            </button>
+            
+            {showDetails && (
+              <div className="mt-3 pt-3 border-t border-border grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  <span>{stat.games?.minutes || 0} minuten</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Square className="w-3 h-3 text-yellow-500" />
+                  <span>{stat.cards?.yellow || 0} geel</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Users className="w-3 h-3" />
+                  <span>{stat.games?.lineups || 0} basisplaatsen</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Square className="w-3 h-3 text-red-500" />
+                  <span>{stat.cards?.red || 0} rood</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 };
 
 const SpelerProfiel = () => {
   const { playerId } = useParams<{ playerId: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("speler-statistieken");
+  const [statsTab, setStatsTab] = useState("current");
+  const [expandedDetails, setExpandedDetails] = useState<Set<string>>(new Set());
+  const [expandedClubs, setExpandedClubs] = useState<Set<number>>(new Set());
 
-  // Get AZ team ID for filtering
   const { data: azTeamId } = useAZTeamId();
 
-  // Fetch player career statistics across multiple seasons
   const { data: playerData, isLoading, error } = useQuery({
     queryKey: ['player-profile', playerId],
     queryFn: async () => {
@@ -143,7 +221,6 @@ const SpelerProfiel = () => {
       
       console.log(`👤 Fetching career statistics for player ${playerId}...`);
       
-      // Get player statistics for multiple seasons
       const seasons = ['2025', '2024', '2023', '2022', '2021', '2020'];
       const allSeasonStats: PlayerStatistics[] = [];
       
@@ -170,11 +247,16 @@ const SpelerProfiel = () => {
     retry: 2,
   });
 
-  // Calculate AZ career totals only
+  // Initialize expandedClubs with AZ when azTeamId is available
+  useState(() => {
+    if (azTeamId) {
+      setExpandedClubs(new Set([azTeamId]));
+    }
+  });
+
+  // Calculate AZ career totals
   const getAZCareerTotals = () => {
     if (!playerData || playerData.length === 0 || !azTeamId) return null;
-    
-    console.log('🔍 Filtering AZ career stats with team ID:', azTeamId);
     
     let totalGames = 0;
     let totalMinutes = 0;
@@ -184,10 +266,8 @@ const SpelerProfiel = () => {
     let totalRedCards = 0;
     
     playerData.forEach(seasonData => {
-      // Find AZ statistics for this season
       const azStats = seasonData.statistics.find(stat => stat.team.id === azTeamId);
       if (azStats) {
-        console.log(`📊 Found AZ stats for season ${azStats.league.season}:`, azStats.games?.appearences, 'games');
         totalGames += azStats.games?.appearences || 0;
         totalMinutes += azStats.games?.minutes || 0;
         totalGoals += azStats.goals?.total || 0;
@@ -196,8 +276,6 @@ const SpelerProfiel = () => {
         totalRedCards += azStats.cards?.red || 0;
       }
     });
-    
-    console.log('🏆 AZ Career totals:', { totalGames, totalGoals, totalAssists });
     
     return {
       games: totalGames,
@@ -209,55 +287,129 @@ const SpelerProfiel = () => {
     };
   };
 
-  // Get all career seasons (all teams)
-  const getAllCareerSeasons = () => {
+  // Get current season stats (2025)
+  const getCurrentSeasonStats = () => {
     if (!playerData || playerData.length === 0) return [];
     
-    const allSeasons: Array<{
-      season: number;
+    const currentSeason = playerData.find(d => 
+      d.statistics.some(s => s.league.season === 2025)
+    );
+    
+    if (!currentSeason) return [];
+    
+    return currentSeason.statistics.filter(s => 
+      s.league.season === 2025 && s.games?.appearences > 0
+    );
+  };
+
+  // Get AZ career stats grouped by season
+  const getAZCareerStats = () => {
+    if (!playerData || playerData.length === 0 || !azTeamId) return [];
+    
+    const azStats: Array<{ season: number; stats: any[] }> = [];
+    
+    playerData.forEach(seasonData => {
+      const seasonAZStats = seasonData.statistics.filter(
+        stat => stat.team.id === azTeamId && stat.games?.appearences > 0
+      );
+      
+      if (seasonAZStats.length > 0) {
+        const season = seasonAZStats[0].league.season;
+        const existing = azStats.find(s => s.season === season);
+        if (existing) {
+          existing.stats.push(...seasonAZStats);
+        } else {
+          azStats.push({ season, stats: seasonAZStats });
+        }
+      }
+    });
+    
+    return azStats.sort((a, b) => b.season - a.season);
+  };
+
+  // Get full career grouped by club
+  const getFullCareerGroupedByClub = () => {
+    if (!playerData || playerData.length === 0) return [];
+    
+    const clubMap = new Map<number, {
       team: { id: number; name: string; logo: string };
-      league: { name: string; logo: string };
-      stats: any;
-      isAZ: boolean;
-    }> = [];
+      seasons: Array<{ season: number; stats: any[] }>;
+    }>();
     
     playerData.forEach(seasonData => {
       seasonData.statistics.forEach(stat => {
-        // Only include seasons with actual game appearances
-        if (stat.games?.appearences && stat.games.appearences > 0) {
-          allSeasons.push({
-            season: stat.league.season,
-            team: stat.team,
-            league: stat.league,
-            stats: stat,
-            isAZ: stat.team.id === azTeamId
-          });
+        if (stat.games?.appearences > 0) {
+          const teamId = stat.team.id;
+          
+          if (!clubMap.has(teamId)) {
+            clubMap.set(teamId, {
+              team: stat.team,
+              seasons: []
+            });
+          }
+          
+          const club = clubMap.get(teamId)!;
+          const existingSeason = club.seasons.find(s => s.season === stat.league.season);
+          
+          if (existingSeason) {
+            existingSeason.stats.push(stat);
+          } else {
+            club.seasons.push({ season: stat.league.season, stats: [stat] });
+          }
         }
       });
     });
     
-    // Sort by season (newest first)
-    return allSeasons.sort((a, b) => b.season - a.season);
+    // Sort seasons within each club
+    clubMap.forEach(club => {
+      club.seasons.sort((a, b) => b.season - a.season);
+    });
+    
+    // Convert to array and sort (AZ first, then by total games)
+    return Array.from(clubMap.values()).sort((a, b) => {
+      if (a.team.id === azTeamId) return -1;
+      if (b.team.id === azTeamId) return 1;
+      const aGames = a.seasons.reduce((sum, s) => sum + s.stats.reduce((ss, st) => ss + (st.games?.appearences || 0), 0), 0);
+      const bGames = b.seasons.reduce((sum, s) => sum + s.stats.reduce((ss, st) => ss + (st.games?.appearences || 0), 0), 0);
+      return bGames - aGames;
+    });
+  };
+
+  const toggleDetails = (key: string) => {
+    const newSet = new Set(expandedDetails);
+    if (newSet.has(key)) {
+      newSet.delete(key);
+    } else {
+      newSet.add(key);
+    }
+    setExpandedDetails(newSet);
+  };
+
+  const toggleClub = (teamId: number) => {
+    const newSet = new Set(expandedClubs);
+    if (newSet.has(teamId)) {
+      newSet.delete(teamId);
+    } else {
+      newSet.add(teamId);
+    }
+    setExpandedClubs(newSet);
   };
 
   const playerInfo = playerData?.[0]?.player;
   const azCareerTotals = getAZCareerTotals();
+  const position = playerData?.[0]?.statistics[0]?.games?.position;
 
   if (error) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
         <div className="px-4 pt-6 pb-20">
-          <Card className="bg-card border border-border shadow-sm">
-            <CardContent className="p-6">
-              <div className="text-center py-8">
-                <p className="text-premium-gray-600 dark:text-gray-300 mb-4">
-                  Fout bij het laden van speler informatie
-                </p>
-                <Button onClick={() => navigate(-1)} className="bg-az-red hover:bg-az-red/90 text-white">
-                  Terug
-                </Button>
-              </div>
+          <Card className="bg-card border border-border">
+            <CardContent className="p-6 text-center">
+              <p className="text-muted-foreground mb-4">Fout bij het laden van speler informatie</p>
+              <Button onClick={() => navigate(-1)} className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                Terug
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -270,12 +422,10 @@ const SpelerProfiel = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="px-4 pt-6 pb-20">
-          <div className="space-y-6">
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-64 w-full" />
-          </div>
+        <div className="px-4 pt-6 pb-20 space-y-4">
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-48 w-full" />
         </div>
         <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
@@ -287,16 +437,12 @@ const SpelerProfiel = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="px-4 pt-6 pb-20">
-          <Card className="bg-card border border-border shadow-sm">
-            <CardContent className="p-6">
-              <div className="text-center py-8">
-                <p className="text-premium-gray-600 dark:text-gray-300 mb-4">
-                  Speler niet gevonden
-                </p>
-                <Button onClick={() => navigate(-1)} className="bg-az-red hover:bg-az-red/90 text-white">
-                  Terug
-                </Button>
-              </div>
+          <Card className="bg-card border border-border">
+            <CardContent className="p-6 text-center">
+              <p className="text-muted-foreground mb-4">Speler niet gevonden</p>
+              <Button onClick={() => navigate(-1)} className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                Terug
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -305,217 +451,223 @@ const SpelerProfiel = () => {
     );
   }
 
+  const currentSeasonStats = getCurrentSeasonStats();
+  const azCareerStats = getAZCareerStats();
+  const fullCareerByClub = getFullCareerGroupedByClub();
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="px-4 pt-6 pb-20 space-y-6">
+      <div className="px-4 pt-6 pb-20 space-y-4">
         {/* Back button */}
         <Button 
           variant="ghost" 
           onClick={() => navigate(-1)}
-          className="text-premium-gray-600 dark:text-gray-300 hover:text-az-red p-0"
+          className="text-muted-foreground hover:text-primary p-0 h-auto"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Terug naar statistieken
+          Terug
         </Button>
 
-        {/* Player Profile Header */}
-        <Card className="bg-card border border-border shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex flex-col sm:flex-row gap-6">
-              <div className="flex-shrink-0">
-                <img 
-                  src={playerInfo.photo} 
-                  alt={playerInfo.name}
-                  className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-az-red"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/placeholder.svg';
-                  }}
-                />
-              </div>
-              
-              <div className="flex-1 space-y-4">
-                <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-az-black dark:text-white">
+        {/* Compact Player Header */}
+        <Card className="bg-card border border-border">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-4">
+              <img 
+                src={playerInfo.photo} 
+                alt={playerInfo.name}
+                className="w-16 h-16 rounded-full object-cover border-2 border-primary flex-shrink-0"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/placeholder.svg';
+                }}
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center flex-wrap gap-2">
+                  <h1 className="text-xl font-bold text-foreground truncate">
                     {playerInfo.name}
                   </h1>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    <Badge variant="secondary" className="bg-az-red text-white">
-                      AZ Alkmaar
+                  {position && (
+                    <Badge variant="secondary" className="bg-primary/10 text-primary text-xs">
+                      {translatePosition(position)}
                     </Badge>
-                    {playerData?.[0]?.statistics[0]?.games?.position && (
-                      <Badge variant="outline" className="border-premium-gray-300 dark:border-gray-600">
-                        {translatePosition(playerData[0].statistics[0].games.position)}
-                      </Badge>
-                    )}
-                  </div>
+                  )}
+                  <span className="text-sm text-muted-foreground">{playerInfo.nationality}</span>
                 </div>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-premium-gray-600 dark:text-gray-400" />
-                    <span className="text-premium-gray-600 dark:text-gray-300">{playerInfo.age} jaar</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-premium-gray-600 dark:text-gray-400" />
-                    <span className="text-premium-gray-600 dark:text-gray-300">
-                      {formatDate(playerInfo.birth.date)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-premium-gray-600 dark:text-gray-400" />
-                    <span className="text-premium-gray-600 dark:text-gray-300">
-                      {playerInfo.birth.place}, {playerInfo.birth.country}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Trophy className="w-4 h-4 text-premium-gray-600 dark:text-gray-400" />
-                    <span className="text-premium-gray-600 dark:text-gray-300">{playerInfo.nationality}</span>
-                  </div>
-                </div>
-                
-                {(playerInfo.height || playerInfo.weight) && (
-                  <div className="flex gap-4 text-sm text-premium-gray-600 dark:text-gray-300">
-                    {playerInfo.height && <span>Lengte: {playerInfo.height}</span>}
-                    {playerInfo.weight && <span>Gewicht: {playerInfo.weight}</span>}
-                  </div>
-                )}
+                <p className="text-sm text-muted-foreground mt-1">
+                  {playerInfo.age} jaar
+                  {playerInfo.height && ` • ${playerInfo.height}`}
+                  {playerInfo.weight && ` • ${playerInfo.weight}`}
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* AZ Career Totals */}
-        {azCareerTotals && (
-        <Card className="bg-card border border-border shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-az-black dark:text-white">AZ-Carrière</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-2xl font-bold text-az-red">{azCareerTotals.games}</div>
-                  <div className="text-sm text-premium-gray-600 dark:text-gray-300">Wedstrijden</div>
+        {/* AZ Career Stats - 2x3 Grid */}
+        {azCareerTotals && azCareerTotals.games > 0 && (
+          <Card className="bg-card border border-border">
+            <CardContent className="p-4">
+              <h2 className="text-sm font-semibold text-muted-foreground mb-3">AZ-CARRIÈRE</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="text-center p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Trophy className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="text-2xl font-bold text-foreground">{azCareerTotals.games}</div>
+                  <div className="text-xs text-muted-foreground">Wedstrijden</div>
                 </div>
-                <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-2xl font-bold text-az-red">{Math.round(azCareerTotals.minutes / 90)}</div>
-                  <div className="text-sm text-premium-gray-600 dark:text-gray-300">Volledige wedstrijden</div>
+                <div className="text-center p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Clock className="w-4 h-4 text-blue-500" />
+                  </div>
+                  <div className="text-2xl font-bold text-foreground">{Math.round(azCareerTotals.minutes / 90)}</div>
+                  <div className="text-xs text-muted-foreground">Vol. wedstr.</div>
                 </div>
-                <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
+                <div className="text-center p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Target className="w-4 h-4 text-green-500" />
+                  </div>
                   <div className="text-2xl font-bold text-green-600">{azCareerTotals.goals}</div>
-                  <div className="text-sm text-premium-gray-600 dark:text-gray-300">Doelpunten</div>
+                  <div className="text-xs text-muted-foreground">Doelpunten</div>
                 </div>
-                <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
+                <div className="text-center p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Users className="w-4 h-4 text-blue-500" />
+                  </div>
                   <div className="text-2xl font-bold text-blue-600">{azCareerTotals.assists}</div>
-                  <div className="text-sm text-premium-gray-600 dark:text-gray-300">Assists</div>
+                  <div className="text-xs text-muted-foreground">Assists</div>
                 </div>
-                <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-2xl font-bold text-az-red">{azCareerTotals.yellowCards}</div>
-                  <div className="text-sm text-premium-gray-600 dark:text-gray-300">Gele kaarten</div>
+                <div className="text-center p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Square className="w-4 h-4 text-yellow-500" />
+                  </div>
+                  <div className="text-2xl font-bold text-yellow-600">{azCareerTotals.yellowCards}</div>
+                  <div className="text-xs text-muted-foreground">Gele kaarten</div>
                 </div>
-                <div className="text-center p-4 bg-premium-gray-50 dark:bg-gray-700 rounded-lg">
+                <div className="text-center p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <AlertTriangle className="w-4 h-4 text-red-500" />
+                  </div>
                   <div className="text-2xl font-bold text-red-600">{azCareerTotals.redCards}</div>
-                  <div className="text-sm text-premium-gray-600 dark:text-gray-300">Rode kaarten</div>
+                  <div className="text-xs text-muted-foreground">Rode kaarten</div>
                 </div>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Season by Season Statistics */}
-        <Card className="bg-card border border-border shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-az-black dark:text-white">Seizoen Statistieken</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {playerData && playerData.length > 0 ? (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="hover:bg-transparent border-b border-gray-200 dark:border-gray-700">
-                      <TableHead className="text-az-black dark:text-white font-semibold">Seizoen</TableHead>
-                      <TableHead className="text-center text-az-black dark:text-white font-semibold">Team</TableHead>
-                      <TableHead className="text-center text-az-black dark:text-white font-semibold">Competitie</TableHead>
-                      <TableHead className="text-center text-az-black dark:text-white font-semibold">Wedst</TableHead>
-                      <TableHead className="text-center text-az-black dark:text-white font-semibold">Min</TableHead>
-                      <TableHead className="text-center text-az-black dark:text-white font-semibold">Goals</TableHead>
-                      <TableHead className="text-center text-az-black dark:text-white font-semibold">Assists</TableHead>
-                      <TableHead className="text-center text-az-black dark:text-white font-semibold">🟡</TableHead>
-                      <TableHead className="text-center text-az-black dark:text-white font-semibold">🟥</TableHead>
-                      <TableHead className="text-center text-az-black dark:text-white font-semibold">Rating</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {getAllCareerSeasons().map((seasonInfo, index) => {
-                      const stats = seasonInfo.stats;
-                      
-                      return (
-                        <TableRow 
-                          key={`${seasonInfo.season}-${seasonInfo.team.id}-${index}`} 
-                          className={`hover:bg-premium-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 ${
-                            seasonInfo.isAZ ? 'bg-az-red/5 dark:bg-az-red/10' : ''
-                          }`}
-                        >
-                          <TableCell className="font-medium text-az-black dark:text-white">
-                            {seasonInfo.season}-{(seasonInfo.season + 1).toString().slice(-2)}
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <div className="flex items-center justify-center gap-2">
-                              <img 
-                                src={seasonInfo.team.logo} 
-                                alt={seasonInfo.team.name}
-                                className="w-4 h-4"
-                              />
-                              <span className={`text-xs ${seasonInfo.isAZ ? 'font-semibold text-az-red' : 'text-premium-gray-600 dark:text-gray-300'}`}>
-                                {seasonInfo.team.name}
-                              </span>
+        {/* Season Statistics with Tabs */}
+        <Card className="bg-card border border-border">
+          <CardContent className="p-4">
+            <Tabs value={statsTab} onValueChange={setStatsTab}>
+              <TabsList className="grid w-full grid-cols-3 mb-4">
+                <TabsTrigger value="current" className="text-xs sm:text-sm">Huidig seizoen</TabsTrigger>
+                <TabsTrigger value="az" className="text-xs sm:text-sm">AZ Carrière</TabsTrigger>
+                <TabsTrigger value="full" className="text-xs sm:text-sm">Volledige carrière</TabsTrigger>
+              </TabsList>
+
+              {/* Current Season Tab */}
+              <TabsContent value="current" className="space-y-3">
+                {currentSeasonStats.length > 0 ? (
+                  currentSeasonStats.map((stat, idx) => (
+                    <CompetitionCard
+                      key={`current-${idx}`}
+                      stat={stat}
+                      showDetails={expandedDetails.has(`current-${idx}`)}
+                      onToggleDetails={() => toggleDetails(`current-${idx}`)}
+                    />
+                  ))
+                ) : (
+                  <p className="text-center text-muted-foreground py-4">
+                    Nog geen statistieken dit seizoen
+                  </p>
+                )}
+              </TabsContent>
+
+              {/* AZ Career Tab */}
+              <TabsContent value="az" className="space-y-4">
+                {azCareerStats.length > 0 ? (
+                  azCareerStats.map((seasonData) => (
+                    <div key={seasonData.season}>
+                      <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+                        {seasonData.season}-{(seasonData.season + 1).toString().slice(-2)}
+                      </h3>
+                      <div className="space-y-2">
+                        {seasonData.stats.map((stat, idx) => (
+                          <CompetitionCard
+                            key={`az-${seasonData.season}-${idx}`}
+                            stat={stat}
+                            showDetails={expandedDetails.has(`az-${seasonData.season}-${idx}`)}
+                            onToggleDetails={() => toggleDetails(`az-${seasonData.season}-${idx}`)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-muted-foreground py-4">
+                    Geen AZ statistieken beschikbaar
+                  </p>
+                )}
+              </TabsContent>
+
+              {/* Full Career Tab */}
+              <TabsContent value="full" className="space-y-3">
+                {fullCareerByClub.length > 0 ? (
+                  fullCareerByClub.map((club) => (
+                    <Collapsible
+                      key={club.team.id}
+                      open={expandedClubs.has(club.team.id) || club.team.id === azTeamId}
+                      onOpenChange={() => toggleClub(club.team.id)}
+                    >
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
+                          <div className="flex items-center gap-3">
+                            <img 
+                              src={club.team.logo} 
+                              alt={club.team.name}
+                              className="w-8 h-8 object-contain"
+                            />
+                            <span className={`font-semibold ${club.team.id === azTeamId ? 'text-primary' : 'text-foreground'}`}>
+                              {club.team.name}
+                            </span>
+                          </div>
+                          {expandedClubs.has(club.team.id) || club.team.id === azTeamId ? (
+                            <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                          )}
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-2 space-y-3 pl-2">
+                        {club.seasons.map((seasonData) => (
+                          <div key={seasonData.season}>
+                            <h4 className="text-xs font-medium text-muted-foreground mb-2">
+                              {seasonData.season}-{(seasonData.season + 1).toString().slice(-2)}
+                            </h4>
+                            <div className="space-y-2">
+                              {seasonData.stats.map((stat, idx) => (
+                                <CompetitionCard
+                                  key={`full-${club.team.id}-${seasonData.season}-${idx}`}
+                                  stat={stat}
+                                  showDetails={expandedDetails.has(`full-${club.team.id}-${seasonData.season}-${idx}`)}
+                                  onToggleDetails={() => toggleDetails(`full-${club.team.id}-${seasonData.season}-${idx}`)}
+                                />
+                              ))}
                             </div>
-                          </TableCell>
-                          <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
-                            <div className="flex items-center justify-center gap-2">
-                              <img 
-                                src={seasonInfo.league.logo} 
-                                alt={seasonInfo.league.name}
-                                className="w-4 h-4"
-                              />
-                              <span className="text-xs">{seasonInfo.league.name}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
-                            {stats.games?.appearences || 0}
-                          </TableCell>
-                          <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
-                            {stats.games?.minutes || 0}
-                          </TableCell>
-                          <TableCell className="text-center font-bold text-green-600">
-                            {stats.goals?.total || 0}
-                          </TableCell>
-                          <TableCell className="text-center font-bold text-blue-600">
-                            {stats.goals?.assists || 0}
-                          </TableCell>
-                          <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
-                            {stats.cards?.yellow || 0}
-                          </TableCell>
-                          <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
-                            {stats.cards?.red || 0}
-                          </TableCell>
-                          <TableCell className="text-center text-premium-gray-600 dark:text-gray-300">
-                            {stats.games?.rating ? parseFloat(stats.games.rating).toFixed(1) : '-'}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-premium-gray-600 dark:text-gray-300">
-                  Geen seizoen statistieken beschikbaar
-                </p>
-              </div>
-            )}
+                          </div>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ))
+                ) : (
+                  <p className="text-center text-muted-foreground py-4">
+                    Geen carrière statistieken beschikbaar
+                  </p>
+                )}
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>
