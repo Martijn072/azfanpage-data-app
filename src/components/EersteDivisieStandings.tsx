@@ -45,20 +45,26 @@ export const EersteDivisieStandings = () => {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-muted/50 border-b border-border">
-                <TableHead className="w-12 text-foreground font-semibold">#</TableHead>
+                <TableHead className="w-8 sm:w-12 text-foreground font-semibold">#</TableHead>
                 <TableHead className="text-foreground font-semibold">Team</TableHead>
-                <TableHead className="text-center w-12 text-foreground font-semibold">Wed</TableHead>
-                <TableHead className="text-center w-12 text-foreground font-semibold">W</TableHead>
-                <TableHead className="text-center w-12 text-foreground font-semibold">G</TableHead>
-                <TableHead className="text-center w-12 text-foreground font-semibold">V</TableHead>
-                <TableHead className="text-center w-16 text-foreground font-semibold">Doelpunten</TableHead>
-                <TableHead className="text-center w-12 text-foreground font-semibold">Ptn</TableHead>
+                <TableHead className="text-center w-10 sm:w-12 text-foreground font-semibold">Wed</TableHead>
+                <TableHead className="hidden sm:table-cell text-center w-12 text-foreground font-semibold">W</TableHead>
+                <TableHead className="hidden sm:table-cell text-center w-12 text-foreground font-semibold">G</TableHead>
+                <TableHead className="hidden sm:table-cell text-center w-12 text-foreground font-semibold">V</TableHead>
+                <TableHead className="text-center w-12 sm:w-16 text-foreground font-semibold">
+                  <span className="hidden sm:inline">Doelpunten</span>
+                  <span className="sm:hidden">+/-</span>
+                </TableHead>
+                <TableHead className="text-center w-10 sm:w-12 text-foreground font-semibold">Ptn</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {standings?.map((standing, index) => {
                 const isJongAZ = standing.team.name.toLowerCase().includes('jong') && 
                                standing.team.name.toLowerCase().includes('az');
+                
+                const goalDiff = standing.all.goals.for - standing.all.goals.against;
+                const goalDiffDisplay = goalDiff > 0 ? `+${goalDiff}` : `${goalDiff}`;
                 
                 return (
                   <TableRow 
@@ -67,49 +73,50 @@ export const EersteDivisieStandings = () => {
                     className={`${isJongAZ ? 'bg-az-red/10 border-b border-az-red/20 hover:bg-az-red/15' : 'hover:bg-muted/50 border-b border-border'} transition-all duration-200 animate-fade-in cursor-pointer`}
                     style={{ animationDelay: `${index * 0.02}s` }}
                   >
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium px-2 sm:px-4">
                       <span className={isJongAZ ? 'text-az-red font-bold' : 'text-foreground'}>
                         {standing.rank}
                       </span>
                     </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
+                    <TableCell className="px-2 sm:px-4">
+                      <div className="flex items-center gap-2 sm:gap-3">
                         <img 
                           src={standing.team.logo} 
                           alt={standing.team.name}
-                          className="w-6 h-6 object-contain transform transition-transform duration-200 hover:scale-110"
+                          className="w-5 h-5 sm:w-6 sm:h-6 object-contain transform transition-transform duration-200 hover:scale-110"
                         />
                         <span className={`hidden sm:block font-medium ${isJongAZ ? 'text-az-red font-bold' : 'text-foreground'}`}>
                           {standing.team.name}
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-center px-2 sm:px-4">
                       <span className={isJongAZ ? 'text-az-red font-bold' : 'text-foreground'}>
                         {standing.all.played}
                       </span>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="hidden sm:table-cell text-center">
                       <span className={isJongAZ ? 'text-az-red font-bold' : 'text-foreground'}>
                         {standing.all.win}
                       </span>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="hidden sm:table-cell text-center">
                       <span className={isJongAZ ? 'text-az-red font-bold' : 'text-foreground'}>
                         {standing.all.draw}
                       </span>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="hidden sm:table-cell text-center">
                       <span className={isJongAZ ? 'text-az-red font-bold' : 'text-foreground'}>
                         {standing.all.lose}
                       </span>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-center px-2 sm:px-4">
                       <span className={isJongAZ ? 'text-az-red font-bold' : 'text-foreground'}>
-                        {standing.all.goals.for}-{standing.all.goals.against}
+                        <span className="sm:hidden">{goalDiffDisplay}</span>
+                        <span className="hidden sm:inline">{standing.all.goals.for}-{standing.all.goals.against}</span>
                       </span>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-center px-2 sm:px-4">
                       <span className={`font-bold ${isJongAZ ? 'text-az-red' : 'text-foreground'}`}>
                         {standing.points}
                       </span>
