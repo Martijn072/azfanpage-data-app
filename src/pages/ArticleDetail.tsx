@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo } from "react";
 import DOMPurify from 'dompurify';
 import { useParams, useNavigate } from "react-router-dom";
 import { Download, Wifi } from "lucide-react";
+import { RelatedArticlesCarousel } from "@/components/RelatedArticlesCarousel";
+import { InlineFollowWidget } from "@/components/InlineFollowWidget";
 import { useArticleDetail } from "@/hooks/useArticleDetail";
 import { ArticlesSkeleton } from "@/components/ArticlesSkeleton";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -528,6 +530,17 @@ const ArticleDetail = () => {
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
         </div>
+
+        {/* Related articles carousel - only show when online */}
+        {!isShowingCachedContent && displayArticle.category && (
+          <RelatedArticlesCarousel
+            currentArticleId={displayArticle.id}
+            category={displayArticle.category}
+          />
+        )}
+
+        {/* Inline follow widget - only show when online */}
+        {!isShowingCachedContent && <InlineFollowWidget />}
 
         {/* Comments only show for online content */}
         {!isShowingCachedContent && (
