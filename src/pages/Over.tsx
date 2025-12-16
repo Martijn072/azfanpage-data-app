@@ -3,7 +3,6 @@ import { BottomNavigation } from "@/components/BottomNavigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
-  Heart, 
   Users, 
   Trophy, 
   Calendar, 
@@ -28,9 +27,11 @@ const Over = () => {
           <Card className="bg-card border border-border shadow-sm">
             <CardHeader>
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-az-red/10 dark:bg-az-red/20 rounded-xl flex items-center justify-center">
-                  <Heart className="w-8 h-8 text-az-red" />
-                </div>
+                <img 
+                  src="/images/az-fanpage-logo.png" 
+                  alt="AZFanpage logo" 
+                  className="w-16 h-16 rounded-xl object-contain"
+                />
                 <div>
                   <CardTitle className="text-2xl font-bold text-foreground">
                     AZFanpage
