@@ -50,9 +50,10 @@ export const transformPost = (post: WordPressPost): Article => {
     slug: post.slug,
     title: cleanHtmlContent(post.title.rendered),
     excerpt: excerpt,
-    content: post.content.rendered, // Full content for article detail
+    content: post.content.rendered,
     author: author,
-    publishedAt: publishedAt,
+    date: post.date, // ISO format for filtering
+    publishedAt: publishedAt, // Relative format for display
     imageUrl: featuredImage,
     category: category,
     isBreaking: isBreaking,

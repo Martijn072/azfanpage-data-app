@@ -25,13 +25,16 @@ export const useRecentAuthors = () => {
       const threeMonthsAgo = new Date();
       threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
-      articles.forEach((article: { author: string; date: string }) => {
-        const articleDate = new Date(article.date);
-        if (articleDate >= threeMonthsAgo && article.author) {
-          // Filter out generic fallback names
-          if (article.author !== "AZFanpage Redactie" && article.author !== "Redactie") {
-            const count = authorCounts.get(article.author) || 0;
-            authorCounts.set(article.author, count + 1);
+      articles.forEach((article: { author: string; date?: string }) => {
+        // Use ISO date field for filtering
+        if (article.date && article.author) {
+          const articleDate = new Date(article.date);
+          if (articleDate >= threeMonthsAgo) {
+            // Filter out generic fallback names
+            if (article.author !== "AZFanpage Redactie" && article.author !== "Redactie") {
+              const count = authorCounts.get(article.author) || 0;
+              authorCounts.set(article.author, count + 1);
+            }
           }
         }
       });

@@ -220,16 +220,20 @@ const Over = () => {
                 </a>
               </div>
 
-              <div className="pt-4 border-t border-border space-y-2">
-                <a 
-                  href="https://072design.nl" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Powered by 072DESIGN
-                </a>
-                <p className="text-xs text-muted-foreground">
+              <div className="pt-4 border-t border-border space-y-4">
+                <div className="bg-gradient-to-r from-az-red/10 to-az-red/5 border border-az-red/20 rounded-lg p-4 text-center">
+                  <a 
+                    href="https://072design.nl" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-foreground hover:text-az-red transition-colors"
+                  >
+                    <span className="text-sm text-muted-foreground">Powered by</span>
+                    <span className="font-semibold">072DESIGN</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
                   © 2025 AZFanpage — Niet officieel gelieerd aan AZ Alkmaar
                 </p>
               </div>

@@ -30,7 +30,8 @@ export interface Article {
   excerpt: string;
   content: string;
   author: string;
-  publishedAt: string;
+  date: string; // ISO format for filtering
+  publishedAt: string; // Relative format for display
   imageUrl: string;
   category: string;
   isBreaking: boolean;
