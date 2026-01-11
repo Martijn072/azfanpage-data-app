@@ -83,7 +83,7 @@ export const InlineShareWidget = ({ article }: InlineShareWidgetProps) => {
       name: "X",
       icon: XIcon,
       onClick: handleTwitterShare,
-      bgColor: "bg-foreground hover:bg-foreground/80",
+      bgColor: "bg-black hover:bg-gray-800",
     },
     {
       name: "Kopieer link",
