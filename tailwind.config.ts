@@ -93,8 +93,8 @@ export default {
 			},
 		fontFamily: {
 			'headline': ['Outfit', 'system-ui', 'sans-serif'],
-			'body': ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-			'sans': ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+			'body': ['Lora', 'Georgia', 'serif'],
+			'sans': ['Lora', 'Georgia', 'serif'],
 		},
 			fontSize: {
 				'headline-xl': ['2.5rem', { lineHeight: '1.25', fontWeight: '700' }],
