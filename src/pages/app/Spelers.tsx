@@ -6,15 +6,9 @@ import { SquadPlayer } from "@/types/footballApi";
 import { Users, Search, Shield, Crosshair, Footprints, Goal } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { POSITION_OVERRIDES } from "@/utils/positionOverrides";
 
 const AZ_TEAM_ID = 201;
-
-// Override API positions where they differ from practice
-const POSITION_OVERRIDES: Record<string, string> = {
-  "T. Parrott": "Attacker",
-  "Weslley Patati": "Attacker",
-  "Ro-Zangelo Daal": "Attacker",
-};
 
 const applyPositionOverrides = (players: SquadPlayer[]): SquadPlayer[] =>
   players.map(p => POSITION_OVERRIDES[p.name] ? { ...p, position: POSITION_OVERRIDES[p.name] } : p);

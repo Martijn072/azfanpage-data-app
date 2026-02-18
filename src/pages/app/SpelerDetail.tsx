@@ -4,6 +4,7 @@ import { PlayerSeasonStats } from "@/types/footballApi";
 import { ArrowLeft, Calendar, MapPin, Flag, Ruler, Weight, Shirt, Star, Goal as GoalIcon, Footprints, ShieldAlert, CreditCard } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { getOverriddenPosition } from "@/utils/positionOverrides";
 
 const StatBox = ({ label, value, sub }: { label: string; value: string | number; sub?: string }) => (
   <div className="bg-card border border-border rounded-xl p-4 text-center">
@@ -150,7 +151,7 @@ const SpelerDetail = () => {
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-2 text-app-small text-muted-foreground">
               {filteredStats[0]?.games.position && (
                 <span className="bg-primary/15 text-primary px-2 py-0.5 rounded-full font-semibold text-[11px] uppercase tracking-wider">
-                  {filteredStats[0].games.position}
+                  {getOverriddenPosition(player.name, filteredStats[0].games.position)}
                 </span>
               )}
               {filteredStats[0]?.games.number && (
