@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { SeasonProvider } from "@/contexts/SeasonContext";
 
 const Dashboard = lazy(() => import("./pages/app/Dashboard"));
 const Wedstrijden = lazy(() => import("./pages/app/Wedstrijden"));
@@ -28,6 +29,7 @@ function App() {
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <SeasonProvider>
             <AppLayout>
               <Suspense fallback={<div className="animate-pulse h-64 bg-card rounded-xl" />}>
                 <Routes>
@@ -43,6 +45,7 @@ function App() {
                 </Routes>
               </Suspense>
             </AppLayout>
+          </SeasonProvider>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

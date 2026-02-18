@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { callFootballApi } from '@/utils/footballApiClient';
 import { FootballApiResponse } from '@/types/footballApi';
-import { getCurrentActiveSeason } from '@/utils/seasonUtils';
+import { useSeason } from '@/contexts/SeasonContext';
 
 interface League {
   id: number;
@@ -23,21 +23,20 @@ interface League {
 }
 
 export const useLeagueIdByName = (country: string, leagueName: string) => {
-  const seasonInfo = getCurrentActiveSeason();
+  const { season } = useSeason();
   
   return useQuery({
-    queryKey: ['league-id', country, leagueName, seasonInfo.currentSeason],
+    queryKey: ['league-id', country, leagueName, season],
     queryFn: async () => {
-      console.log(`🔍 Searching for league: "${leagueName}" in ${country} for season ${seasonInfo.currentSeason}...`);
+      console.log(`🔍 Searching for league: "${leagueName}" in ${country} for season ${season}...`);
       
       const response: FootballApiResponse<League> = await callFootballApi('/leagues', {
         country: country,
-        season: seasonInfo.currentSeason
+        season: season
       });
       
       console.log('📊 Leagues API Response:', response);
       
-      // Filter leagues strictly by country and match robustly by name
       const leaguesInCountry = (response.response || []).filter(item => 
         item?.country?.name?.toLowerCase() === country.toLowerCase()
       );
@@ -53,10 +52,9 @@ export const useLeagueIdByName = (country: string, leagueName: string) => {
       let leagueId = league ? league.id : null;
       let foundName = league ? league.name : null;
 
-      // Fallback to known ID if API doesn't return the league for some reason
       if (!leagueId && country.toLowerCase() === 'netherlands') {
         console.warn('⚠️ Eerste Divisie not found via API, falling back to static ID 89');
-        leagueId = 89; // API-Football ID for Keuken Kampioen Divisie (Eerste Divisie)
+        leagueId = 89;
         foundName = 'Keuken Kampioen Divisie';
       }
       
@@ -64,7 +62,7 @@ export const useLeagueIdByName = (country: string, leagueName: string) => {
       
       return { id: leagueId, name: foundName };
     },
-    staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
+    staleTime: 1000 * 60 * 60 * 24,
     retry: 2,
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });

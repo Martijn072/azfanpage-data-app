@@ -2,19 +2,19 @@
 import { useQuery } from '@tanstack/react-query';
 import { callFootballApi } from '@/utils/footballApiClient';
 import { FootballApiResponse, Fixture } from '@/types/footballApi';
-import { getCurrentActiveSeason } from '@/utils/seasonUtils';
+import { useSeason } from '@/contexts/SeasonContext';
 
 export const useTeamFixtures = (teamId: number, last?: number) => {
-  const seasonInfo = getCurrentActiveSeason();
+  const { season } = useSeason();
   
   return useQuery({
-    queryKey: ['team-fixtures', teamId, seasonInfo.currentSeason, last],
+    queryKey: ['team-fixtures', teamId, season, last],
     queryFn: async () => {
-      console.log(`🏈 Fetching team fixtures for team ${teamId} in season ${seasonInfo.currentSeason}...`);
+      console.log(`🏈 Fetching team fixtures for team ${teamId} in season ${season}...`);
       
       const params: Record<string, string> = {
         team: teamId.toString(),
-        season: seasonInfo.currentSeason
+        season: season
       };
       
       if (last) {
@@ -26,7 +26,7 @@ export const useTeamFixtures = (teamId: number, last?: number) => {
       console.log('🏈 Team Fixtures API Response:', response);
       return response.response || [];
     },
-    staleTime: 1000 * 60 * 30, // Cache for 30 minutes
+    staleTime: 1000 * 60 * 30,
     retry: 2,
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
     enabled: !!teamId,
@@ -34,16 +34,16 @@ export const useTeamFixtures = (teamId: number, last?: number) => {
 };
 
 export const useTeamNextFixtures = (teamId: number, next?: number) => {
-  const seasonInfo = getCurrentActiveSeason();
+  const { season } = useSeason();
   
   return useQuery({
-    queryKey: ['team-next-fixtures', teamId, seasonInfo.currentSeason, next],
+    queryKey: ['team-next-fixtures', teamId, season, next],
     queryFn: async () => {
-      console.log(`🔮 Fetching upcoming team fixtures for team ${teamId} in season ${seasonInfo.currentSeason}...`);
+      console.log(`🔮 Fetching upcoming team fixtures for team ${teamId} in season ${season}...`);
       
       const params: Record<string, string> = {
         team: teamId.toString(),
-        season: seasonInfo.currentSeason
+        season: season
       };
       
       if (next) {
@@ -55,7 +55,7 @@ export const useTeamNextFixtures = (teamId: number, next?: number) => {
       console.log('🔮 Team Next Fixtures API Response:', response);
       return response.response || [];
     },
-    staleTime: 1000 * 60 * 30, // Cache for 30 minutes
+    staleTime: 1000 * 60 * 30,
     retry: 2,
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
     enabled: !!teamId,

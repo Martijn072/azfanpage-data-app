@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { callFootballApi } from '@/utils/footballApiClient';
 import { FootballApiResponse } from '@/types/footballApi';
-import { getCurrentActiveSeason } from '@/utils/seasonUtils';
+import { useSeason } from '@/contexts/SeasonContext';
 
 interface TeamStatistics {
   league: {
@@ -40,25 +40,24 @@ interface TeamStatistics {
 }
 
 export const useTeamStatistics = (teamId: number) => {
-  const seasonInfo = getCurrentActiveSeason();
+  const { season } = useSeason();
   
   return useQuery({
-    queryKey: ['team-statistics', teamId, seasonInfo.currentSeason],
+    queryKey: ['team-statistics', teamId, season],
     queryFn: async () => {
-      console.log(`📊 Fetching team statistics for team ${teamId} in season ${seasonInfo.currentSeason}...`);
+      console.log(`📊 Fetching team statistics for team ${teamId} in season ${season}...`);
       const response = await callFootballApi('/teams/statistics', {
-        league: '88', // Eredivisie league ID
-        season: seasonInfo.currentSeason,
+        league: '88',
+        season: season,
         team: teamId.toString()
       });
       
       console.log('📊 Team Statistics API Response:', response);
-      // The API returns a single object for /teams/statistics, not an array
       const data = response.response;
       if (Array.isArray(data)) return data[0] || null;
       return data || null;
     },
-    staleTime: 1000 * 60 * 60, // Cache for 1 hour
+    staleTime: 1000 * 60 * 60,
     retry: 2,
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
     enabled: !!teamId,
