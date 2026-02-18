@@ -11,7 +11,7 @@ interface TemplateSelectorProps {
 const templates: { id: TemplateType; label: string; icon: typeof Trophy; format: string }[] = [
   { id: 'result', label: 'Uitslag', icon: Trophy, format: '1080×1080' },
   { id: 'preview', label: 'Voorbeschouwing', icon: FileSearch, format: '1080×1080' },
-  { id: 'standings', label: 'Stand', icon: BarChart3, format: '1080×1350' },
+  { id: 'standings', label: 'Stand', icon: BarChart3, format: '1080×1080' },
   { id: 'matchday', label: 'Speelronde', icon: Calendar, format: '1080×1080' },
 ];
 

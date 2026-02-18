@@ -53,14 +53,14 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
 
     if (!az) {
       return (
-        <div ref={ref} style={{ width: 1080, height: 1350 }} className="bg-[#0F1117] flex items-center justify-center">
+        <div ref={ref} style={{ width: 1080, height: 1080 }} className="bg-[#0F1117] flex items-center justify-center">
           <p className="text-[#9CA3AF] text-xl">Geen standgegevens beschikbaar</p>
         </div>
       );
     }
 
     return (
-      <div ref={ref} style={{ width: 1080, height: 1350 }} className="relative overflow-hidden flex flex-col">
+      <div ref={ref} style={{ width: 1080, height: 1080 }} className="relative overflow-hidden flex flex-col">
         {backgroundImage ? (
           <>
             <img src={backgroundImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />

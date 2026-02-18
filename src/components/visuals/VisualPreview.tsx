@@ -18,7 +18,7 @@ interface VisualPreviewProps {
 const TEMPLATE_SIZES: Record<TemplateType, { w: number; h: number }> = {
   result: { w: 1080, h: 1080 },
   preview: { w: 1080, h: 1080 },
-  standings: { w: 1080, h: 1350 },
+  standings: { w: 1080, h: 1080 },
   matchday: { w: 1080, h: 1080 },
 };
 
