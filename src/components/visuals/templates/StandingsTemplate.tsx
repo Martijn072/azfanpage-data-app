@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 import { Standing } from '@/types/footballApi';
 
 interface StandingsTemplateProps {
@@ -6,11 +6,52 @@ interface StandingsTemplateProps {
   backgroundImage?: string | null;
 }
 
+const FormDots = ({ form }: { form: string }) => {
+  const dots = form.split('').slice(-5);
+  return (
+    <div className="flex gap-3">
+      {dots.map((char, i) => {
+        const color = char === 'W' ? '#22C55E' : char === 'D' ? '#6B7280' : '#EF4444';
+        const label = char === 'W' ? 'W' : char === 'D' ? 'G' : 'V';
+        return (
+          <div key={i} className="flex flex-col items-center gap-1.5">
+            <div
+              className="rounded-full"
+              style={{ width: 28, height: 28, backgroundColor: color }}
+            />
+            <span className="text-white/50 text-xs font-body font-semibold">{label}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const ContextRow = ({ team }: { team: Standing }) => (
+  <div className="flex items-center px-6 py-4 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}>
+    <span className="w-12 text-center font-mono text-lg font-bold text-[#6B7280]">{team.rank}</span>
+    <div className="flex items-center gap-3 flex-1 ml-3">
+      <img src={team.team.logo} alt={team.team.name} className="h-8 w-8 object-contain" />
+      <span className="text-[#D1D5DB] text-lg font-headline font-medium">{team.team.name}</span>
+    </div>
+    <span className="text-[#9CA3AF] font-mono text-base w-16 text-center">{team.all.played}W</span>
+    <span className="font-mono text-xl font-bold text-[#E5E7EB] w-16 text-center">{team.points}</span>
+  </div>
+);
+
 export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplateProps>(
   ({ standings, backgroundImage }, ref) => {
-    const top10 = standings?.slice(0, 10) || [];
+    const { az, above, below } = useMemo(() => {
+      if (!standings?.length) return { az: null, above: [], below: [] };
+      const azIndex = standings.findIndex(t => t.team.name.toLowerCase().includes('az'));
+      if (azIndex === -1) return { az: null, above: [], below: [] };
+      const az = standings[azIndex];
+      const above = standings.slice(Math.max(0, azIndex - 2), azIndex);
+      const below = standings.slice(azIndex + 1, azIndex + 3);
+      return { az, above, below };
+    }, [standings]);
 
-    if (top10.length === 0) {
+    if (!az) {
       return (
         <div ref={ref} style={{ width: 1080, height: 1350 }} className="bg-[#0F1117] flex items-center justify-center">
           <p className="text-[#9CA3AF] text-xl">Geen standgegevens beschikbaar</p>
@@ -31,7 +72,8 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
         <div className="absolute top-0 left-0 right-0 h-[6px]" style={{ background: 'linear-gradient(90deg, #DB0021 0%, #DB0021 60%, transparent 100%)' }} />
 
         <div className="relative z-10 flex flex-col px-14 py-14 flex-1">
-          <div className="flex items-center justify-between mb-10">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-12">
             <div>
               <span className="text-[#DB0021] text-xl font-body font-semibold uppercase tracking-[0.25em]">
                 Eredivisie
@@ -41,49 +83,69 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
             <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-20 w-auto opacity-80" />
           </div>
 
-          <div className="flex items-center px-5 py-3 text-white/50 text-base font-body font-semibold uppercase tracking-wider">
-            <span className="w-12 text-center">#</span>
-            <span className="flex-1 ml-4">Club</span>
-            <span className="w-14 text-center">W</span>
-            <span className="w-14 text-center">G</span>
-            <span className="w-14 text-center">V</span>
-            <span className="w-16 text-center">+/-</span>
-            <span className="w-16 text-center font-bold">Ptn</span>
+          {/* AZ Central Block */}
+          <div
+            className="rounded-2xl px-10 py-10 mb-10 flex flex-col items-center"
+            style={{
+              backgroundColor: 'rgba(219,0,33,0.10)',
+              border: '2px solid rgba(219,0,33,0.35)',
+            }}
+          >
+            <div className="flex items-center gap-8 mb-6">
+              <span className="font-mono font-black text-[#DB0021]" style={{ fontSize: 80, lineHeight: 1 }}>
+                {az.rank}<sup className="text-3xl align-super">e</sup>
+              </span>
+              <img src={az.team.logo} alt={az.team.name} className="h-24 w-24 object-contain" />
+              <span className="text-white text-4xl font-headline font-bold">{az.team.name}</span>
+            </div>
+
+            <div className="flex items-center gap-12 mb-8">
+              <div className="flex flex-col items-center">
+                <span className="text-white/50 text-sm font-body uppercase tracking-wider">Punten</span>
+                <span className="text-white font-mono font-black" style={{ fontSize: 52, lineHeight: 1.1 }}>{az.points}</span>
+              </div>
+              <div className="w-px h-14 bg-white/10" />
+              <div className="flex flex-col items-center">
+                <span className="text-white/50 text-sm font-body uppercase tracking-wider">Gespeeld</span>
+                <span className="text-white font-mono font-bold text-3xl">{az.all.played}</span>
+              </div>
+              <div className="w-px h-14 bg-white/10" />
+              <div className="flex flex-col items-center">
+                <span className="text-white/50 text-sm font-body uppercase tracking-wider">Doelsaldo</span>
+                <span className={`font-mono font-bold text-3xl ${az.goalsDiff > 0 ? 'text-[#22C55E]' : az.goalsDiff < 0 ? 'text-[#EF4444]' : 'text-[#9CA3AF]'}`}>
+                  {az.goalsDiff > 0 ? '+' : ''}{az.goalsDiff}
+                </span>
+              </div>
+            </div>
+
+            {az.form && (
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-white/40 text-xs font-body uppercase tracking-widest">Laatste 5</span>
+                <FormDots form={az.form} />
+              </div>
+            )}
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            {top10.map((team) => {
-              const isAZ = team.team.name.toLowerCase().includes('az');
-              return (
-                <div
-                  key={team.rank}
-                  className="flex items-center px-5 py-4 rounded-xl"
-                  style={{
-                    backgroundColor: isAZ ? 'rgba(219,0,33,0.12)' : 'rgba(255,255,255,0.03)',
-                    borderLeft: isAZ ? '4px solid #DB0021' : '4px solid transparent',
-                  }}
-                >
-                  <span className={`w-12 text-center font-mono text-lg font-bold ${isAZ ? 'text-[#DB0021]' : 'text-[#9CA3AF]'}`}>
-                    {team.rank}
-                  </span>
-                  <div className="flex items-center gap-3 flex-1 ml-4">
-                    <img src={team.team.logo} alt={team.team.name} className="h-8 w-8 object-contain" />
-                    <span className={`text-lg font-headline font-semibold ${isAZ ? 'text-white' : 'text-[#E5E7EB]'}`}>
-                      {team.team.name}
-                    </span>
-                  </div>
-                  <span className="w-14 text-center text-[#E5E7EB] font-mono text-base">{team.all.win}</span>
-                  <span className="w-14 text-center text-[#E5E7EB] font-mono text-base">{team.all.draw}</span>
-                  <span className="w-14 text-center text-[#E5E7EB] font-mono text-base">{team.all.lose}</span>
-                  <span className={`w-16 text-center font-mono text-base ${team.goalsDiff > 0 ? 'text-[#22C55E]' : team.goalsDiff < 0 ? 'text-[#EF4444]' : 'text-[#9CA3AF]'}`}>
-                    {team.goalsDiff > 0 ? '+' : ''}{team.goalsDiff}
-                  </span>
-                  <span className={`w-16 text-center font-mono text-xl font-bold ${isAZ ? 'text-white' : 'text-[#E5E7EB]'}`}>
-                    {team.points}
-                  </span>
-                </div>
-              );
-            })}
+          {/* Context teams */}
+          <div className="flex flex-col gap-2">
+            {above.map(t => <ContextRow key={t.rank} team={t} />)}
+            {/* AZ row in context */}
+            <div
+              className="flex items-center px-6 py-4 rounded-xl"
+              style={{
+                backgroundColor: 'rgba(219,0,33,0.12)',
+                borderLeft: '4px solid #DB0021',
+              }}
+            >
+              <span className="w-12 text-center font-mono text-lg font-bold text-[#DB0021]">{az.rank}</span>
+              <div className="flex items-center gap-3 flex-1 ml-3">
+                <img src={az.team.logo} alt={az.team.name} className="h-8 w-8 object-contain" />
+                <span className="text-white text-lg font-headline font-bold">{az.team.name}</span>
+              </div>
+              <span className="text-white/60 font-mono text-base w-16 text-center">{az.all.played}W</span>
+              <span className="font-mono text-xl font-bold text-white w-16 text-center">{az.points}</span>
+            </div>
+            {below.map(t => <ContextRow key={t.rank} team={t} />)}
           </div>
         </div>
       </div>
