@@ -16,14 +16,18 @@ const STAT_KEYS = [
   "Shots on Goal",
   "Shots off Goal",
   "Blocked Shots",
+  "Shots insidebox",
+  "Shots outsidebox",
   "Corner Kicks",
   "Fouls",
   "Offsides",
   "Yellow Cards",
   "Red Cards",
+  "Goalkeeper Saves",
   "Total passes",
   "Passes accurate",
   "Passes %",
+  "goals_prevented",
 ];
 
 const STAT_LABELS: Record<string, string> = {
@@ -33,14 +37,18 @@ const STAT_LABELS: Record<string, string> = {
   "Shots on Goal": "Schoten op doel",
   "Shots off Goal": "Schoten naast",
   "Blocked Shots": "Geblokte schoten",
+  "Shots insidebox": "Schoten in 16m",
+  "Shots outsidebox": "Schoten buiten 16m",
   "Corner Kicks": "Corners",
   "Fouls": "Overtredingen",
   "Offsides": "Buitenspel",
   "Yellow Cards": "Gele kaarten",
   "Red Cards": "Rode kaarten",
+  "Goalkeeper Saves": "Reddingen keeper",
   "Total passes": "Passes totaal",
   "Passes accurate": "Geslaagde passes",
   "Passes %": "Pass percentage",
+  "goals_prevented": "Goals voorkomen",
 };
 
 export const StatComparisonBars = ({ stats, homeTeamId }: StatComparisonBarsProps) => {
