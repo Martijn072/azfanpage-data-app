@@ -87,15 +87,10 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
           <div
             className="rounded-2xl px-10 py-8 mb-8 flex flex-col items-center"
             style={{
-              backgroundColor: 'rgba(15,17,23,0.85)',
               border: '2px solid rgba(219,0,33,0.35)',
-              backdropFilter: 'blur(8px)',
             }}
           >
-            <div className="flex items-center gap-8 mb-6">
-              <span className="font-mono font-black text-[#DB0021]" style={{ fontSize: 80, lineHeight: 1 }}>
-                {az.rank}<sup className="text-3xl align-super">e</sup>
-              </span>
+            <div className="flex items-center justify-center mb-6">
               <img src={az.team.logo} alt={az.team.name} className="h-24 w-24 object-contain" />
             </div>
 
