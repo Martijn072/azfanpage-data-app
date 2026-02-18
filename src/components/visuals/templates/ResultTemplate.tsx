@@ -29,64 +29,40 @@ export const ResultTemplate = forwardRef<HTMLDivElement, ResultTemplateProps>(
         style={{ width: 1080, height: 1080 }}
         className="relative overflow-hidden flex flex-col items-center justify-center"
       >
-        {/* Background */}
         <div className="absolute inset-0 bg-[#0F1117]" />
-        
-        {/* Red accent gradient */}
         <div
           className="absolute top-0 left-0 right-0 h-[6px]"
           style={{ background: 'linear-gradient(90deg, #DB0021 0%, #DB0021 60%, transparent 100%)' }}
         />
-
-        {/* Subtle radial glow */}
         <div
           className="absolute inset-0"
           style={{ background: 'radial-gradient(circle at 50% 40%, rgba(219,0,33,0.08) 0%, transparent 60%)' }}
         />
 
-        {/* Content */}
         <div className="relative z-10 flex flex-col items-center w-full px-16">
-          {/* League & round */}
           <div className="flex items-center gap-3 mb-4">
-            <img src={league.logo} alt={league.name} className="h-8 w-8 object-contain" crossOrigin="anonymous" />
+            <img src={league.logo} alt={league.name} className="h-8 w-8 object-contain" />
             <span className="text-[#9CA3AF] text-lg font-body tracking-wide uppercase">
               {league.name} · {league.round}
             </span>
           </div>
 
-          {/* Date */}
           <p className="text-[#6B7280] text-base font-body mb-16">{matchDate}</p>
 
-          {/* Teams + Score */}
           <div className="flex items-center justify-center gap-12 w-full">
-            {/* Home */}
             <div className="flex flex-col items-center gap-5 flex-1">
-              <img
-                src={teams.home.logo}
-                alt={teams.home.name}
-                className="h-32 w-32 object-contain drop-shadow-lg"
-                crossOrigin="anonymous"
-              />
+              <img src={teams.home.logo} alt={teams.home.name} className="h-32 w-32 object-contain drop-shadow-lg" />
               <span className="text-white text-2xl font-headline font-semibold text-center leading-tight">
                 {teams.home.name}
               </span>
             </div>
 
-            {/* Score */}
             <div className="flex flex-col items-center">
               <div className="flex items-baseline gap-4">
-                <span className="text-white font-mono text-[120px] font-bold leading-none">
-                  {goals.home ?? '-'}
-                </span>
-                <span className="text-[#4B5563] font-mono text-[80px] font-light leading-none">
-                  –
-                </span>
-                <span className="text-white font-mono text-[120px] font-bold leading-none">
-                  {goals.away ?? '-'}
-                </span>
+                <span className="text-white font-mono text-[120px] font-bold leading-none">{goals.home ?? '-'}</span>
+                <span className="text-[#4B5563] font-mono text-[80px] font-light leading-none">–</span>
+                <span className="text-white font-mono text-[120px] font-bold leading-none">{goals.away ?? '-'}</span>
               </div>
-
-              {/* Result badge */}
               <div
                 className="mt-6 px-6 py-2 rounded-full text-sm font-body font-semibold uppercase tracking-widest"
                 style={{
@@ -98,21 +74,14 @@ export const ResultTemplate = forwardRef<HTMLDivElement, ResultTemplateProps>(
               </div>
             </div>
 
-            {/* Away */}
             <div className="flex flex-col items-center gap-5 flex-1">
-              <img
-                src={teams.away.logo}
-                alt={teams.away.name}
-                className="h-32 w-32 object-contain drop-shadow-lg"
-                crossOrigin="anonymous"
-              />
+              <img src={teams.away.logo} alt={teams.away.name} className="h-32 w-32 object-contain drop-shadow-lg" />
               <span className="text-white text-2xl font-headline font-semibold text-center leading-tight">
                 {teams.away.name}
               </span>
             </div>
           </div>
 
-          {/* Venue */}
           {fixture.fixture.venue && (
             <p className="text-[#6B7280] text-base font-body mt-16">
               📍 {fixture.fixture.venue.name}, {fixture.fixture.venue.city}
@@ -120,14 +89,8 @@ export const ResultTemplate = forwardRef<HTMLDivElement, ResultTemplateProps>(
           )}
         </div>
 
-        {/* Watermark */}
         <div className="absolute bottom-8 right-10 flex items-center gap-2 z-10">
-          <img
-            src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png"
-            alt="AZ Fanpage"
-            className="h-7 w-auto opacity-60"
-            crossOrigin="anonymous"
-          />
+          <img src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png" alt="AZ Fanpage" className="h-7 w-auto opacity-60" />
         </div>
       </div>
     );

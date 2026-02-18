@@ -23,7 +23,6 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
         <div className="absolute top-0 left-0 right-0 h-[6px]" style={{ background: 'linear-gradient(90deg, #DB0021 0%, #DB0021 60%, transparent 100%)' }} />
 
         <div className="relative z-10 flex flex-col px-14 py-14 flex-1">
-          {/* Header */}
           <div className="flex items-center justify-between mb-10">
             <div>
               <span className="text-[#DB0021] text-lg font-body font-semibold uppercase tracking-[0.25em]">
@@ -31,10 +30,9 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
               </span>
               <h2 className="text-white text-4xl font-headline font-bold mt-1">Stand</h2>
             </div>
-            <img src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png" alt="AZ Fanpage" className="h-8 w-auto opacity-60" crossOrigin="anonymous" />
+            <img src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png" alt="AZ Fanpage" className="h-8 w-auto opacity-60" />
           </div>
 
-          {/* Table header */}
           <div className="flex items-center px-5 py-3 text-[#6B7280] text-sm font-body font-semibold uppercase tracking-wider">
             <span className="w-12 text-center">#</span>
             <span className="flex-1 ml-4">Club</span>
@@ -45,7 +43,6 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
             <span className="w-16 text-center font-bold">Ptn</span>
           </div>
 
-          {/* Rows */}
           <div className="flex flex-col gap-1.5">
             {top10.map((team) => {
               const isAZ = team.team.name.toLowerCase().includes('az');
@@ -62,7 +59,7 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
                     {team.rank}
                   </span>
                   <div className="flex items-center gap-3 flex-1 ml-4">
-                    <img src={team.team.logo} alt={team.team.name} className="h-8 w-8 object-contain" crossOrigin="anonymous" />
+                    <img src={team.team.logo} alt={team.team.name} className="h-8 w-8 object-contain" />
                     <span className={`text-lg font-headline font-semibold ${isAZ ? 'text-white' : 'text-[#E5E7EB]'}`}>
                       {team.team.name}
                     </span>
