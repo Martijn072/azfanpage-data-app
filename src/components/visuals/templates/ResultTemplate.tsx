@@ -44,48 +44,48 @@ export const ResultTemplate = forwardRef<HTMLDivElement, ResultTemplateProps>(
         />
 
         <div className="relative z-10 flex flex-col items-center w-full px-16">
-          <div className="flex items-center gap-3 mb-3">
-            <img src={league.logo} alt={league.name} className="h-9 w-9 object-contain" />
-            <span className="text-white/80 text-xl font-body tracking-wide uppercase">
+          <div className="flex items-center gap-4 mb-3">
+            <img src={league.logo} alt={league.name} className="h-10 w-10 object-contain" />
+            <span className="text-white text-2xl font-body tracking-wide uppercase">
               {league.name} · {league.round}
             </span>
           </div>
 
-          <p className="text-white/60 text-lg font-body mb-14">{matchDate}</p>
+          <p className="text-white/80 text-xl font-body mb-14">{matchDate}</p>
 
           <div className="flex items-center justify-center gap-12 w-full">
             <div className="flex flex-col items-center gap-5 flex-1">
-              <img src={teams.home.logo} alt={teams.home.name} className="h-32 w-32 object-contain drop-shadow-lg" />
-              <span className="text-white text-2xl font-headline font-semibold text-center leading-tight">
+              <img src={teams.home.logo} alt={teams.home.name} className="h-36 w-36 object-contain drop-shadow-lg" />
+              <span className="text-white text-3xl font-headline font-semibold text-center leading-tight">
                 {teams.home.name}
               </span>
             </div>
 
             <div className="flex flex-col items-center">
               <div className="flex items-baseline gap-4">
-                <span className="text-white font-mono text-[120px] font-bold leading-none">{goals.home ?? '-'}</span>
-                <span className="text-white/50 font-mono text-[80px] font-light leading-none">–</span>
-                <span className="text-white font-mono text-[120px] font-bold leading-none">{goals.away ?? '-'}</span>
+                <span className="text-white font-mono text-[130px] font-bold leading-none">{goals.home ?? '-'}</span>
+                <span className="text-white/70 font-mono text-[90px] font-light leading-none">–</span>
+                <span className="text-white font-mono text-[130px] font-bold leading-none">{goals.away ?? '-'}</span>
               </div>
             </div>
 
             <div className="flex flex-col items-center gap-5 flex-1">
-              <img src={teams.away.logo} alt={teams.away.name} className="h-32 w-32 object-contain drop-shadow-lg" />
-              <span className="text-white text-2xl font-headline font-semibold text-center leading-tight">
+              <img src={teams.away.logo} alt={teams.away.name} className="h-36 w-36 object-contain drop-shadow-lg" />
+              <span className="text-white text-3xl font-headline font-semibold text-center leading-tight">
                 {teams.away.name}
               </span>
             </div>
           </div>
 
           {fixture.fixture.venue && (
-            <p className="text-white/60 text-xl font-body mt-14">
+            <p className="text-white/80 text-2xl font-body mt-14">
               {fixture.fixture.venue.name}, {fixture.fixture.venue.city}
             </p>
           )}
         </div>
 
         <div className="absolute bottom-8 right-10 flex items-center gap-2 z-10">
-          <img src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png" alt="AZ Fanpage" className="h-10 w-auto opacity-70" />
+          <img src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png" alt="AZ Fanpage" className="h-12 w-auto opacity-80" />
         </div>
       </div>
     );
