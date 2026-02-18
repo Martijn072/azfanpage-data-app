@@ -94,3 +94,21 @@ export interface TeamStatistics {
   };
   statistics: FixtureStatistic[];
 }
+
+export interface SquadPlayer {
+  id: number;
+  name: string;
+  age: number;
+  number: number | null;
+  position: string; // "Goalkeeper" | "Defender" | "Midfielder" | "Attacker"
+  photo: string;
+}
+
+export interface SquadResponse {
+  team: {
+    id: number;
+    name: string;
+    logo: string;
+  };
+  players: SquadPlayer[];
+}
