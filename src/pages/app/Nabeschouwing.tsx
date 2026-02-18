@@ -2,20 +2,28 @@ import { useAZFixtures } from "@/hooks/useFootballApi";
 import { useFixtureStatistics } from "@/hooks/useFixtureStatistics";
 import { useFixtureEvents } from "@/hooks/useFixtureEvents";
 import { useFixtureLineups } from "@/hooks/useFixtureLineups";
+import { TeamLineup } from "@/hooks/useFixtureLineups";
+import { FixtureEvent } from "@/hooks/useFixtureEvents";
 import { StatComparisonBars } from "@/components/wedstrijd/StatComparisonBars";
 import { EventsTimeline } from "@/components/wedstrijd/EventsTimeline";
 import { FormationDisplay } from "@/components/wedstrijd/FormationDisplay";
-import { Fixture } from "@/types/footballApi";
+import { Fixture, TeamStatistics } from "@/types/footballApi";
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { BarChart3, ArrowRight } from "lucide-react";
+import { BarChart3, ArrowRight, Users, Target, Shield, AlertTriangle } from "lucide-react";
 
 const AZ_TEAM_ID = 201;
 
 type Tab = "statistieken" | "tijdlijn" | "opstelling";
+
+const getStat = (teamStats: TeamStatistics, type: string): number => {
+  const s = teamStats.statistics.find(s => s.type === type);
+  if (!s || s.value === null || s.value === undefined) return 0;
+  return parseFloat(String(s.value).replace("%", "")) || 0;
+};
 
 const Nabeschouwing = () => {
   const navigate = useNavigate();
@@ -31,38 +39,130 @@ const Nabeschouwing = () => {
 
   const isPlayed = fixture && (fixture.fixture.status.short === "FT" || fixture.fixture.status.short === "AET" || fixture.fixture.status.short === "PEN");
 
-  // Quick insights
+  const isAZHome = fixture ? fixture.teams.home.id === AZ_TEAM_ID : false;
+  const azGoals = fixture ? (isAZHome ? fixture.goals.home : fixture.goals.away) : null;
+  const oppGoals = fixture ? (isAZHome ? fixture.goals.away : fixture.goals.home) : null;
+  const opponentName = fixture ? (isAZHome ? fixture.teams.away.name : fixture.teams.home.name) : "";
+
+  let result: "W" | "G" | "V" = "G";
+  if (azGoals !== null && oppGoals !== null) {
+    if (azGoals > oppGoals) result = "W";
+    else if (azGoals < oppGoals) result = "V";
+  }
+  const resultLabel = { W: "Winst", G: "Gelijk", V: "Verlies" };
+  const resultColors = { W: "bg-success/15 text-success", G: "bg-warning/15 text-warning", V: "bg-danger/15 text-danger" };
+
+  // Generate rich insights from stats, events, and lineups
   const insights = useMemo(() => {
-    if (!fixture || !stats || stats.length < 2 || !isPlayed) return [];
-    const items: string[] = [];
-    const isAZHome = fixture.teams.home.id === AZ_TEAM_ID;
-    const azStats = stats.find(s => s.team.id === AZ_TEAM_ID);
-    const oppStats = stats.find(s => s.team.id !== AZ_TEAM_ID);
-    if (!azStats || !oppStats) return items;
+    if (!fixture || !isPlayed) return [];
+    const items: { icon: typeof Target; text: string; type: "info" | "success" | "warning" | "danger" }[] = [];
 
-    const getStat = (team: typeof azStats, type: string) => {
-      const s = team.statistics.find(s => s.type === type);
-      if (!s || !s.value) return 0;
-      return parseFloat(String(s.value).replace("%", "")) || 0;
+    // Result insight
+    if (azGoals !== null && oppGoals !== null) {
+      if (azGoals > oppGoals) {
+        items.push({ icon: Target, text: `Overwinning: ${azGoals}-${oppGoals} tegen ${opponentName}`, type: "success" });
+      } else if (azGoals < oppGoals) {
+        items.push({ icon: AlertTriangle, text: `Verlies: ${azGoals}-${oppGoals} tegen ${opponentName}`, type: "danger" });
+      } else {
+        items.push({ icon: Target, text: `Gelijkspel: ${azGoals}-${oppGoals} tegen ${opponentName}`, type: "warning" });
+      }
+    }
+
+    // Halftime vs fulltime
+    if (fixture.score.halftime.home !== null && fixture.score.halftime.away !== null) {
+      const htAZ = isAZHome ? fixture.score.halftime.home : fixture.score.halftime.away;
+      const htOpp = isAZHome ? fixture.score.halftime.away : fixture.score.halftime.home;
+      if (htAZ < htOpp && azGoals !== null && oppGoals !== null && azGoals >= oppGoals) {
+        items.push({ icon: Target, text: `Comeback: AZ stond achter bij rust (${htAZ}-${htOpp})`, type: "success" });
+      }
+    }
+
+    // Stats-based insights
+    if (stats && stats.length >= 2) {
+      const azStats = stats.find(s => s.team.id === AZ_TEAM_ID);
+      const oppStats = stats.find(s => s.team.id !== AZ_TEAM_ID);
+      if (azStats && oppStats) {
+        const azPoss = getStat(azStats, "Ball Possession");
+        const oppPoss = getStat(oppStats, "Ball Possession");
+        if (azPoss >= 60) items.push({ icon: BarChart3, text: `Balbezit-dominantie: ${azPoss}% voor AZ`, type: "info" });
+        else if (oppPoss >= 60) items.push({ icon: BarChart3, text: `${opponentName} domineerde het balbezit (${oppPoss}%)`, type: "warning" });
+
+        const azShots = getStat(azStats, "Total Shots");
+        const oppShots = getStat(oppStats, "Total Shots");
+        const azOnTarget = getStat(azStats, "Shots on Goal");
+        const oppOnTarget = getStat(oppStats, "Shots on Goal");
+
+        if (azShots >= oppShots * 1.5) items.push({ icon: Target, text: `AZ was dreigender: ${azShots} schoten vs ${oppShots}`, type: "info" });
+        if (azOnTarget > 0 && azGoals !== null && azGoals > 0) {
+          const conversion = Math.round((azGoals / azOnTarget) * 100);
+          if (conversion >= 50) items.push({ icon: Target, text: `Hoge conversie: ${conversion}% van de schoten op doel erin`, type: "success" });
+        }
+
+        const azCorners = getStat(azStats, "Corner Kicks");
+        const oppCorners = getStat(oppStats, "Corner Kicks");
+        if (azCorners >= oppCorners * 2 && azCorners >= 6) items.push({ icon: BarChart3, text: `Corners: ${azCorners}-${oppCorners} in voordeel AZ`, type: "info" });
+
+        const azPassAcc = getStat(azStats, "Passes %");
+        if (azPassAcc >= 85) items.push({ icon: Shield, text: `Nauwkeurig passing: ${azPassAcc}% pass-percentage`, type: "info" });
+      }
+    }
+
+    // Events-based insights
+    if (events && events.length > 0) {
+      const azGoalEvents = events.filter((e: FixtureEvent) => e.team.id === AZ_TEAM_ID && e.type === "Goal" && e.detail !== "Missed Penalty");
+      const azCards = events.filter((e: FixtureEvent) => e.team.id === AZ_TEAM_ID && e.type === "Card");
+      const yellowCards = azCards.filter((e: FixtureEvent) => e.detail === "Yellow Card");
+      const redCards = azCards.filter((e: FixtureEvent) => e.detail === "Red Card" || e.detail === "Second Yellow card");
+
+      if (azGoalEvents.length > 0) {
+        const scorers = azGoalEvents.map((e: FixtureEvent) => e.player.name.split(" ").pop()).join(", ");
+        items.push({ icon: Target, text: `Doelpuntenmakers: ${scorers}`, type: "success" });
+      }
+
+      const lateGoals = azGoalEvents.filter((e: FixtureEvent) => e.time.elapsed >= 80);
+      if (lateGoals.length > 0) {
+        items.push({ icon: Target, text: `Late treffer in minuut ${lateGoals.map((e: FixtureEvent) => e.time.elapsed + "'").join(", ")}`, type: "success" });
+      }
+
+      if (redCards.length > 0) {
+        items.push({ icon: AlertTriangle, text: `Rode kaart voor ${redCards.map((e: FixtureEvent) => e.player.name.split(" ").pop()).join(", ")}`, type: "danger" });
+      }
+      if (yellowCards.length >= 3) {
+        items.push({ icon: AlertTriangle, text: `${yellowCards.length} gele kaarten voor AZ`, type: "warning" });
+      }
+    }
+
+    // Lineup insight
+    if (lineups && lineups.length >= 2) {
+      const azLineup = lineups.find((l: TeamLineup) => l.team.id === AZ_TEAM_ID);
+      if (azLineup) {
+        items.push({ icon: Users, text: `Formatie: ${azLineup.formation}`, type: "info" });
+      }
+    }
+
+    return items.slice(0, 8); // Max 8 insights
+  }, [fixture, stats, events, lineups, isPlayed, azGoals, oppGoals, isAZHome, opponentName]);
+
+  // Key lineup highlights
+  const lineupHighlights = useMemo(() => {
+    if (!lineups || lineups.length < 2 || !events) return null;
+    const azLineup = lineups.find((l: TeamLineup) => l.team.id === AZ_TEAM_ID);
+    if (!azLineup) return null;
+
+    const substitutions = events.filter((e: FixtureEvent) => e.type === "subst" && e.team.id === AZ_TEAM_ID);
+
+    return {
+      formation: azLineup.formation,
+      coach: azLineup.coach?.name || "Onbekend",
+      starters: azLineup.startXI.length,
+      subs: substitutions.length,
+      subDetails: substitutions.map((e: FixtureEvent) => ({
+        in: e.assist?.name?.split(" ").pop() || "?",
+        out: e.player.name.split(" ").pop() || "?",
+        minute: e.time.elapsed,
+      })),
     };
-
-    const azPoss = getStat(azStats, "Ball Possession");
-    const oppPoss = getStat(oppStats, "Ball Possession");
-    if (azPoss > 55) items.push(`AZ domineerde het balbezit met ${azPoss}%`);
-    else if (oppPoss > 55) items.push(`Tegenstander had meer balbezit: ${oppPoss}%`);
-
-    const azShots = getStat(azStats, "Total Shots");
-    const oppShots = getStat(oppStats, "Total Shots");
-    if (azShots > oppShots * 1.5) items.push(`AZ creëerde veel meer kansen (${azShots} vs ${oppShots} schoten)`);
-
-    const azGoals = isAZHome ? fixture.goals.home! : fixture.goals.away!;
-    const oppGoals = isAZHome ? fixture.goals.away! : fixture.goals.home!;
-    if (azGoals > oppGoals) items.push(`Overwinning met ${azGoals}-${oppGoals}`);
-    else if (azGoals < oppGoals) items.push(`Verlies met ${azGoals}-${oppGoals}`);
-    else items.push(`Gelijkspel: ${azGoals}-${oppGoals}`);
-
-    return items;
-  }, [fixture, stats, isPlayed]);
+  }, [lineups, events]);
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "statistieken", label: "Statistieken" },
@@ -75,6 +175,10 @@ const Nabeschouwing = () => {
       <div className="space-y-6">
         <div><h2 className="font-headline text-app-title tracking-tight text-foreground mb-1">Nabeschouwing</h2></div>
         <div className="bg-card border border-border rounded-xl p-6 animate-pulse h-48" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-card border border-border rounded-xl p-4 animate-pulse h-40" />
+          <div className="bg-card border border-border rounded-xl p-4 animate-pulse h-40" />
+        </div>
       </div>
     );
   }
@@ -89,6 +193,8 @@ const Nabeschouwing = () => {
       </div>
     );
   }
+
+  const iconColors = { info: "text-info", success: "text-success", warning: "text-warning", danger: "text-danger" };
 
   return (
     <div className="space-y-6">
@@ -107,11 +213,14 @@ const Nabeschouwing = () => {
 
       {/* Match header */}
       <div className="bg-card border border-border rounded-xl p-6">
-        <div className="text-center mb-4">
-          <div className="text-app-tiny text-muted-foreground">{fixture.league.name} · {fixture.league.round}</div>
-          <div className="text-app-tiny text-muted-foreground">
-            {format(new Date(fixture.fixture.date), "EEEE d MMMM yyyy", { locale: nl })}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <img src={fixture.league.logo} alt="" className="h-4 w-4 object-contain" />
+            <span className="text-app-tiny text-muted-foreground">{fixture.league.name} · {fixture.league.round}</span>
           </div>
+          <span className={cn("text-app-tiny px-2 py-0.5 rounded-full font-medium", resultColors[result])}>
+            {resultLabel[result]}
+          </span>
         </div>
         <div className="flex items-center justify-center gap-8">
           <div className="flex items-center gap-3 flex-1 justify-end">
@@ -135,25 +244,80 @@ const Nabeschouwing = () => {
             </span>
           </div>
         </div>
+        <div className="mt-3 text-center text-app-tiny text-muted-foreground">
+          {format(new Date(fixture.fixture.date), "EEEE d MMMM yyyy · HH:mm", { locale: nl })}
+          {fixture.fixture.venue && ` · ${fixture.fixture.venue.name}`}
+          {fixture.fixture.referee && ` · ${fixture.fixture.referee}`}
+        </div>
       </div>
 
-      {/* Quick insights */}
-      {insights.length > 0 && (
-        <div className="bg-card border border-border rounded-xl p-4">
+      {/* Insights + lineup highlights side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Data highlights */}
+        <div className="lg:col-span-2 bg-card border border-border rounded-xl p-4">
           <div className="flex items-center gap-2 mb-3">
             <BarChart3 className="h-4 w-4 text-info" />
             <h3 className="text-app-body-strong text-foreground">Data-highlights</h3>
           </div>
-          <ul className="space-y-1">
-            {insights.map((insight, i) => (
-              <li key={i} className="text-app-small text-muted-foreground flex items-start gap-2">
-                <span className="text-info mt-0.5">•</span>
-                {insight}
-              </li>
-            ))}
-          </ul>
+          {insights.length > 0 ? (
+            <ul className="space-y-2">
+              {insights.map((insight, i) => (
+                <li key={i} className="text-app-small text-muted-foreground flex items-start gap-2">
+                  <insight.icon className={cn("h-3.5 w-3.5 mt-0.5 shrink-0", iconColors[insight.type])} />
+                  <span>{insight.text}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="space-y-2 animate-pulse">
+              {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-5 bg-muted rounded w-3/4" />)}
+            </div>
+          )}
         </div>
-      )}
+
+        {/* Lineup highlights */}
+        <div className="bg-card border border-border rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            <h3 className="text-app-body-strong text-foreground">Opstelling</h3>
+          </div>
+          {lineupHighlights ? (
+            <div className="space-y-3">
+              <div className="flex justify-between text-app-small">
+                <span className="text-muted-foreground">Formatie</span>
+                <span className="font-mono text-foreground font-semibold">{lineupHighlights.formation}</span>
+              </div>
+              <div className="flex justify-between text-app-small">
+                <span className="text-muted-foreground">Coach</span>
+                <span className="text-foreground">{lineupHighlights.coach}</span>
+              </div>
+              {lineupHighlights.subs > 0 && (
+                <>
+                  <div className="border-t border-border pt-2">
+                    <span className="text-app-tiny text-muted-foreground uppercase tracking-wider">Wissels ({lineupHighlights.subs})</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {lineupHighlights.subDetails.map((sub, i) => (
+                      <div key={i} className="flex items-center justify-between text-app-small">
+                        <span className="text-foreground">
+                          <span className="text-success">↑</span> {sub.in} <span className="text-danger">↓</span> {sub.out}
+                        </span>
+                        <span className="text-muted-foreground font-mono text-app-tiny">{sub.minute}'</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          ) : lineupsLoading ? (
+            <div className="space-y-2 animate-pulse">
+              {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-5 bg-muted rounded w-full" />)}
+            </div>
+          ) : (
+            <p className="text-app-small text-muted-foreground">Geen opstellingsdata</p>
+          )}
+        </div>
+      </div>
 
       {/* Tabs */}
       <div className="flex gap-1 bg-card border border-border rounded-lg p-1 w-fit">
