@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { usePlayerStatistics } from "@/hooks/usePlayerStatistics";
 import { PlayerSeasonStats } from "@/types/footballApi";
-import { ArrowLeft, Calendar, MapPin, Flag, Ruler, Weight, Shirt, Star, Goal as GoalIcon, Footprints, ShieldAlert, CreditCard } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Flag, Ruler, Weight, Shirt, Star, Goal as GoalIcon, Footprints, ShieldAlert, CreditCard, Target, Crosshair, Handshake, Swords, CircleDot, AlertTriangle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { getOverriddenPosition } from "@/utils/positionOverrides";
@@ -14,15 +14,43 @@ const StatBox = ({ label, value, sub }: { label: string; value: string | number;
   </div>
 );
 
+const StatMini = ({ label, value }: { label: string; value: string | number | null }) => (
+  <div className="text-center">
+    <p className="font-mono text-lg font-bold text-foreground">{value ?? 0}</p>
+    <p className="text-[11px] text-muted-foreground">{label}</p>
+  </div>
+);
+
+const StatSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div>
+    <h4 className="text-app-small font-semibold text-muted-foreground uppercase tracking-wider mb-2">{title}</h4>
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      {children}
+    </div>
+  </div>
+);
+
 const LeagueStatsRow = ({ stats }: { stats: PlayerSeasonStats }) => {
   const g = stats.games;
   const goals = stats.goals;
   const cards = stats.cards;
+  const subs = stats.substitutes;
+  const shots = stats.shots;
+  const passes = stats.passes;
+  const tackles = stats.tackles;
+  const duels = stats.duels;
+  const dribbles = stats.dribbles;
+  const fouls = stats.fouls;
+  const penalty = stats.penalty;
   const rating = g.rating ? parseFloat(g.rating).toFixed(2) : null;
 
+  const duelsWonPct = duels.total && duels.won ? Math.round((duels.won / duels.total) * 100) : null;
+  const dribblesSuccessPct = dribbles.attempts && dribbles.success ? Math.round((dribbles.success / dribbles.attempts) * 100) : null;
+
   return (
-    <div className="bg-card border border-border rounded-xl p-4">
-      <div className="flex items-center gap-3 mb-4">
+    <div className="bg-card border border-border rounded-xl p-4 space-y-4">
+      {/* Header */}
+      <div className="flex items-center gap-3">
         <img src={stats.league.logo} alt={stats.league.name} className="h-6 w-6" />
         <div className="flex-1 min-w-0">
           <h4 className="text-app-body font-semibold text-foreground truncate">{stats.league.name}</h4>
@@ -40,38 +68,89 @@ const LeagueStatsRow = ({ stats }: { stats: PlayerSeasonStats }) => {
         )}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 text-center">
-        <div>
-          <p className="font-mono text-lg font-bold text-foreground">{g.appearences || 0}</p>
-          <p className="text-[11px] text-muted-foreground">Wedstrijden</p>
-        </div>
-        <div>
-          <p className="font-mono text-lg font-bold text-foreground">{g.lineups || 0}</p>
-          <p className="text-[11px] text-muted-foreground">Basisplaatsen</p>
-        </div>
-        <div>
-          <p className="font-mono text-lg font-bold text-foreground">{g.minutes || 0}</p>
-          <p className="text-[11px] text-muted-foreground">Minuten</p>
-        </div>
-        <div>
-          <p className="font-mono text-lg font-bold text-foreground">{goals.total || 0}</p>
-          <p className="text-[11px] text-muted-foreground">Goals</p>
-        </div>
-        <div>
-          <p className="font-mono text-lg font-bold text-foreground">{goals.assists || 0}</p>
-          <p className="text-[11px] text-muted-foreground">Assists</p>
-        </div>
-        <div className="flex items-center justify-center gap-2">
-          <span className="flex items-center gap-0.5">
+      {/* Appearances & Minutes */}
+      <StatSection title="Speeltijd">
+        <StatMini label="Wedstrijden" value={g.appearences || 0} />
+        <StatMini label="Basisplaatsen" value={g.lineups || 0} />
+        <StatMini label="Minuten" value={g.minutes || 0} />
+        <StatMini label="Invalbeurten" value={subs.in || 0} />
+        <StatMini label="Gewisseld" value={subs.out || 0} />
+        <StatMini label="Op de bank" value={subs.bench || 0} />
+      </StatSection>
+
+      {/* Goals & Scoring */}
+      <StatSection title="Doelpunten & assists">
+        <StatMini label="Goals" value={goals.total || 0} />
+        <StatMini label="Assists" value={goals.assists || 0} />
+        <StatMini label="Tegendoelpunten" value={goals.conceded ?? 0} />
+        <StatMini label="Reddingen" value={goals.saves ?? 0} />
+      </StatSection>
+
+      {/* Shots */}
+      <StatSection title="Schoten">
+        <StatMini label="Schoten totaal" value={shots.total ?? 0} />
+        <StatMini label="Op doel" value={shots.on ?? 0} />
+      </StatSection>
+
+      {/* Passes */}
+      <StatSection title="Passes">
+        <StatMini label="Passes totaal" value={passes.total ?? 0} />
+        <StatMini label="Key passes" value={passes.key ?? 0} />
+        <StatMini label="Nauwkeurigheid" value={passes.accuracy != null ? `${passes.accuracy}%` : "–"} />
+      </StatSection>
+
+      {/* Defensive */}
+      <StatSection title="Verdedigend">
+        <StatMini label="Tackles" value={tackles.total ?? 0} />
+        <StatMini label="Blocks" value={tackles.blocks ?? 0} />
+        <StatMini label="Intercepties" value={tackles.interceptions ?? 0} />
+      </StatSection>
+
+      {/* Duels */}
+      <StatSection title="Duels">
+        <StatMini label="Duels totaal" value={duels.total ?? 0} />
+        <StatMini label="Duels gewonnen" value={duels.won ?? 0} />
+        <StatMini label="Duel %" value={duelsWonPct != null ? `${duelsWonPct}%` : "–"} />
+      </StatSection>
+
+      {/* Dribbles */}
+      <StatSection title="Dribbels">
+        <StatMini label="Pogingen" value={dribbles.attempts ?? 0} />
+        <StatMini label="Geslaagd" value={dribbles.success ?? 0} />
+        <StatMini label="Dribbel %" value={dribblesSuccessPct != null ? `${dribblesSuccessPct}%` : "–"} />
+        <StatMini label="Voorbij gedribbeld" value={dribbles.past ?? 0} />
+      </StatSection>
+
+      {/* Fouls & Cards */}
+      <StatSection title="Overtredingen & kaarten">
+        <StatMini label="Overtredingen" value={fouls.committed ?? 0} />
+        <StatMini label="Overtr. verkregen" value={fouls.drawn ?? 0} />
+        <div className="flex items-center justify-center gap-3">
+          <span className="flex items-center gap-1">
             <span className="inline-block w-2.5 h-3.5 rounded-sm bg-amber-400" />
             <span className="font-mono text-sm text-foreground">{cards.yellow}</span>
           </span>
-          <span className="flex items-center gap-0.5">
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-2.5 h-3.5 rounded-sm bg-amber-600" />
+            <span className="font-mono text-sm text-foreground">{cards.yellowred}</span>
+          </span>
+          <span className="flex items-center gap-1">
             <span className="inline-block w-2.5 h-3.5 rounded-sm bg-red-500" />
             <span className="font-mono text-sm text-foreground">{cards.red}</span>
           </span>
         </div>
-      </div>
+      </StatSection>
+
+      {/* Penalties */}
+      {(penalty.won || penalty.scored || penalty.missed || penalty.saved || penalty.commited) ? (
+        <StatSection title="Penalty's">
+          <StatMini label="Gewonnen" value={penalty.won ?? 0} />
+          <StatMini label="Gescoord" value={penalty.scored ?? 0} />
+          <StatMini label="Gemist" value={penalty.missed ?? 0} />
+          <StatMini label="Gestopt" value={penalty.saved ?? 0} />
+          <StatMini label="Veroorzaakt" value={penalty.commited ?? 0} />
+        </StatSection>
+      ) : null}
     </div>
   );
 };
@@ -115,7 +194,6 @@ const SpelerDetail = () => {
   }
 
   const { player, statistics } = data;
-  // Filter out friendly matches
   const filteredStats = statistics.filter(s => s.league.name !== "Friendlies" && s.league.name !== "Club Friendlies");
 
   // Aggregate totals across all competitions
@@ -125,9 +203,24 @@ const SpelerDetail = () => {
       goals: acc.goals + (s.goals.total || 0),
       assists: acc.assists + (s.goals.assists || 0),
       minutes: acc.minutes + (s.games.minutes || 0),
+      shots: acc.shots + (s.shots.total || 0),
+      shotsOn: acc.shotsOn + (s.shots.on || 0),
+      passes: acc.passes + (s.passes.total || 0),
+      keyPasses: acc.keyPasses + (s.passes.key || 0),
+      tackles: acc.tackles + (s.tackles.total || 0),
+      interceptions: acc.interceptions + (s.tackles.interceptions || 0),
+      duelsWon: acc.duelsWon + (s.duels.won || 0),
+      duelsTotal: acc.duelsTotal + (s.duels.total || 0),
+      dribblesSuccess: acc.dribblesSuccess + (s.dribbles.success || 0),
+      dribblesAttempts: acc.dribblesAttempts + (s.dribbles.attempts || 0),
+      yellow: acc.yellow + (s.cards.yellow || 0),
+      red: acc.red + (s.cards.red || 0),
     }),
-    { appearances: 0, goals: 0, assists: 0, minutes: 0 }
+    { appearances: 0, goals: 0, assists: 0, minutes: 0, shots: 0, shotsOn: 0, passes: 0, keyPasses: 0, tackles: 0, interceptions: 0, duelsWon: 0, duelsTotal: 0, dribblesSuccess: 0, dribblesAttempts: 0, yellow: 0, red: 0 }
   );
+
+  const duelPct = totals.duelsTotal > 0 ? Math.round((totals.duelsWon / totals.duelsTotal) * 100) : null;
+  const dribblePct = totals.dribblesAttempts > 0 ? Math.round((totals.dribblesSuccess / totals.dribblesAttempts) * 100) : null;
 
   return (
     <div className="space-y-6">
@@ -167,14 +260,22 @@ const SpelerDetail = () => {
         </div>
       </div>
 
-      {/* Season totals */}
+      {/* Season totals - expanded */}
       <div>
         <h3 className="text-app-body font-semibold text-foreground mb-3">Seizoenstotalen</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           <StatBox label="Wedstrijden" value={totals.appearances} />
           <StatBox label="Goals" value={totals.goals} />
           <StatBox label="Assists" value={totals.assists} />
           <StatBox label="Minuten" value={totals.minutes.toLocaleString()} />
+          <StatBox label="Schoten" value={totals.shots} sub={`${totals.shotsOn} op doel`} />
+          <StatBox label="Key passes" value={totals.keyPasses} sub={`${totals.passes} totaal`} />
+          <StatBox label="Tackles" value={totals.tackles} sub={`${totals.interceptions} intercepties`} />
+          <StatBox label="Duels gewonnen" value={totals.duelsWon} sub={duelPct != null ? `${duelPct}% van ${totals.duelsTotal}` : undefined} />
+          <StatBox label="Dribbels" value={totals.dribblesSuccess} sub={dribblePct != null ? `${dribblePct}% geslaagd` : undefined} />
+          <StatBox label="Gele kaarten" value={totals.yellow} />
+          <StatBox label="Rode kaarten" value={totals.red} />
+          <StatBox label="Passes totaal" value={totals.passes.toLocaleString()} />
         </div>
       </div>
 
