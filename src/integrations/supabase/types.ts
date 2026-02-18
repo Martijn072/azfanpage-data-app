@@ -38,6 +38,42 @@ export type Database = {
         }
         Relationships: []
       }
+      article_translations: {
+        Row: {
+          article_id: string
+          content_hash: string
+          created_at: string
+          id: string
+          source_language: string
+          target_language: string
+          translated_at: string
+          translated_content: string
+          translated_title: string
+        }
+        Insert: {
+          article_id: string
+          content_hash: string
+          created_at?: string
+          id?: string
+          source_language?: string
+          target_language?: string
+          translated_at?: string
+          translated_content: string
+          translated_title: string
+        }
+        Update: {
+          article_id?: string
+          content_hash?: string
+          created_at?: string
+          id?: string
+          source_language?: string
+          target_language?: string
+          translated_at?: string
+          translated_content?: string
+          translated_title?: string
+        }
+        Relationships: []
+      }
       media_reports: {
         Row: {
           created_at: string

@@ -3,86 +3,70 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the premium design system with improved Dutch readability */
+/* AZ Fanpage Data App — Dark-first design system */
 
 @layer base {
   :root {
+    /* Light theme (for export/print) */
     --background: 0 0% 100%;
-    --foreground: 261 9% 9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 261 9% 9%;
-
+    --foreground: 220 15% 10%;
+    --card: 0 0% 97%;
+    --card-foreground: 220 15% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 261 9% 9%;
-
+    --popover-foreground: 220 15% 10%;
     --primary: 351 100% 43%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 261 9% 9%;
-
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-
-    --accent: 0 0% 96%;
-    --accent-foreground: 261 9% 9%;
-
+    --secondary: 220 10% 95%;
+    --secondary-foreground: 220 15% 10%;
+    --muted: 220 10% 95%;
+    --muted-foreground: 220 5% 45%;
+    --accent: 220 10% 93%;
+    --accent-foreground: 220 15% 10%;
     --destructive: 0 85% 60%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
+    --border: 220 10% 90%;
+    --input: 220 10% 90%;
     --ring: 351 100% 43%;
-
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 261 9% 9%;
+    --sidebar-foreground: 220 15% 10%;
     --sidebar-primary: 351 100% 43%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 96%;
-    --sidebar-accent-foreground: 261 9% 9%;
-    --sidebar-border: 0 0% 90%;
+    --sidebar-accent: 220 10% 95%;
+    --sidebar-accent-foreground: 220 15% 10%;
+    --sidebar-border: 220 10% 90%;
     --sidebar-ring: 351 100% 43%;
   }
 
   .dark {
-    --background: 260 15% 10%;
-    --foreground: 0 0% 98%;
-
-    --card: 260 14% 13%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 260 15% 10%;
-    --popover-foreground: 0 0% 98%;
-
+    --background: 228 25% 7%;
+    --foreground: 240 5% 95%;
+    --card: 226 22% 11%;
+    --card-foreground: 240 5% 95%;
+    --popover: 225 20% 12%;
+    --popover-foreground: 240 5% 95%;
     --primary: 351 100% 43%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 260 12% 18%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 260 12% 18%;
-    --muted-foreground: 0 0% 70%;
-
-    --accent: 260 12% 18%;
-    --accent-foreground: 0 0% 98%;
-
+    --secondary: 225 15% 15%;
+    --secondary-foreground: 240 5% 95%;
+    --muted: 225 12% 16%;
+    --muted-foreground: 220 5% 65%;
+    --accent: 225 12% 16%;
+    --accent-foreground: 240 5% 95%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 260 10% 22%;
-    --input: 260 10% 22%;
+    --border: 224 12% 18%;
+    --input: 224 12% 18%;
     --ring: 351 100% 43%;
 
-    --sidebar-background: 260 15% 10%;
-    --sidebar-foreground: 0 0% 98%;
+    --sidebar-background: 226 22% 11%;
+    --sidebar-foreground: 240 5% 95%;
     --sidebar-primary: 351 100% 43%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 260 12% 18%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 260 10% 22%;
+    --sidebar-accent: 225 15% 15%;
+    --sidebar-accent-foreground: 240 5% 95%;
+    --sidebar-border: 224 12% 18%;
     --sidebar-ring: 351 100% 43%;
   }
 }
@@ -99,163 +83,7 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Premium typography classes optimized for Dutch readability */
-  .headline-premium {
-    @apply font-headline font-semibold tracking-tight text-foreground;
-    letter-spacing: -0.02em;
-  }
-
-  .body-premium {
-    @apply font-body text-premium-gray-700 leading-relaxed;
-    font-feature-settings: "kern" 1, "liga" 1;
-  }
-
-  /* Enhanced article content styling with proper WordPress content formatting */
-  .article-content {
-    @apply prose prose-lg prose-gray max-w-none;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
-  }
-
-  .article-content h1 {
-    @apply headline-premium text-headline-xl mb-6 mt-8 first:mt-0;
-  }
-
-  .article-content h2 {
-    @apply headline-premium text-headline-lg mb-4 mt-8 first:mt-0 text-az-black dark:text-white;
-  }
-
-  .article-content h3 {
-    @apply headline-premium text-headline-md mb-3 mt-6 first:mt-0 text-az-black dark:text-white;
-  }
-
-  .article-content h4 {
-    @apply headline-premium text-headline-sm mb-3 mt-5 first:mt-0 text-az-black dark:text-white;
-  }
-
-  .article-content p {
-    @apply body-premium text-body-lg mb-6 leading-relaxed text-premium-gray-700 dark:text-gray-300;
-  }
-
-  .article-content ul, .article-content ol {
-    @apply mb-6 space-y-2;
-  }
-
-  .article-content li {
-    @apply body-premium text-body-lg leading-relaxed text-premium-gray-700 dark:text-gray-300;
-  }
-
-  .article-content blockquote {
-    @apply border-l-4 border-az-red pl-6 italic my-6 text-premium-gray-600 dark:text-gray-400;
-  }
-
-  /* Ultra-specific CSS rules to force natural scaling for ALL article images */
-  .article-content img,
-  .article-content figure img,
-  .article-content figure > img,
-  .article-content div > img,
-  .article-content p > img,
-  .wp-content img,
-  .wp-block-image img,
-  .wp-block-gallery img,
-  .article-content .wp-image-1,
-  .article-content .wp-image-2,
-  .article-content .wp-image-3,
-  .article-content .wp-image-4,
-  .article-content .wp-image-5,
-  .article-content .wp-image-6,
-  .article-content .wp-image-7,
-  .article-content .wp-image-8,
-  .article-content .wp-image-9,
-  .article-content [class*="wp-image-"] {
-    max-width: 100% !important;
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: unset !important;
-    object-fit: unset !important;
-    display: block;
-    margin: 1.5rem auto;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  }
-
-  /* Remove any remaining caption container restrictions */
-  .article-content .wp-caption,
-  .article-content div[id^="attachment_"],
-  .article-content div[class*="wp-caption"] {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 1.5rem auto !important;
-  }
-
-  /* Clean image caption styling */
-  .article-content .image-caption {
-    @apply text-sm text-premium-gray-600 dark:text-gray-400 italic mt-2 px-4;
-    text-align: center;
-    margin: 0.5rem 0 1rem 0;
-  }
-
-  /* Ensure featured images keep their styling */
-  .article-content img.featured-image {
-    aspect-ratio: 16/9;
-    object-fit: cover;
-  }
-
-  /* Figure and figcaption styling */
-  .article-content figure {
-    margin: 1.5rem 0;
-    text-align: center;
-  }
-
-  .article-content figcaption,
-  .article-content .wp-caption-text {
-    @apply text-sm text-premium-gray-600 dark:text-gray-400 italic mt-2 px-4;
-    text-align: center;
-  }
-
-  /* Gallery images styling */
-  .article-content .wp-block-gallery,
-  .article-content .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin: 1.5rem 0;
-  }
-
-  .article-content .wp-block-gallery img,
-  .article-content .gallery img {
-    margin: 0;
-    width: 100%;
-    height: auto;
-  }
-
-  /* Mobile specific improvements */
-  @media (max-width: 768px) {
-    .article-content img,
-    .article-content figure img {
-      margin: 1rem auto;
-      border-radius: 0.25rem;
-    }
-    
-    .article-content .wp-block-gallery,
-    .article-content .gallery {
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 0.5rem;
-    }
-  }
-
-  .article-content a {
-    @apply text-az-red hover:underline font-medium dark:text-red-400;
-  }
-
-  .article-content strong, .article-content b {
-    @apply font-semibold text-az-black dark:text-white;
-  }
-
-  .article-content em, .article-content i {
-    @apply italic;
-  }
-
-  /* Custom text selection - Remove yellow highlights */
+  /* Custom text selection */
   ::selection {
     background-color: hsl(var(--primary));
     color: white;
@@ -266,17 +94,7 @@
     color: white;
   }
 
-  .article-content ::selection {
-    background-color: hsl(var(--primary));
-    color: white;
-  }
-
-  .article-content ::-moz-selection {
-    background-color: hsl(var(--primary));
-    color: white;
-  }
-
-  /* Custom scrollbar for premium feel */
+  /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
   }
@@ -286,137 +104,17 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-premium-gray-300 rounded-full;
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-az-red;
+    background: hsl(var(--primary));
   }
 }
 
-/* Font size toggle classes for article content */
-/* Mobile-first: larger base fonts, adjusted for desktop */
-
-/* Small font size */
-.font-size-small .article-content p,
-.font-size-small .article-content li {
-  font-size: 1.0625rem; /* 17px mobile */
-  line-height: 1.7;
-}
-
-.font-size-small .article-content h2 {
-  font-size: 1.375rem;
-}
-
-.font-size-small .article-content h3 {
-  font-size: 1.125rem;
-}
-
-/* Medium font size (default) */
-.font-size-medium .article-content p,
-.font-size-medium .article-content li {
-  font-size: 1.1875rem; /* 19px mobile */
-  line-height: 1.75;
-}
-
-/* Large font size */
-.font-size-large .article-content p,
-.font-size-large .article-content li {
-  font-size: 1.375rem; /* 22px mobile */
-  line-height: 1.8;
-}
-
-.font-size-large .article-content h2 {
-  font-size: 1.75rem;
-}
-
-.font-size-large .article-content h3 {
-  font-size: 1.375rem;
-}
-
-/* Desktop adjustments: slightly smaller fonts */
-@media (min-width: 768px) {
-  .font-size-small .article-content p,
-  .font-size-small .article-content li {
-    font-size: 1rem; /* 16px */
-  }
-
-  .font-size-medium .article-content p,
-  .font-size-medium .article-content li {
-    font-size: 1.125rem; /* 18px */
-  }
-
-  .font-size-large .article-content p,
-  .font-size-large .article-content li {
-    font-size: 1.25rem; /* 20px */
-  }
-}
-
-/* Disqus comment content overflow prevention */
-.prose a,
-.prose img,
-.prose pre,
-.prose code {
-  max-width: 100%;
-  word-break: break-word;
-  overflow-wrap: break-word;
-}
-
-.prose img {
-  height: auto;
-}
-
-/* Premium button styles */
 @layer components {
-  .btn-primary {
-    @apply bg-az-red hover:bg-red-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md font-body transform hover:scale-105 active:scale-95;
-  }
-
-  .btn-secondary {
-    @apply bg-white hover:bg-premium-gray-50 text-az-black font-medium px-6 py-3 rounded-lg border border-premium-gray-200 transition-all duration-200 shadow-sm hover:shadow-md font-body transform hover:scale-105 active:scale-95;
-  }
-
-  /* Premium card styles */
-  .card-premium {
-    @apply bg-card text-card-foreground rounded-xl shadow-sm border border-border hover:shadow-md transition-all duration-200;
-  }
-
-  /* Breaking news indicator */
-  .breaking-news {
-    @apply bg-az-red text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide font-body;
-  }
-
-  /* Enhanced micro-interactions */
-  .interactive-card {
-    @apply transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg;
-  }
-
-  .interactive-button {
-    @apply transform transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-lg;
-  }
-
-  .interactive-icon {
-    @apply transform transition-all duration-200 hover:scale-110 hover:text-az-red;
-  }
-
-  /* Audio Player Slider Styling - Force AZ Red */
-  .audio-slider [data-radix-slider-track] {
-    @apply bg-premium-gray-200 dark:bg-gray-700;
-  }
-
-  .audio-slider [data-radix-slider-range] {
-    @apply bg-az-red;
-  }
-
-  .audio-slider [data-radix-slider-thumb] {
-    @apply bg-az-red border-az-red hover:bg-red-700 focus:ring-az-red;
-  }
-
-  .audio-slider [data-radix-slider-thumb]:focus {
-    @apply ring-2 ring-az-red ring-offset-2;
-  }
-
-  /* Remove all animations and transitions for users who prefer reduced motion */
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -426,57 +124,5 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
-  }
-
-  /* Accessibility classes */
-  .reduce-motion *,
-  .reduce-motion *::before,
-  .reduce-motion *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-
-  .high-contrast {
-    --premium-gray-50: hsl(0, 0%, 100%);
-    --premium-gray-100: hsl(0, 0%, 95%);
-    --premium-gray-200: hsl(0, 0%, 10%);
-    --premium-gray-300: hsl(0, 0%, 5%);
-    --premium-gray-400: hsl(0, 0%, 0%);
-    --premium-gray-500: hsl(0, 0%, 0%);
-    --premium-gray-600: hsl(0, 0%, 0%);
-    --az-red: hsl(0, 100%, 30%);
-    --az-black: hsl(0, 0%, 0%);
-  }
-
-  .high-contrast.dark {
-    --premium-gray-50: hsl(0, 0%, 0%);
-    --premium-gray-100: hsl(0, 0%, 5%);
-    --premium-gray-200: hsl(0, 0%, 90%);
-    --premium-gray-300: hsl(0, 0%, 95%);
-    --premium-gray-400: hsl(0, 0%, 100%);
-    --premium-gray-500: hsl(0, 0%, 100%);
-    --premium-gray-600: hsl(0, 0%, 100%);
-    --az-red: hsl(0, 100%, 60%);
-  }
-
-  .screen-reader-mode .sr-only {
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
-    padding: 0.25rem !important;
-    margin: 0 !important;
-    overflow: visible !important;
-    clip: auto !important;
-    white-space: normal !important;
-    background: hsl(var(--premium-gray-100));
-    border: 1px solid hsl(var(--premium-gray-300));
-  }
-
-  /* Focus improvements */
-  *:focus-visible {
-    outline: 2px solid hsl(var(--az-red)) !important;
-    outline-offset: 2px !important;
   }
 }

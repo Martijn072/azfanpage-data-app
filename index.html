@@ -3,108 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AZ nieuws lees je op AZFanpage</title>
-    <meta name="description" content="AZFanpage brengt al meer dan 20 jaar het AZ nieuws vanuit supportersperspectief. Weten wat er speelt bij de club uit Alkmaar? Volg ons en je weet het!" />
-    <meta name="author" content="AZFanpage.nl" />
-    
-    <!-- SEO - noindex for PWA, authority stays at azfanpage.nl -->
+    <title>AZ Fanpage Data App</title>
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="googlebot" content="noindex, nofollow" />
 
     <!-- Favicon -->
     <link rel="icon" href="/favicon.png" type="image/png" />
 
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="apple-touch-startup-image" href="/icons/icon-512x512.png" />
-
-    <!-- Optimized font loading with display=swap -->
+    <!-- Fonts: Outfit, Plus Jakarta Sans, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" />
-    </noscript>
-    
-    <!-- Preconnect for external resources -->
-    <link rel="preconnect" href="https://www.azfanpage.nl" />
-    <link rel="dns-prefetch" href="https://api-football-v1.p.rapidapi.com" />
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-    
-    <!-- Preload critical assets -->
-    <link rel="preload" as="image" href="/icons/icon-192x192.png" />
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="AZ nieuws lees je op AZFanpage" />
-    <meta property="og:description" content="AZFanpage brengt al meer dan 20 jaar het AZ nieuws vanuit supportersperspectief. Weten wat er speelt bij de club uit Alkmaar? Volg ons en je weet het!" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://app.azfanpage.nl/" />
-    <meta property="og:site_name" content="AZFanpage.nl" />
-    <meta property="og:locale" content="nl_NL" />
-    <meta property="og:image" content="https://app.azfanpage.nl/og-image.png" />
-    <meta property="og:image:width" content="1920" />
-    <meta property="og:image:height" content="1024" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" />
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@azfanpagenl" />
-    <meta name="twitter:title" content="AZ nieuws lees je op AZFanpage" />
-    <meta name="twitter:description" content="AZFanpage brengt al meer dan 20 jaar het AZ nieuws vanuit supportersperspectief. Weten wat er speelt bij de club uit Alkmaar? Volg ons en je weet het!" />
-    <meta name="twitter:image" content="https://app.azfanpage.nl/og-image.png" />
-    
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#DB0021" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="AZFanpage" />
-
-    <!-- MS Tiles -->
-    <meta name="msapplication-TileColor" content="#DB0021" />
-    <meta name="msapplication-TileImage" content="/icons/icon-144x144.png" />
-
-    <!-- Google Analytics 4 - deferred loading -->
-    <script async defer src="https://www.googletagmanager.com/gtag/js?id=G-08TNV76FD0"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-08TNV76FD0');
-    </script>
-
-    <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "AZFanpage",
-      "description": "AZFanpage brengt al meer dan 20 jaar het AZ nieuws vanuit supportersperspectief. Weten wat er speelt bij de club uit Alkmaar? Volg ons en je weet het!",
-      "url": "https://app.azfanpage.nl",
-      "applicationCategory": "SportsApplication",
-      "operatingSystem": "Web",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "EUR"
-      },
-      "author": {
-        "@type": "Organization",
-        "name": "AZFanpage.nl",
-        "url": "https://www.azfanpage.nl"
-      },
-      "about": {
-        "@type": "SportsTeam",
-        "name": "AZ Alkmaar",
-        "sport": "Voetbal",
-        "memberOf": {
-          "@type": "SportsOrganization",
-          "name": "Eredivisie"
-        }
-      }
-    }
-    </script>
+    <!-- Theme -->
+    <meta name="theme-color" content="#0F1117" />
   </head>
 
   <body>
