@@ -6,6 +6,7 @@ import { useHeadToHead } from "@/hooks/useHeadToHead";
 import { TeamLineup } from "@/hooks/useFixtureLineups";
 import { FixtureEvent } from "@/hooks/useFixtureEvents";
 import { StatComparisonBars } from "@/components/wedstrijd/StatComparisonBars";
+import { MatchVerdict } from "@/components/nabeschouwing/MatchVerdict";
 import { EventsTimeline } from "@/components/wedstrijd/EventsTimeline";
 import { FormationDisplay } from "@/components/wedstrijd/FormationDisplay";
 import { Fixture, TeamStatistics } from "@/types/footballApi";
@@ -321,6 +322,20 @@ const Nabeschouwing = () => {
           {fixture.fixture.referee && ` · ${fixture.fixture.referee}`}
         </div>
       </div>
+
+      {/* Match verdict */}
+      {azGoals !== null && oppGoals !== null && (
+        <MatchVerdict
+          azGoals={azGoals}
+          oppGoals={oppGoals}
+          opponentName={opponentName}
+          isAZHome={isAZHome}
+          stats={stats || null}
+          events={events || null}
+          halftimeAZ={isAZHome ? fixture.score.halftime.home : fixture.score.halftime.away}
+          halftimeOpp={isAZHome ? fixture.score.halftime.away : fixture.score.halftime.home}
+        />
+      )}
 
       {/* Insights + lineup highlights */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
