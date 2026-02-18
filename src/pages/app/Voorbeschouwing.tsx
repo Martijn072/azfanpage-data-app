@@ -12,7 +12,6 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Trophy, MapPin, TrendingUp, Swords, BarChart3, Clock, Calendar, Home, Plane } from "lucide-react";
 import { FormComparisonChart } from "@/components/voorbeschouwing/FormComparisonChart";
-import { GoalsTrendChart } from "@/components/voorbeschouwing/GoalsTrendChart";
 import { H2HVisualBar } from "@/components/voorbeschouwing/H2HVisualBar";
 
 const AZ_TEAM_ID = 201;
@@ -453,18 +452,15 @@ const Voorbeschouwing = () => {
         </div>
       )}
 
-      {/* Context charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {allFixtures && opponentRecent && opponentId && (
-          <FormComparisonChart
-            azFixtures={allFixtures}
-            opponentFixtures={opponentRecent}
-            opponentId={opponentId}
-            opponentName={opponent.name}
-          />
-        )}
-        {allFixtures && <GoalsTrendChart fixtures={allFixtures} />}
-      </div>
+      {/* Context chart */}
+      {allFixtures && opponentRecent && opponentId && (
+        <FormComparisonChart
+          azFixtures={allFixtures}
+          opponentFixtures={opponentRecent}
+          opponentId={opponentId}
+          opponentName={opponent.name}
+        />
+      )}
 
 
       {/* Eredivisie stand context */}
