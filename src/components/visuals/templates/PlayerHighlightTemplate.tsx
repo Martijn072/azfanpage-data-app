@@ -1,0 +1,62 @@
+import { forwardRef } from 'react';
+
+interface PlayerHighlightTemplateProps {
+  playerName: string;
+  tagline: string;
+  backgroundImage?: string | null;
+}
+
+export const PlayerHighlightTemplate = forwardRef<HTMLDivElement, PlayerHighlightTemplateProps>(
+  ({ playerName, tagline, backgroundImage }, ref) => {
+    return (
+      <div
+        ref={ref}
+        style={{ width: 1080, height: 1080 }}
+        className="relative overflow-hidden"
+      >
+        {backgroundImage ? (
+          <img src={backgroundImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+        ) : (
+          <div className="absolute inset-0 bg-[#0F1117]" />
+        )}
+
+        {/* Bottom gradient overlay for text legibility */}
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 35%, transparent 60%)' }}
+        />
+
+        {/* Red top bar */}
+        <div
+          className="absolute top-0 left-0 right-0 h-[6px] z-10"
+          style={{ background: 'linear-gradient(90deg, #DB0021 0%, #DB0021 60%, transparent 100%)' }}
+        />
+
+        {/* Text content bottom-left */}
+        <div className="absolute bottom-14 left-14 right-36 z-10">
+          <p
+            className="text-white font-headline font-black leading-none"
+            style={{ fontSize: playerName.length > 16 ? 72 : 88 }}
+          >
+            {playerName || 'Spelernaam'}
+          </p>
+          {(tagline || !playerName) && (
+            <p
+              className="text-white/80 font-body font-medium mt-3"
+              style={{ fontSize: 36 }}
+            >
+              {tagline || 'Man of the Match'}
+            </p>
+          )}
+        </div>
+
+        {/* AZ Fanpage logo */}
+        <div className="absolute bottom-8 right-10 z-10">
+          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-20 w-auto opacity-80" />
+        </div>
+      </div>
+    );
+  }
+);
+
+PlayerHighlightTemplate.displayName = 'PlayerHighlightTemplate';
