@@ -3,14 +3,14 @@ import { useTeamStatistics } from "@/hooks/useTeamStatistics";
 import { useHeadToHead } from "@/hooks/useHeadToHead";
 import { useTeamFixtures } from "@/hooks/useTeamFixtures";
 import { useOpponentRecentForm } from "@/hooks/useOpponentRecentForm";
-import { useSquad } from "@/hooks/useSquad";
+
 import { Fixture, Standing } from "@/types/footballApi";
 import { format, formatDistanceToNow } from "date-fns";
 import { nl } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trophy, MapPin, TrendingUp, Swords, BarChart3, Clock, Calendar, Users, Home, Plane } from "lucide-react";
+import { Trophy, MapPin, TrendingUp, Swords, BarChart3, Clock, Calendar, Home, Plane } from "lucide-react";
 import { FormComparisonChart } from "@/components/voorbeschouwing/FormComparisonChart";
 import { GoalsTrendChart } from "@/components/voorbeschouwing/GoalsTrendChart";
 import { H2HVisualBar } from "@/components/voorbeschouwing/H2HVisualBar";
@@ -75,7 +75,7 @@ const Voorbeschouwing = () => {
   const { data: standings } = useEredivisieStandings();
   const { data: azStats } = useTeamStatistics(AZ_TEAM_ID);
   const { data: allFixtures } = useTeamFixtures(AZ_TEAM_ID);
-  const { data: squad } = useSquad(AZ_TEAM_ID);
+  
 
   const opponentId = useMemo(() => {
     if (!nextFixture) return null;
@@ -466,36 +466,6 @@ const Voorbeschouwing = () => {
         {allFixtures && <GoalsTrendChart fixtures={allFixtures} />}
       </div>
 
-      {/* Key players — AZ squad quick view */}
-      {squad && squad.players && (
-        <div className="bg-card border border-border rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <Users className="h-4 w-4 text-primary" />
-            <h3 className="text-app-body-strong text-foreground">Selectie AZ</h3>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-            {squad.players
-              .filter(p => p.position === "Attacker" || p.position === "Midfielder")
-              .slice(0, 8)
-              .map(p => (
-                <button
-                  key={p.id}
-                  onClick={() => navigate(`/spelers/${p.id}`)}
-                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted/50 transition-colors text-left"
-                >
-                  <img src={p.photo} alt="" className="h-8 w-8 rounded-full object-cover bg-muted" />
-                  <div className="min-w-0">
-                    <p className="text-app-small font-medium text-foreground truncate">{p.name}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {p.position === "Attacker" ? "Aanvaller" : "Middenvelder"}
-                      {p.number ? ` · #${p.number}` : ""}
-                    </p>
-                  </div>
-                </button>
-              ))}
-          </div>
-        </div>
-      )}
 
       {/* Eredivisie stand context */}
       {isEredivisie && azStanding && oppStanding && (
