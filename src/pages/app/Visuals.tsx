@@ -1,9 +1,24 @@
 import { useState } from 'react';
 import { TemplateSelector, TemplateType } from '@/components/visuals/TemplateSelector';
 import { VisualPreview } from '@/components/visuals/VisualPreview';
+import { BackgroundUploader } from '@/components/visuals/BackgroundUploader';
 
 const Visuals = () => {
   const [selected, setSelected] = useState<TemplateType>('result');
+  const [backgrounds, setBackgrounds] = useState<Record<TemplateType, string | null>>({
+    result: null,
+    preview: null,
+    standings: null,
+    matchday: null,
+  });
+
+  const handleUpload = (url: string) => {
+    setBackgrounds((prev) => ({ ...prev, [selected]: url }));
+  };
+
+  const handleRemove = () => {
+    setBackgrounds((prev) => ({ ...prev, [selected]: null }));
+  };
 
   return (
     <div className="space-y-6">
@@ -16,7 +31,13 @@ const Visuals = () => {
 
       <TemplateSelector selected={selected} onSelect={setSelected} />
 
-      <VisualPreview template={selected} />
+      <BackgroundUploader
+        backgroundImage={backgrounds[selected]}
+        onUpload={handleUpload}
+        onRemove={handleRemove}
+      />
+
+      <VisualPreview template={selected} backgroundImage={backgrounds[selected]} />
     </div>
   );
 };

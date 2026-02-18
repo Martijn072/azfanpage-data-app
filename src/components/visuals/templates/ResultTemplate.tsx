@@ -5,10 +5,11 @@ import { nl } from 'date-fns/locale';
 
 interface ResultTemplateProps {
   fixture: Fixture | null;
+  backgroundImage?: string | null;
 }
 
 export const ResultTemplate = forwardRef<HTMLDivElement, ResultTemplateProps>(
-  ({ fixture }, ref) => {
+  ({ fixture, backgroundImage }, ref) => {
     if (!fixture) {
       return (
         <div ref={ref} style={{ width: 1080, height: 1080 }} className="bg-[#0F1117] flex items-center justify-center">
@@ -29,14 +30,20 @@ export const ResultTemplate = forwardRef<HTMLDivElement, ResultTemplateProps>(
         style={{ width: 1080, height: 1080 }}
         className="relative overflow-hidden flex flex-col items-center justify-center"
       >
-        <div className="absolute inset-0 bg-[#0F1117]" />
+        {backgroundImage ? (
+          <>
+            <img src={backgroundImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div className="absolute inset-0 bg-black/65" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-[#0F1117]" />
+            <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 50% 40%, rgba(219,0,33,0.08) 0%, transparent 60%)' }} />
+          </>
+        )}
         <div
           className="absolute top-0 left-0 right-0 h-[6px]"
           style={{ background: 'linear-gradient(90deg, #DB0021 0%, #DB0021 60%, transparent 100%)' }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{ background: 'radial-gradient(circle at 50% 40%, rgba(219,0,33,0.08) 0%, transparent 60%)' }}
         />
 
         <div className="relative z-10 flex flex-col items-center w-full px-16">
@@ -84,7 +91,7 @@ export const ResultTemplate = forwardRef<HTMLDivElement, ResultTemplateProps>(
 
           {fixture.fixture.venue && (
             <p className="text-[#6B7280] text-base font-body mt-16">
-              📍 {fixture.fixture.venue.name}, {fixture.fixture.venue.city}
+              {fixture.fixture.venue.name}, {fixture.fixture.venue.city}
             </p>
           )}
         </div>

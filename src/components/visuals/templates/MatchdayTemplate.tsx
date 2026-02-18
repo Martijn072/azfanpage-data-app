@@ -6,10 +6,11 @@ import { nl } from 'date-fns/locale';
 interface MatchdayTemplateProps {
   lastFixture: Fixture | null;
   nextFixture: Fixture | null;
+  backgroundImage?: string | null;
 }
 
 export const MatchdayTemplate = forwardRef<HTMLDivElement, MatchdayTemplateProps>(
-  ({ lastFixture, nextFixture }, ref) => {
+  ({ lastFixture, nextFixture, backgroundImage }, ref) => {
     if (!lastFixture && !nextFixture) {
       return (
         <div ref={ref} style={{ width: 1080, height: 1080 }} className="bg-[#0F1117] flex items-center justify-center">
@@ -20,9 +21,18 @@ export const MatchdayTemplate = forwardRef<HTMLDivElement, MatchdayTemplateProps
 
     return (
       <div ref={ref} style={{ width: 1080, height: 1080 }} className="relative overflow-hidden flex flex-col">
-        <div className="absolute inset-0 bg-[#0F1117]" />
+        {backgroundImage ? (
+          <>
+            <img src={backgroundImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div className="absolute inset-0 bg-black/65" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-[#0F1117]" />
+            <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 50% 50%, rgba(219,0,33,0.05) 0%, transparent 50%)' }} />
+          </>
+        )}
         <div className="absolute top-0 left-0 right-0 h-[6px]" style={{ background: 'linear-gradient(90deg, #DB0021 0%, #DB0021 60%, transparent 100%)' }} />
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 50% 50%, rgba(219,0,33,0.05) 0%, transparent 50%)' }} />
 
         <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-16 gap-12">
           <span className="text-[#DB0021] text-lg font-body font-semibold uppercase tracking-[0.25em]">
