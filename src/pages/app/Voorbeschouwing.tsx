@@ -3,12 +3,14 @@ import { useTeamStatistics } from "@/hooks/useTeamStatistics";
 import { useHeadToHead } from "@/hooks/useHeadToHead";
 import { useTeamFixtures } from "@/hooks/useTeamFixtures";
 import { useOpponentRecentForm } from "@/hooks/useOpponentRecentForm";
+import { useSquad } from "@/hooks/useSquad";
 import { Fixture, Standing } from "@/types/footballApi";
 import { format, formatDistanceToNow } from "date-fns";
 import { nl } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
-import { Trophy, MapPin, TrendingUp, Swords, BarChart3, Clock, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Trophy, MapPin, TrendingUp, Swords, BarChart3, Clock, Calendar, Users, Home, Plane } from "lucide-react";
 
 const AZ_TEAM_ID = 201;
 
@@ -31,7 +33,6 @@ const FormBadge = ({ form }: { form: string }) => {
   );
 };
 
-/** Derive W/D/L form string from fixtures for a given team */
 const deriveFormFromFixtures = (fixtures: Fixture[], teamId: number): string => {
   return fixtures
     .filter(f => f.fixture.status.short === "FT" || f.fixture.status.short === "AET" || f.fixture.status.short === "PEN")
@@ -66,10 +67,12 @@ const resultStyles: Record<string, string> = {
 };
 
 const Voorbeschouwing = () => {
+  const navigate = useNavigate();
   const { data: nextFixture, isLoading: fixtureLoading } = useNextAZFixture(AZ_TEAM_ID);
   const { data: standings } = useEredivisieStandings();
   const { data: azStats } = useTeamStatistics(AZ_TEAM_ID);
   const { data: allFixtures } = useTeamFixtures(AZ_TEAM_ID);
+  const { data: squad } = useSquad(AZ_TEAM_ID);
 
   const opponentId = useMemo(() => {
     if (!nextFixture) return null;
@@ -81,13 +84,11 @@ const Voorbeschouwing = () => {
   const { data: h2hFixtures } = useHeadToHead(AZ_TEAM_ID, opponentId);
   const { data: opponentRecent } = useOpponentRecentForm(opponentId, 5);
 
-  // Derive opponent form from recent fixtures
   const opponentForm = useMemo(() => {
     if (!opponentRecent || opponentRecent.length === 0 || !opponentId) return null;
     return deriveFormFromFixtures(opponentRecent, opponentId);
   }, [opponentRecent, opponentId]);
 
-  // Opponent W/D/L summary from recent matches
   const opponentSummary = useMemo(() => {
     if (!opponentRecent || !opponentId) return null;
     const played = opponentRecent.filter(f => f.fixture.status.short === "FT" || f.fixture.status.short === "AET" || f.fixture.status.short === "PEN");
@@ -108,6 +109,15 @@ const Voorbeschouwing = () => {
   const azStanding = standings?.find(s => s.team.id === AZ_TEAM_ID);
   const oppStanding = opponentId ? standings?.find(s => s.team.id === opponentId) : null;
 
+  // AZ recent results list
+  const azRecentResults = useMemo(() => {
+    if (!allFixtures) return [];
+    return allFixtures
+      .filter(f => f.fixture.status.short === "FT" || f.fixture.status.short === "AET" || f.fixture.status.short === "PEN")
+      .sort((a, b) => new Date(b.fixture.date).getTime() - new Date(a.fixture.date).getTime())
+      .slice(0, 5);
+  }, [allFixtures]);
+
   // H2H summary
   const h2hSummary = useMemo(() => {
     if (!h2hFixtures || h2hFixtures.length === 0) return null;
@@ -124,6 +134,13 @@ const Voorbeschouwing = () => {
     });
     return { azWins, draws, oppWins, total: h2hFixtures.length };
   }, [h2hFixtures]);
+
+  // Top scorers from AZ's recent fixtures
+  const topScorers = useMemo(() => {
+    if (!allFixtures) return [];
+    // We don't have per-match goal data in fixtures, but we can show squad info
+    return [];
+  }, [allFixtures]);
 
   if (fixtureLoading) {
     return (
@@ -233,7 +250,34 @@ const Voorbeschouwing = () => {
                   <div className="text-app-tiny text-muted-foreground">Verlies</div>
                 </div>
               </div>
-              <div className="mt-3 space-y-1">
+
+              {/* Home/Away split */}
+              <div className="mt-3 pt-3 border-t border-border">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="text-app-tiny text-muted-foreground uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                      <Home className="h-3 w-3" /> Thuis
+                    </h4>
+                    <div className="space-y-1 text-app-small">
+                      <div className="flex justify-between"><span className="text-muted-foreground">W-G-V</span><span className="font-mono text-foreground">{azStats.fixtures.wins.home}-{azStats.fixtures.draws.home}-{azStats.fixtures.loses.home}</span></div>
+                      <div className="flex justify-between"><span className="text-muted-foreground">Goals</span><span className="font-mono text-foreground">{azStats.goals.for.total.home}-{azStats.goals.against.total.home}</span></div>
+                      <div className="flex justify-between"><span className="text-muted-foreground">Clean sheets</span><span className="font-mono text-foreground">{azStats.clean_sheet.home}</span></div>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-app-tiny text-muted-foreground uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                      <Plane className="h-3 w-3" /> Uit
+                    </h4>
+                    <div className="space-y-1 text-app-small">
+                      <div className="flex justify-between"><span className="text-muted-foreground">W-G-V</span><span className="font-mono text-foreground">{azStats.fixtures.wins.away}-{azStats.fixtures.draws.away}-{azStats.fixtures.loses.away}</span></div>
+                      <div className="flex justify-between"><span className="text-muted-foreground">Goals</span><span className="font-mono text-foreground">{azStats.goals.for.total.away}-{azStats.goals.against.total.away}</span></div>
+                      <div className="flex justify-between"><span className="text-muted-foreground">Clean sheets</span><span className="font-mono text-foreground">{azStats.clean_sheet.away}</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-border space-y-1">
                 <div className="flex justify-between text-app-small">
                   <span className="text-muted-foreground">Doelpunten voor</span>
                   <span className="text-foreground font-mono">{azStats.goals.for.total.total} ({azStats.goals.for.average.total}/wed)</span>
@@ -246,7 +290,36 @@ const Voorbeschouwing = () => {
                   <span className="text-muted-foreground">Clean sheets</span>
                   <span className="text-foreground font-mono">{azStats.clean_sheet.total}</span>
                 </div>
+                <div className="flex justify-between text-app-small">
+                  <span className="text-muted-foreground">Niet gescoord</span>
+                  <span className="text-foreground font-mono">{azStats.failed_to_score.total}x</span>
+                </div>
               </div>
+
+              {/* AZ recent results */}
+              {azRecentResults.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-border">
+                  <h4 className="text-app-tiny text-muted-foreground uppercase tracking-wider mb-2">Recente uitslagen</h4>
+                  <div className="space-y-1.5">
+                    {azRecentResults.map((f: Fixture) => {
+                      const res = getResult(f, AZ_TEAM_ID);
+                      const isHome = f.teams.home.id === AZ_TEAM_ID;
+                      return (
+                        <div key={f.fixture.id} className="flex items-center justify-between text-app-small gap-2">
+                          <span className="text-muted-foreground w-14 shrink-0">{format(new Date(f.fixture.date), "d MMM", { locale: nl })}</span>
+                          <span className="flex-1 truncate text-foreground">
+                            {isHome ? f.teams.away.name : f.teams.home.name}
+                            <span className="text-muted-foreground text-app-tiny ml-1">({isHome ? "T" : "U"})</span>
+                          </span>
+                          <span className={cn("font-mono font-bold shrink-0", res ? resultStyles[res] : "text-muted-foreground")}>
+                            {f.goals.home}-{f.goals.away}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </>
           ) : (
             <div className="space-y-2 animate-pulse">
@@ -256,7 +329,7 @@ const Voorbeschouwing = () => {
           )}
         </div>
 
-        {/* Opponent Form — from recent fixtures (works for any team/league) */}
+        {/* Opponent Form */}
         <div className="bg-card border border-border rounded-xl p-4">
           <div className="flex items-center gap-2 mb-3">
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -339,7 +412,6 @@ const Voorbeschouwing = () => {
             </div>
           </div>
 
-          {/* H2H match list */}
           <div className="space-y-1.5 border-t border-border pt-3">
             {h2hFixtures?.slice(0, 5).map((f: Fixture) => {
               const azHome = f.teams.home.id === AZ_TEAM_ID;
@@ -366,7 +438,38 @@ const Voorbeschouwing = () => {
         </div>
       )}
 
-      {/* Eredivisie stand context — only for Eredivisie matches */}
+      {/* Key players — AZ squad quick view */}
+      {squad && squad.players && (
+        <div className="bg-card border border-border rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Users className="h-4 w-4 text-primary" />
+            <h3 className="text-app-body-strong text-foreground">Selectie AZ</h3>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+            {squad.players
+              .filter(p => p.position === "Attacker" || p.position === "Midfielder")
+              .slice(0, 8)
+              .map(p => (
+                <button
+                  key={p.id}
+                  onClick={() => navigate(`/spelers/${p.id}`)}
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted/50 transition-colors text-left"
+                >
+                  <img src={p.photo} alt="" className="h-8 w-8 rounded-full object-cover bg-muted" />
+                  <div className="min-w-0">
+                    <p className="text-app-small font-medium text-foreground truncate">{p.name}</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      {p.position === "Attacker" ? "Aanvaller" : "Middenvelder"}
+                      {p.number ? ` · #${p.number}` : ""}
+                    </p>
+                  </div>
+                </button>
+              ))}
+          </div>
+        </div>
+      )}
+
+      {/* Eredivisie stand context */}
       {isEredivisie && azStanding && oppStanding && (
         <div className="bg-card border border-border rounded-xl p-4">
           <div className="flex items-center gap-2 mb-3">

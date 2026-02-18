@@ -2,6 +2,7 @@ import { useAZFixtures } from "@/hooks/useFootballApi";
 import { useFixtureStatistics } from "@/hooks/useFixtureStatistics";
 import { useFixtureEvents } from "@/hooks/useFixtureEvents";
 import { useFixtureLineups } from "@/hooks/useFixtureLineups";
+import { useHeadToHead } from "@/hooks/useHeadToHead";
 import { TeamLineup } from "@/hooks/useFixtureLineups";
 import { FixtureEvent } from "@/hooks/useFixtureEvents";
 import { StatComparisonBars } from "@/components/wedstrijd/StatComparisonBars";
@@ -13,7 +14,7 @@ import { nl } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { BarChart3, ArrowRight, Users, Target, Shield, AlertTriangle } from "lucide-react";
+import { BarChart3, ArrowRight, Users, Target, Shield, AlertTriangle, Swords } from "lucide-react";
 
 const AZ_TEAM_ID = 201;
 
@@ -23,6 +24,12 @@ const getStat = (teamStats: TeamStatistics, type: string): number => {
   const s = teamStats.statistics.find(s => s.type === type);
   if (!s || s.value === null || s.value === undefined) return 0;
   return parseFloat(String(s.value).replace("%", "")) || 0;
+};
+
+const resultStyles: Record<string, string> = {
+  W: "text-success",
+  G: "text-warning",
+  V: "text-danger",
 };
 
 const Nabeschouwing = () => {
@@ -36,6 +43,13 @@ const Nabeschouwing = () => {
   const { data: stats, isLoading: statsLoading } = useFixtureStatistics(fixtureId);
   const { data: events, isLoading: eventsLoading } = useFixtureEvents(fixtureId);
   const { data: lineups, isLoading: lineupsLoading } = useFixtureLineups(fixtureId);
+
+  const opponentId = useMemo(() => {
+    if (!fixture) return null;
+    return fixture.teams.home.id === AZ_TEAM_ID ? fixture.teams.away.id : fixture.teams.home.id;
+  }, [fixture]);
+
+  const { data: h2hFixtures } = useHeadToHead(AZ_TEAM_ID, opponentId);
 
   const isPlayed = fixture && (fixture.fixture.status.short === "FT" || fixture.fixture.status.short === "AET" || fixture.fixture.status.short === "PEN");
 
@@ -51,6 +65,23 @@ const Nabeschouwing = () => {
   }
   const resultLabel = { W: "Winst", G: "Gelijk", V: "Verlies" };
   const resultColors = { W: "bg-success/15 text-success", G: "bg-warning/15 text-warning", V: "bg-danger/15 text-danger" };
+
+  // H2H summary
+  const h2hSummary = useMemo(() => {
+    if (!h2hFixtures || h2hFixtures.length === 0) return null;
+    let azWins = 0, draws = 0, oppWins = 0;
+    h2hFixtures.forEach((f: Fixture) => {
+      const azHome = f.teams.home.id === AZ_TEAM_ID;
+      const ag = azHome ? f.goals.home : f.goals.away;
+      const og = azHome ? f.goals.away : f.goals.home;
+      if (ag !== null && og !== null) {
+        if (ag > og) azWins++;
+        else if (ag < og) oppWins++;
+        else draws++;
+      }
+    });
+    return { azWins, draws, oppWins, total: h2hFixtures.length };
+  }, [h2hFixtures]);
 
   // Generate rich insights from stats, events, and lineups
   const insights = useMemo(() => {
@@ -82,6 +113,20 @@ const Nabeschouwing = () => {
       const azStats = stats.find(s => s.team.id === AZ_TEAM_ID);
       const oppStats = stats.find(s => s.team.id !== AZ_TEAM_ID);
       if (azStats && oppStats) {
+        // xG insight
+        const azXG = getStat(azStats, "expected_goals");
+        const oppXG = getStat(oppStats, "expected_goals");
+        if (azXG > 0 || oppXG > 0) {
+          const xgDiff = azGoals !== null ? azGoals - azXG : 0;
+          if (xgDiff > 0.5) {
+            items.push({ icon: Target, text: `AZ overtrof xG: ${azGoals} goals bij ${azXG.toFixed(2)} xG (+${xgDiff.toFixed(2)})`, type: "success" });
+          } else if (xgDiff < -0.5) {
+            items.push({ icon: AlertTriangle, text: `AZ ondermaats qua xG: ${azGoals} goals bij ${azXG.toFixed(2)} xG (${xgDiff.toFixed(2)})`, type: "warning" });
+          } else {
+            items.push({ icon: BarChart3, text: `xG: AZ ${azXG.toFixed(2)} – ${opponentName} ${oppXG.toFixed(2)}`, type: "info" });
+          }
+        }
+
         const azPoss = getStat(azStats, "Ball Possession");
         const oppPoss = getStat(oppStats, "Ball Possession");
         if (azPoss >= 60) items.push({ icon: BarChart3, text: `Balbezit-dominantie: ${azPoss}% voor AZ`, type: "info" });
@@ -90,7 +135,6 @@ const Nabeschouwing = () => {
         const azShots = getStat(azStats, "Total Shots");
         const oppShots = getStat(oppStats, "Total Shots");
         const azOnTarget = getStat(azStats, "Shots on Goal");
-        const oppOnTarget = getStat(oppStats, "Shots on Goal");
 
         if (azShots >= oppShots * 1.5) items.push({ icon: Target, text: `AZ was dreigender: ${azShots} schoten vs ${oppShots}`, type: "info" });
         if (azOnTarget > 0 && azGoals !== null && azGoals > 0) {
@@ -115,7 +159,7 @@ const Nabeschouwing = () => {
       const redCards = azCards.filter((e: FixtureEvent) => e.detail === "Red Card" || e.detail === "Second Yellow card");
 
       if (azGoalEvents.length > 0) {
-        const scorers = azGoalEvents.map((e: FixtureEvent) => e.player.name.split(" ").pop()).join(", ");
+        const scorers = azGoalEvents.map((e: FixtureEvent) => `${e.player.name.split(" ").pop()} (${e.time.elapsed}')`).join(", ");
         items.push({ icon: Target, text: `Doelpuntenmakers: ${scorers}`, type: "success" });
       }
 
@@ -140,8 +184,14 @@ const Nabeschouwing = () => {
       }
     }
 
-    return items.slice(0, 8); // Max 8 insights
+    return items.slice(0, 10);
   }, [fixture, stats, events, lineups, isPlayed, azGoals, oppGoals, isAZHome, opponentName]);
+
+  // Goal scorers with player IDs for linking
+  const goalScorers = useMemo(() => {
+    if (!events) return [];
+    return events.filter((e: FixtureEvent) => e.type === "Goal" && e.detail !== "Missed Penalty");
+  }, [events]);
 
   // Key lineup highlights
   const lineupHighlights = useMemo(() => {
@@ -244,6 +294,27 @@ const Nabeschouwing = () => {
             </span>
           </div>
         </div>
+
+        {/* Clickable goal scorers */}
+        {goalScorers.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-4 pt-4 border-t border-border">
+            {goalScorers.map((g, i) => (
+              <button
+                key={i}
+                onClick={() => g.player.id && g.team.id === AZ_TEAM_ID && navigate(`/spelers/${g.player.id}`)}
+                className={cn(
+                  "text-app-small",
+                  g.team.id === AZ_TEAM_ID ? "text-primary hover:underline cursor-pointer" : "text-muted-foreground cursor-default"
+                )}
+              >
+                ⚽ {g.player.name} {g.time.elapsed}'{g.time.extra ? `+${g.time.extra}` : ""}
+                {g.detail === "Penalty" && " (P)"}
+                {g.detail === "Own Goal" && " (e.d.)"}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="mt-3 text-center text-app-tiny text-muted-foreground">
           {format(new Date(fixture.fixture.date), "EEEE d MMMM yyyy · HH:mm", { locale: nl })}
           {fixture.fixture.venue && ` · ${fixture.fixture.venue.name}`}
@@ -251,7 +322,7 @@ const Nabeschouwing = () => {
         </div>
       </div>
 
-      {/* Insights + lineup highlights side by side */}
+      {/* Insights + lineup highlights */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Data highlights */}
         <div className="lg:col-span-2 bg-card border border-border rounded-xl p-4">
@@ -318,6 +389,53 @@ const Nabeschouwing = () => {
           )}
         </div>
       </div>
+
+      {/* H2H context */}
+      {h2hSummary && h2hSummary.total > 0 && (
+        <div className="bg-card border border-border rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Swords className="h-4 w-4 text-muted-foreground" />
+            <h3 className="text-app-body-strong text-foreground">Onderlinge historie (laatste {h2hSummary.total})</h3>
+          </div>
+          <div className="grid grid-cols-3 gap-4 text-center mb-3">
+            <div>
+              <div className="text-app-data-lg font-mono text-primary">{h2hSummary.azWins}</div>
+              <div className="text-app-tiny text-muted-foreground">AZ winst</div>
+            </div>
+            <div>
+              <div className="text-app-data-lg font-mono text-warning">{h2hSummary.draws}</div>
+              <div className="text-app-tiny text-muted-foreground">Gelijk</div>
+            </div>
+            <div>
+              <div className="text-app-data-lg font-mono text-muted-foreground">{h2hSummary.oppWins}</div>
+              <div className="text-app-tiny text-muted-foreground">{opponentName}</div>
+            </div>
+          </div>
+          <div className="space-y-1.5 border-t border-border pt-3">
+            {h2hFixtures?.slice(0, 5).map((f: Fixture) => {
+              const azHome = f.teams.home.id === AZ_TEAM_ID;
+              const ag = azHome ? f.goals.home : f.goals.away;
+              const og = azHome ? f.goals.away : f.goals.home;
+              let res = "G";
+              if (ag !== null && og !== null) {
+                if (ag > og) res = "W";
+                else if (ag < og) res = "V";
+              }
+              return (
+                <div key={f.fixture.id} className="flex items-center justify-between text-app-small">
+                  <span className="text-muted-foreground w-20">{format(new Date(f.fixture.date), "d MMM yy", { locale: nl })}</span>
+                  <span className="flex-1 text-foreground">
+                    {f.teams.home.name}
+                    <span className={cn("font-mono font-bold mx-1.5", resultStyles[res])}>{f.goals.home} - {f.goals.away}</span>
+                    {f.teams.away.name}
+                  </span>
+                  <img src={f.league.logo} alt="" className="h-4 w-4 object-contain opacity-40 shrink-0" />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 bg-card border border-border rounded-lg p-1 w-fit">
