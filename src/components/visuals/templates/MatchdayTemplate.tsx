@@ -25,18 +25,16 @@ export const MatchdayTemplate = forwardRef<HTMLDivElement, MatchdayTemplateProps
         <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 50% 50%, rgba(219,0,33,0.05) 0%, transparent 50%)' }} />
 
         <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-16 gap-12">
-          {/* Title */}
           <span className="text-[#DB0021] text-lg font-body font-semibold uppercase tracking-[0.25em]">
             Speelronde
           </span>
 
-          {/* Last result */}
           {lastFixture && (
             <div className="flex flex-col items-center gap-6 w-full">
               <span className="text-[#6B7280] text-sm font-body uppercase tracking-wider">Laatste uitslag</span>
               <div className="flex items-center justify-center gap-8 w-full">
                 <div className="flex flex-col items-center gap-3">
-                  <img src={lastFixture.teams.home.logo} alt={lastFixture.teams.home.name} className="h-20 w-20 object-contain" crossOrigin="anonymous" />
+                  <img src={lastFixture.teams.home.logo} alt={lastFixture.teams.home.name} className="h-20 w-20 object-contain" />
                   <span className="text-[#E5E7EB] text-base font-headline font-semibold">{lastFixture.teams.home.name}</span>
                 </div>
                 <div className="flex items-baseline gap-3">
@@ -45,7 +43,7 @@ export const MatchdayTemplate = forwardRef<HTMLDivElement, MatchdayTemplateProps
                   <span className="text-white font-mono text-7xl font-bold">{lastFixture.goals.away ?? '-'}</span>
                 </div>
                 <div className="flex flex-col items-center gap-3">
-                  <img src={lastFixture.teams.away.logo} alt={lastFixture.teams.away.name} className="h-20 w-20 object-contain" crossOrigin="anonymous" />
+                  <img src={lastFixture.teams.away.logo} alt={lastFixture.teams.away.name} className="h-20 w-20 object-contain" />
                   <span className="text-[#E5E7EB] text-base font-headline font-semibold">{lastFixture.teams.away.name}</span>
                 </div>
               </div>
@@ -55,16 +53,14 @@ export const MatchdayTemplate = forwardRef<HTMLDivElement, MatchdayTemplateProps
             </div>
           )}
 
-          {/* Divider */}
           <div className="w-48 h-px bg-[#374151]" />
 
-          {/* Next match */}
           {nextFixture && (
             <div className="flex flex-col items-center gap-6 w-full">
               <span className="text-[#6B7280] text-sm font-body uppercase tracking-wider">Volgende wedstrijd</span>
               <div className="flex items-center justify-center gap-10 w-full">
                 <div className="flex flex-col items-center gap-3">
-                  <img src={nextFixture.teams.home.logo} alt={nextFixture.teams.home.name} className="h-20 w-20 object-contain" crossOrigin="anonymous" />
+                  <img src={nextFixture.teams.home.logo} alt={nextFixture.teams.home.name} className="h-20 w-20 object-contain" />
                   <span className="text-[#E5E7EB] text-base font-headline font-semibold">{nextFixture.teams.home.name}</span>
                 </div>
                 <div className="flex flex-col items-center gap-1">
@@ -76,7 +72,7 @@ export const MatchdayTemplate = forwardRef<HTMLDivElement, MatchdayTemplateProps
                   </span>
                 </div>
                 <div className="flex flex-col items-center gap-3">
-                  <img src={nextFixture.teams.away.logo} alt={nextFixture.teams.away.name} className="h-20 w-20 object-contain" crossOrigin="anonymous" />
+                  <img src={nextFixture.teams.away.logo} alt={nextFixture.teams.away.name} className="h-20 w-20 object-contain" />
                   <span className="text-[#E5E7EB] text-base font-headline font-semibold">{nextFixture.teams.away.name}</span>
                 </div>
               </div>
@@ -88,7 +84,7 @@ export const MatchdayTemplate = forwardRef<HTMLDivElement, MatchdayTemplateProps
         </div>
 
         <div className="absolute bottom-8 right-10 z-10">
-          <img src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png" alt="AZ Fanpage" className="h-7 w-auto opacity-60" crossOrigin="anonymous" />
+          <img src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png" alt="AZ Fanpage" className="h-7 w-auto opacity-60" />
         </div>
       </div>
     );

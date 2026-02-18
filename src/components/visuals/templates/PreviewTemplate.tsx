@@ -28,32 +28,29 @@ export const PreviewTemplate = forwardRef<HTMLDivElement, PreviewTemplateProps>(
         <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 50% 30%, rgba(219,0,33,0.06) 0%, transparent 60%)' }} />
 
         <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-16">
-          {/* Header */}
           <span className="text-[#DB0021] text-lg font-body font-semibold uppercase tracking-[0.25em] mb-2">
             Voorbeschouwing
           </span>
 
           <div className="flex items-center gap-3 mb-20">
-            <img src={league.logo} alt={league.name} className="h-7 w-7 object-contain" crossOrigin="anonymous" />
+            <img src={league.logo} alt={league.name} className="h-7 w-7 object-contain" />
             <span className="text-[#9CA3AF] text-base font-body">{league.name} · {league.round}</span>
           </div>
 
-          {/* Teams */}
           <div className="flex items-center justify-center gap-16 w-full">
             <div className="flex flex-col items-center gap-5 flex-1">
-              <img src={teams.home.logo} alt={teams.home.name} className="h-36 w-36 object-contain drop-shadow-lg" crossOrigin="anonymous" />
+              <img src={teams.home.logo} alt={teams.home.name} className="h-36 w-36 object-contain drop-shadow-lg" />
               <span className="text-white text-2xl font-headline font-semibold text-center">{teams.home.name}</span>
             </div>
 
             <span className="text-[#4B5563] font-mono text-6xl font-light">VS</span>
 
             <div className="flex flex-col items-center gap-5 flex-1">
-              <img src={teams.away.logo} alt={teams.away.name} className="h-36 w-36 object-contain drop-shadow-lg" crossOrigin="anonymous" />
+              <img src={teams.away.logo} alt={teams.away.name} className="h-36 w-36 object-contain drop-shadow-lg" />
               <span className="text-white text-2xl font-headline font-semibold text-center">{teams.away.name}</span>
             </div>
           </div>
 
-          {/* Date & time */}
           <div className="mt-20 flex flex-col items-center gap-2">
             <span className="text-white text-3xl font-headline font-bold">{matchTime}</span>
             <span className="text-[#9CA3AF] text-lg font-body capitalize">{matchDate}</span>
@@ -66,7 +63,7 @@ export const PreviewTemplate = forwardRef<HTMLDivElement, PreviewTemplateProps>(
         </div>
 
         <div className="absolute bottom-8 right-10 z-10">
-          <img src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png" alt="AZ Fanpage" className="h-7 w-auto opacity-60" crossOrigin="anonymous" />
+          <img src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png" alt="AZ Fanpage" className="h-7 w-auto opacity-60" />
         </div>
       </div>
     );
