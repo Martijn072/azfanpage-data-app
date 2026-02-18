@@ -1,41 +1,51 @@
 
-
-# Stand-template: AZ-focus card
+# Speler Uitlichten — Simpel "Man of the Match" template
 
 ## Concept
 
-De huidige tabel met 10 teams wordt vervangen door een visueel sterke kaart die draait om AZ. Het idee:
+Een minimalistisch template waar de **eigen foto het verhaal vertelt**. Geen statistiekenoverzicht, geen volledige spelerskaart. Gewoon:
 
-- **Bovenaan**: "Eredivisie" + seizoen als header, met het AZ Fanpage logo
-- **Centraal blok**: AZ groot uitgelicht met:
-  - Positie (groot cijfer, bijv. "6e")
-  - Club logo + naam
-  - Punten (groot)
-  - Vorm: de laatste 5 wedstrijden als gekleurde bolletjes (groen = winst, grijs = gelijk, rood = verlies)
-  - Gespeeld / Doelsaldo
-- **Onderaan**: Een compacte lijst met 2 teams boven AZ en 2 teams onder AZ, zodat je direct de concurrentie ziet. Elk met rank, logo, naam en punten.
+- De uploadbare foto op volle grootte als achtergrond (bijv. een speler die juicht na een hattrick)
+- Onderaan een subtiele overlay met alleen de **spelernaam** en een **korte tagline** die je zelf typt (bijv. "Hat-trick hero", "Man of the Match", "Debuutgoal")
+- AZ Fanpage logo rechtsonder
+- Rode gradient-lijn bovenaan (consistent met de andere templates)
 
-## Visuele stijl
+Meer niet. De foto doet het werk.
 
-- Formaat blijft 1080x1350 (story-formaat)
-- Donkere achtergrond met optionele achtergrondafbeelding (bestaande upload-functie)
-- AZ-rij krijgt een rode accent-border en subtiele rode achtergrond
-- De omliggende teams zijn kleiner en gedempt weergegeven
-- Rode gradient-lijn bovenaan (consistent met andere templates)
+## Hoe het werkt
+
+1. Je selecteert het template "Speler"
+2. Je uploadt een foto (bestaande upload-functie)
+3. Je typt een spelernaam en een korte tagline in twee tekstvelden
+4. De preview toont de foto full-bleed met onderaan naam + tagline
+5. Download als PNG
+
+Geen API-calls, geen spelerselectie-dropdown, geen statistieken. Puur visueel.
 
 ## Technische aanpak
 
-### Bestand: `src/components/visuals/templates/StandingsTemplate.tsx`
+### 1. TemplateSelector.tsx
+- `TemplateType` uitbreiden met `'player'`
+- Nieuw item: `{ id: 'player', label: 'Speler', icon: User, format: '1080x1080' }`
 
-Volledige herbouw van de template-inhoud:
+### 2. Nieuw: PlayerHighlightTemplate.tsx
+- Props: `playerName`, `tagline`, `backgroundImage`
+- Layout (1080x1080):
+  - Achtergrondafbeelding full-bleed (of donkere fallback als er geen foto is)
+  - Gradient-overlay onderaan (van transparant naar zwart) zodat tekst leesbaar is
+  - Spelernaam in grote, vette letters
+  - Tagline eronder in iets kleiner, lichtere stijl
+  - Rode lijn bovenaan + AZ Fanpage logo rechtsonder
 
-1. **AZ detectie**: Zoek AZ in de standings-array op basis van teamnaam (bestaande logica)
-2. **Context-teams**: Pak 2 teams boven en 2 teams onder AZ's positie uit de volledige stand
-3. **Centraal AZ-blok**: Groot weergegeven met positie, logo, punten en vorm-indicator
-4. **Vorm-bolletjes**: De `form`-string uit de API (bijv. "WWDLW") omzetten naar gekleurde cirkels
-5. **Omliggende teams**: Compacte rijen met rank, klein logo, naam en punten
+### 3. Visuals.tsx
+- State toevoegen: `playerName` (string) en `tagline` (string)
+- Twee tekstvelden tonen wanneer template `'player'` is geselecteerd
+- `backgrounds` record uitbreiden met `player: null`
 
-### Geen andere bestanden nodig
+### 4. VisualPreview.tsx
+- `playerName` en `tagline` als props ontvangen
+- `PlayerHighlightTemplate` renderen wanneer template `'player'`
+- Template size: `player: { w: 1080, h: 1080 }`
 
-De props (`standings`, `backgroundImage`) en het formaat (1080x1350) blijven identiek. Alleen de visuele inhoud van de template verandert.
-
+### Geen nieuwe dependencies of API-calls nodig
+Alles draait op de bestaande upload-functie en handmatige tekstinvoer.
