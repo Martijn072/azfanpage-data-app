@@ -90,11 +90,7 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
               border: '2px solid rgba(219,0,33,0.35)',
             }}
           >
-            <div className="flex items-center justify-center mb-6">
-              <img src={az.team.logo} alt={az.team.name} className="h-24 w-24 object-contain" />
-            </div>
-
-            <div className="flex items-center gap-12 mb-8">
+            <div className="flex items-center gap-12">
               <div className="flex flex-col items-center">
                 <span className="text-white/50 text-sm font-body uppercase tracking-wider">Punten</span>
                 <span className="text-white font-mono font-black" style={{ fontSize: 52, lineHeight: 1.1 }}>{az.points}</span>
@@ -102,12 +98,12 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
               <div className="w-px h-14 bg-white/10" />
               <div className="flex flex-col items-center">
                 <span className="text-white/50 text-sm font-body uppercase tracking-wider">Gespeeld</span>
-                <span className="text-white font-mono font-bold text-3xl">{az.all.played}</span>
+                <span className="text-white font-mono font-black" style={{ fontSize: 52, lineHeight: 1.1 }}>{az.all.played}</span>
               </div>
               <div className="w-px h-14 bg-white/10" />
               <div className="flex flex-col items-center">
                 <span className="text-white/50 text-sm font-body uppercase tracking-wider">Doelsaldo</span>
-                <span className={`font-mono font-bold text-3xl ${az.goalsDiff > 0 ? 'text-[#22C55E]' : az.goalsDiff < 0 ? 'text-[#EF4444]' : 'text-[#9CA3AF]'}`}>
+                <span className={`font-mono font-black ${az.goalsDiff > 0 ? 'text-[#22C55E]' : az.goalsDiff < 0 ? 'text-[#EF4444]' : 'text-[#9CA3AF]'}`} style={{ fontSize: 52, lineHeight: 1.1 }}>
                   {az.goalsDiff > 0 ? '+' : ''}{az.goalsDiff}
                 </span>
               </div>
