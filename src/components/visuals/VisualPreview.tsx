@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 
 interface VisualPreviewProps {
   template: TemplateType;
+  backgroundImage: string | null;
 }
 
 const TEMPLATE_SIZES: Record<TemplateType, { w: number; h: number }> = {
@@ -21,7 +22,7 @@ const TEMPLATE_SIZES: Record<TemplateType, { w: number; h: number }> = {
   matchday: { w: 1080, h: 1080 },
 };
 
-export const VisualPreview = ({ template }: VisualPreviewProps) => {
+export const VisualPreview = ({ template, backgroundImage }: VisualPreviewProps) => {
   const templateRef = useRef<HTMLDivElement>(null);
   const { downloadPng } = useVisualDownload();
 
@@ -36,7 +37,6 @@ export const VisualPreview = ({ template }: VisualPreviewProps) => {
   const isLoading = fixturesLoading || nextLoading || standingsLoading;
 
   const scale = useMemo(() => {
-    // Scale to fit within a max preview width of 540px
     return Math.min(540 / size.w, 540 / size.h);
   }, [size]);
 
@@ -52,7 +52,6 @@ export const VisualPreview = ({ template }: VisualPreviewProps) => {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Scaled preview container */}
       <div
         className="rounded-xl border border-border overflow-hidden bg-secondary/30 mx-auto"
         style={{ width: size.w * scale, height: size.h * scale }}
@@ -70,15 +69,14 @@ export const VisualPreview = ({ template }: VisualPreviewProps) => {
               height: size.h,
             }}
           >
-            {template === 'result' && <ResultTemplate ref={templateRef} fixture={lastFixture} />}
-            {template === 'preview' && <PreviewTemplate ref={templateRef} fixture={nextFixture} />}
-            {template === 'standings' && <StandingsTemplate ref={templateRef} standings={standings ?? null} />}
-            {template === 'matchday' && <MatchdayTemplate ref={templateRef} lastFixture={lastFixture} nextFixture={nextFixture} />}
+            {template === 'result' && <ResultTemplate ref={templateRef} fixture={lastFixture} backgroundImage={backgroundImage} />}
+            {template === 'preview' && <PreviewTemplate ref={templateRef} fixture={nextFixture} backgroundImage={backgroundImage} />}
+            {template === 'standings' && <StandingsTemplate ref={templateRef} standings={standings ?? null} backgroundImage={backgroundImage} />}
+            {template === 'matchday' && <MatchdayTemplate ref={templateRef} lastFixture={lastFixture} nextFixture={nextFixture} backgroundImage={backgroundImage} />}
           </div>
         )}
       </div>
 
-      {/* Download button */}
       <div className="flex justify-center">
         <Button onClick={handleDownload} disabled={isLoading} className="gap-2">
           <Download className="h-4 w-4" />

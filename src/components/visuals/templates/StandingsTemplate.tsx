@@ -3,10 +3,11 @@ import { Standing } from '@/types/footballApi';
 
 interface StandingsTemplateProps {
   standings: Standing[] | null;
+  backgroundImage?: string | null;
 }
 
 export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplateProps>(
-  ({ standings }, ref) => {
+  ({ standings, backgroundImage }, ref) => {
     const top10 = standings?.slice(0, 10) || [];
 
     if (top10.length === 0) {
@@ -19,7 +20,14 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
 
     return (
       <div ref={ref} style={{ width: 1080, height: 1350 }} className="relative overflow-hidden flex flex-col">
-        <div className="absolute inset-0 bg-[#0F1117]" />
+        {backgroundImage ? (
+          <>
+            <img src={backgroundImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div className="absolute inset-0 bg-black/75" />
+          </>
+        ) : (
+          <div className="absolute inset-0 bg-[#0F1117]" />
+        )}
         <div className="absolute top-0 left-0 right-0 h-[6px]" style={{ background: 'linear-gradient(90deg, #DB0021 0%, #DB0021 60%, transparent 100%)' }} />
 
         <div className="relative z-10 flex flex-col px-14 py-14 flex-1">
