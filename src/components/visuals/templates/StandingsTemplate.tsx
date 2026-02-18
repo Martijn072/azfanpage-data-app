@@ -38,7 +38,7 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
               </span>
               <h2 className="text-white text-4xl font-headline font-bold mt-1">Stand</h2>
             </div>
-            <img src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png" alt="AZ Fanpage" className="h-12 w-auto opacity-80" />
+            <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-20 w-auto opacity-80" />
           </div>
 
           <div className="flex items-center px-5 py-3 text-white/50 text-base font-body font-semibold uppercase tracking-wider">

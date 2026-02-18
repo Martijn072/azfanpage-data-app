@@ -73,7 +73,7 @@ export const PreviewTemplate = forwardRef<HTMLDivElement, PreviewTemplateProps>(
         </div>
 
         <div className="absolute bottom-8 right-10 z-10">
-          <img src="/lovable-uploads/02689d46-9781-412f-9093-feef3e99cfe2.png" alt="AZ Fanpage" className="h-12 w-auto opacity-80" />
+          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-20 w-auto opacity-80" />
         </div>
       </div>
     );
