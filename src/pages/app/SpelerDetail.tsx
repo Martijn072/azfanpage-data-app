@@ -14,19 +14,17 @@ const StatBox = ({ label, value, sub }: { label: string; value: string | number;
   </div>
 );
 
-const StatMini = ({ label, value }: { label: string; value: string | number | null }) => (
-  <div className="text-center">
-    <p className="font-mono text-lg font-bold text-foreground">{value ?? 0}</p>
-    <p className="text-[11px] text-muted-foreground">{label}</p>
+const StatLine = ({ label, value }: { label: string; value: string | number | null }) => (
+  <div className="flex items-center justify-between py-1.5 border-b border-border/50 last:border-0">
+    <span className="text-app-small text-muted-foreground">{label}</span>
+    <span className="font-mono text-app-body font-semibold text-foreground">{value ?? 0}</span>
   </div>
 );
 
 const StatSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div>
-    <h4 className="text-app-small font-semibold text-muted-foreground uppercase tracking-wider mb-2">{title}</h4>
-    <div className="grid grid-cols-3 gap-3">
-      {children}
-    </div>
+    <h4 className="text-app-small font-semibold text-muted-foreground uppercase tracking-wider mb-1 mt-3 first:mt-0">{title}</h4>
+    <div>{children}</div>
   </div>
 );
 
@@ -70,85 +68,74 @@ const LeagueStatsRow = ({ stats }: { stats: PlayerSeasonStats }) => {
 
       {/* Appearances & Minutes */}
       <StatSection title="Speeltijd">
-        <StatMini label="Wedstrijden" value={g.appearences || 0} />
-        <StatMini label="Basisplaatsen" value={g.lineups || 0} />
-        <StatMini label="Minuten" value={g.minutes || 0} />
-        <StatMini label="Invalbeurten" value={subs.in || 0} />
-        <StatMini label="Gewisseld" value={subs.out || 0} />
-        <StatMini label="Op de bank" value={subs.bench || 0} />
+        <StatLine label="Wedstrijden" value={g.appearences || 0} />
+        <StatLine label="Basisplaatsen" value={g.lineups || 0} />
+        <StatLine label="Minuten" value={g.minutes || 0} />
+        <StatLine label="Invalbeurten" value={subs.in || 0} />
+        <StatLine label="Gewisseld" value={subs.out || 0} />
+        <StatLine label="Op de bank" value={subs.bench || 0} />
       </StatSection>
 
       {/* Goals & Scoring */}
       <StatSection title="Doelpunten & assists">
-        <StatMini label="Goals" value={goals.total || 0} />
-        <StatMini label="Assists" value={goals.assists || 0} />
-        <StatMini label="Tegendoelpunten" value={goals.conceded ?? 0} />
-        <StatMini label="Reddingen" value={goals.saves ?? 0} />
+        <StatLine label="Goals" value={goals.total || 0} />
+        <StatLine label="Assists" value={goals.assists || 0} />
+        <StatLine label="Tegendoelpunten" value={goals.conceded ?? 0} />
+        <StatLine label="Reddingen" value={goals.saves ?? 0} />
       </StatSection>
 
       {/* Shots */}
       <StatSection title="Schoten">
-        <StatMini label="Schoten totaal" value={shots.total ?? 0} />
-        <StatMini label="Op doel" value={shots.on ?? 0} />
+        <StatLine label="Schoten totaal" value={shots.total ?? 0} />
+        <StatLine label="Op doel" value={shots.on ?? 0} />
       </StatSection>
 
       {/* Passes */}
       <StatSection title="Passes">
-        <StatMini label="Passes totaal" value={passes.total ?? 0} />
-        <StatMini label="Key passes" value={passes.key ?? 0} />
-        <StatMini label="Nauwkeurigheid" value={passes.accuracy != null ? `${passes.accuracy}%` : "–"} />
+        <StatLine label="Passes totaal" value={passes.total ?? 0} />
+        <StatLine label="Key passes" value={passes.key ?? 0} />
+        <StatLine label="Nauwkeurigheid" value={passes.accuracy != null ? `${passes.accuracy}%` : "–"} />
       </StatSection>
 
       {/* Defensive */}
       <StatSection title="Verdedigend">
-        <StatMini label="Tackles" value={tackles.total ?? 0} />
-        <StatMini label="Blocks" value={tackles.blocks ?? 0} />
-        <StatMini label="Intercepties" value={tackles.interceptions ?? 0} />
+        <StatLine label="Tackles" value={tackles.total ?? 0} />
+        <StatLine label="Blocks" value={tackles.blocks ?? 0} />
+        <StatLine label="Intercepties" value={tackles.interceptions ?? 0} />
       </StatSection>
 
       {/* Duels */}
       <StatSection title="Duels">
-        <StatMini label="Duels totaal" value={duels.total ?? 0} />
-        <StatMini label="Duels gewonnen" value={duels.won ?? 0} />
-        <StatMini label="Duel %" value={duelsWonPct != null ? `${duelsWonPct}%` : "–"} />
+        <StatLine label="Duels totaal" value={duels.total ?? 0} />
+        <StatLine label="Duels gewonnen" value={duels.won ?? 0} />
+        <StatLine label="Duel %" value={duelsWonPct != null ? `${duelsWonPct}%` : "–"} />
       </StatSection>
 
       {/* Dribbles */}
       <StatSection title="Dribbels">
-        <StatMini label="Pogingen" value={dribbles.attempts ?? 0} />
-        <StatMini label="Geslaagd" value={dribbles.success ?? 0} />
-        <StatMini label="Dribbel %" value={dribblesSuccessPct != null ? `${dribblesSuccessPct}%` : "–"} />
-        <StatMini label="Voorbij gedribbeld" value={dribbles.past ?? 0} />
+        <StatLine label="Pogingen" value={dribbles.attempts ?? 0} />
+        <StatLine label="Geslaagd" value={dribbles.success ?? 0} />
+        <StatLine label="Dribbel %" value={dribblesSuccessPct != null ? `${dribblesSuccessPct}%` : "–"} />
+        <StatLine label="Voorbij gedribbeld" value={dribbles.past ?? 0} />
       </StatSection>
 
       {/* Fouls & Cards */}
       <StatSection title="Overtredingen & kaarten">
-        <StatMini label="Overtredingen" value={fouls.committed ?? 0} />
-        <StatMini label="Overtr. verkregen" value={fouls.drawn ?? 0} />
-        <div className="flex items-center justify-center gap-3">
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-2.5 h-3.5 rounded-sm bg-amber-400" />
-            <span className="font-mono text-sm text-foreground">{cards.yellow}</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-2.5 h-3.5 rounded-sm bg-amber-600" />
-            <span className="font-mono text-sm text-foreground">{cards.yellowred}</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-2.5 h-3.5 rounded-sm bg-red-500" />
-            <span className="font-mono text-sm text-foreground">{cards.red}</span>
-          </span>
-        </div>
+        <StatLine label="Overtredingen" value={fouls.committed ?? 0} />
+        <StatLine label="Overtr. verkregen" value={fouls.drawn ?? 0} />
+        <StatLine label="Gele kaarten" value={cards.yellow} />
+        <StatLine label="Geel-rood" value={cards.yellowred} />
+        <StatLine label="Rode kaarten" value={cards.red} />
       </StatSection>
 
       {/* Penalties */}
       {(penalty.won || penalty.scored || penalty.missed || penalty.saved || penalty.commited) ? (
         <StatSection title="Penalty's">
-          <StatMini label="Gewonnen" value={penalty.won ?? 0} />
-          <StatMini label="Gescoord" value={penalty.scored ?? 0} />
-          <StatMini label="Gemist" value={penalty.missed ?? 0} />
-          <StatMini label="Gestopt" value={penalty.saved ?? 0} />
-          <StatMini label="Veroorzaakt" value={penalty.commited ?? 0} />
+          <StatLine label="Gewonnen" value={penalty.won ?? 0} />
+          <StatLine label="Gescoord" value={penalty.scored ?? 0} />
+          <StatLine label="Gemist" value={penalty.missed ?? 0} />
+          <StatLine label="Gestopt" value={penalty.saved ?? 0} />
+          <StatLine label="Veroorzaakt" value={penalty.commited ?? 0} />
         </StatSection>
       ) : null}
     </div>
