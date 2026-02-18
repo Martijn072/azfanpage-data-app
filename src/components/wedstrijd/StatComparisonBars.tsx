@@ -10,6 +10,7 @@ const AZ_TEAM_ID = 201;
 
 // Stats we want to show, in order
 const STAT_KEYS = [
+  "expected_goals",
   "Ball Possession",
   "Total Shots",
   "Shots on Goal",
@@ -26,6 +27,7 @@ const STAT_KEYS = [
 ];
 
 const STAT_LABELS: Record<string, string> = {
+  "expected_goals": "Expected Goals (xG)",
   "Ball Possession": "Balbezit",
   "Total Shots": "Schoten totaal",
   "Shots on Goal": "Schoten op doel",
@@ -84,8 +86,9 @@ export const StatComparisonBars = ({ stats, homeTeamId }: StatComparisonBarsProp
         const homePercent = total > 0 ? (homeVal / total) * 100 : 50;
         const awayPercent = total > 0 ? (awayVal / total) * 100 : 50;
         const isPercentage = statKey.includes("%") || statKey === "Ball Possession";
-        const displayHome = isPercentage ? `${homeVal}%` : homeVal.toString();
-        const displayAway = isPercentage ? `${awayVal}%` : awayVal.toString();
+        const isDecimal = statKey === "expected_goals";
+        const displayHome = isPercentage ? `${homeVal}%` : isDecimal ? homeVal.toFixed(2) : homeVal.toString();
+        const displayAway = isPercentage ? `${awayVal}%` : isDecimal ? awayVal.toFixed(2) : awayVal.toString();
 
         // Determine which side "wins" this stat
         const homeIsAZ = homeTeamId === AZ_TEAM_ID;
