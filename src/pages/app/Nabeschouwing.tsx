@@ -273,12 +273,12 @@ const Nabeschouwing = () => {
             {resultLabel[result]}
           </span>
         </div>
-        <div className="flex items-center justify-center gap-8">
-          <div className="flex items-center gap-3 flex-1 justify-end">
-            <span className={cn("text-app-heading text-right", fixture.teams.home.id === AZ_TEAM_ID && "text-primary font-bold")}>
+        <div className="flex items-center justify-center gap-4 sm:gap-8">
+          <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3 flex-1 justify-center sm:justify-end">
+            <span className={cn("text-app-body sm:text-app-heading text-center sm:text-right order-2 sm:order-1", fixture.teams.home.id === AZ_TEAM_ID && "text-primary font-bold")}>
               {fixture.teams.home.name}
             </span>
-            <img src={fixture.teams.home.logo} alt="" className="h-12 w-12 object-contain" />
+            <img src={fixture.teams.home.logo} alt="" className="h-10 w-10 sm:h-12 sm:w-12 object-contain order-1 sm:order-2" />
           </div>
           <div className="text-center shrink-0">
             <div className="text-app-data-lg font-mono text-foreground tracking-tight">
@@ -288,9 +288,9 @@ const Nabeschouwing = () => {
               HT: {fixture.score.halftime.home} - {fixture.score.halftime.away}
             </div>
           </div>
-          <div className="flex items-center gap-3 flex-1">
-            <img src={fixture.teams.away.logo} alt="" className="h-12 w-12 object-contain" />
-            <span className={cn("text-app-heading", fixture.teams.away.id === AZ_TEAM_ID && "text-primary font-bold")}>
+          <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3 flex-1 justify-center sm:justify-start">
+            <img src={fixture.teams.away.logo} alt="" className="h-10 w-10 sm:h-12 sm:w-12 object-contain" />
+            <span className={cn("text-app-body sm:text-app-heading text-center", fixture.teams.away.id === AZ_TEAM_ID && "text-primary font-bold")}>
               {fixture.teams.away.name}
             </span>
           </div>

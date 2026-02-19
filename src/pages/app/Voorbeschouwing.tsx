@@ -194,26 +194,31 @@ const Voorbeschouwing = () => {
           </span>
         </div>
 
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            <img src={nextFixture.teams.home.logo} alt="" className="h-12 w-12 object-contain" />
-            <div>
-              <span className={cn("text-app-heading block", isAZHome && "text-primary")}>{nextFixture.teams.home.name}</span>
-              {isAZHome && azStanding && <span className="text-app-tiny text-muted-foreground">Eredivisie #{azStanding.rank} · {azStanding.points} ptn</span>}
-              {!isAZHome && oppStanding && <span className="text-app-tiny text-muted-foreground">Eredivisie #{oppStanding.rank} · {oppStanding.points} ptn</span>}
+        <div className="flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-3 flex-1 min-w-0">
+            <img src={nextFixture.teams.home.logo} alt="" className="h-10 w-10 sm:h-12 sm:w-12 object-contain" />
+            <div className="text-center sm:text-left">
+              <span className={cn("text-app-body sm:text-app-heading block", isAZHome && "text-primary")}>{nextFixture.teams.home.name}</span>
+              <span className="text-app-tiny text-muted-foreground hidden sm:inline">
+                {isAZHome && azStanding && `Eredivisie #${azStanding.rank} · ${azStanding.points} ptn`}
+                {!isAZHome && oppStanding && `Eredivisie #${oppStanding.rank} · ${oppStanding.points} ptn`}
+              </span>
             </div>
           </div>
           <div className="text-center shrink-0">
             <div className="text-app-data-lg font-mono text-foreground">{format(matchDate, "HH:mm")}</div>
-            <div className="text-app-tiny text-muted-foreground">{format(matchDate, "EEEE d MMMM", { locale: nl })}</div>
+            <div className="text-app-tiny text-muted-foreground hidden sm:block">{format(matchDate, "EEEE d MMMM", { locale: nl })}</div>
+            <div className="text-app-tiny text-muted-foreground sm:hidden">{format(matchDate, "d MMM", { locale: nl })}</div>
           </div>
-          <div className="flex items-center gap-3 flex-1 min-w-0 justify-end">
-            <div className="text-right">
-              <span className={cn("text-app-heading block", !isAZHome && "text-primary")}>{nextFixture.teams.away.name}</span>
-              {!isAZHome && azStanding && <span className="text-app-tiny text-muted-foreground">Eredivisie #{azStanding.rank} · {azStanding.points} ptn</span>}
-              {isAZHome && oppStanding && <span className="text-app-tiny text-muted-foreground">Eredivisie #{oppStanding.rank} · {oppStanding.points} ptn</span>}
+          <div className="flex flex-col sm:flex-row-reverse items-center sm:items-center gap-1 sm:gap-3 flex-1 min-w-0 justify-start sm:justify-end">
+            <img src={nextFixture.teams.away.logo} alt="" className="h-10 w-10 sm:h-12 sm:w-12 object-contain" />
+            <div className="text-center sm:text-right">
+              <span className={cn("text-app-body sm:text-app-heading block", !isAZHome && "text-primary")}>{nextFixture.teams.away.name}</span>
+              <span className="text-app-tiny text-muted-foreground hidden sm:inline">
+                {!isAZHome && azStanding && `Eredivisie #${azStanding.rank} · ${azStanding.points} ptn`}
+                {isAZHome && oppStanding && `Eredivisie #${oppStanding.rank} · ${oppStanding.points} ptn`}
+              </span>
             </div>
-            <img src={nextFixture.teams.away.logo} alt="" className="h-12 w-12 object-contain" />
           </div>
         </div>
 
