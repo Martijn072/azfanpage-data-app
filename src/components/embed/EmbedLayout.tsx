@@ -6,7 +6,10 @@ interface EmbedLayoutProps {
 
 export const EmbedLayout = ({ children }: EmbedLayoutProps) => {
   useEffect(() => {
-    document.documentElement.classList.add("dark");
+    document.documentElement.classList.remove("dark");
+    return () => {
+      document.documentElement.classList.add("dark");
+    };
   }, []);
 
   return (

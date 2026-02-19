@@ -7,6 +7,7 @@ import {
   Trophy,
   Users,
   Palette,
+  Code2,
   PenTool,
   Settings,
   ChevronLeft,
@@ -29,6 +30,7 @@ const navItems = [
   { title: "Competitie", path: "/competitie", icon: Trophy },
   { title: "Spelers", path: "/spelers", icon: Users },
   { title: "Visuals", path: "/visuals", icon: Palette },
+  { title: "Embeds", path: "/embeds", icon: Code2 },
 ];
 
 const futureItems = [

@@ -16,6 +16,7 @@ const Competitie = lazy(() => import("./pages/app/Competitie"));
 const Spelers = lazy(() => import("./pages/app/Spelers"));
 const SpelerDetail = lazy(() => import("./pages/app/SpelerDetail"));
 const Visuals = lazy(() => import("./pages/app/Visuals"));
+const Embeds = lazy(() => import("./pages/app/Embeds"));
 
 // Embed widgets (no AppLayout)
 const EmbedStandings = lazy(() => import("./pages/embed/EmbedStandings"));
@@ -60,6 +61,7 @@ function App() {
                       <Route path="/spelers" element={<Spelers />} />
                       <Route path="/spelers/:id" element={<SpelerDetail />} />
                       <Route path="/visuals" element={<Visuals />} />
+                      <Route path="/embeds" element={<Embeds />} />
                       <Route path="*" element={<Dashboard />} />
                     </Routes>
                   </AppLayout>
