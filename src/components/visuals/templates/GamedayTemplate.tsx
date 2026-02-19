@@ -26,9 +26,11 @@ export const GamedayTemplate = forwardRef<HTMLDivElement, GamedayTemplateProps>(
           <div className="absolute inset-0 bg-[#0F1117]" />
         )}
 
+        {/* Base overlay */}
+        <div className="absolute inset-0 bg-black/50" />
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.7) 100%)' }}
+          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.4) 100%)' }}
         />
 
         {/* Red top bar */}
@@ -37,41 +39,44 @@ export const GamedayTemplate = forwardRef<HTMLDivElement, GamedayTemplateProps>(
         {/* Content */}
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-10 px-16">
           {/* MATCHDAY header */}
-          <span
-            className="text-[#DB0021] font-headline font-black uppercase tracking-[0.3em]"
-            style={{ fontSize: 56 }}
-          >
-            Matchday
-          </span>
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-16 h-[4px]" style={{ background: '#DB0021' }} />
+            <span
+              className="text-white font-headline font-black uppercase tracking-[0.3em]"
+              style={{ fontSize: 56, textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}
+            >
+              Matchday
+            </span>
+          </div>
 
           {/* Teams & time */}
           <div className="flex items-center justify-center gap-12 w-full">
             <div className="flex flex-col items-center gap-4">
-              <img src={fixture.teams.home.logo} alt={fixture.teams.home.name} className="h-32 w-32 object-contain" />
-              <span className="text-white text-2xl font-headline font-semibold text-center">{fixture.teams.home.name}</span>
+              <img src={fixture.teams.home.logo} alt={fixture.teams.home.name} className="h-32 w-32 object-contain drop-shadow-lg" />
+              <span className="text-white text-2xl font-headline font-semibold text-center" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>{fixture.teams.home.name}</span>
             </div>
 
             <div className="flex flex-col items-center gap-2">
-              <span className="text-white font-headline font-bold" style={{ fontSize: 72 }}>
+              <span className="text-white font-headline font-bold" style={{ fontSize: 72, textShadow: '0 2px 16px rgba(0,0,0,0.8)' }}>
                 {format(new Date(fixture.fixture.date), 'HH:mm')}
               </span>
-              <span className="text-white/80 text-2xl font-body capitalize">
+              <span className="text-white/90 text-2xl font-body capitalize" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
                 {format(new Date(fixture.fixture.date), 'EEEE d MMMM', { locale: nl })}
               </span>
             </div>
 
             <div className="flex flex-col items-center gap-4">
-              <img src={fixture.teams.away.logo} alt={fixture.teams.away.name} className="h-32 w-32 object-contain" />
-              <span className="text-white text-2xl font-headline font-semibold text-center">{fixture.teams.away.name}</span>
+              <img src={fixture.teams.away.logo} alt={fixture.teams.away.name} className="h-32 w-32 object-contain drop-shadow-lg" />
+              <span className="text-white text-2xl font-headline font-semibold text-center" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>{fixture.teams.away.name}</span>
             </div>
           </div>
 
           {/* Venue & league */}
           <div className="flex flex-col items-center gap-1">
-            <span className="text-white/70 text-xl font-body">
+            <span className="text-white/80 text-xl font-body" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
               {fixture.fixture.venue?.name}
             </span>
-            <span className="text-white/50 text-lg font-body">
+            <span className="text-white/60 text-lg font-body" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
               {fixture.league.name} · {fixture.league.round}
             </span>
           </div>

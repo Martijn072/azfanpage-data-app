@@ -75,10 +75,10 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
           {/* Header */}
           <div className="flex items-center justify-between mb-12">
             <div>
-              <span className="text-[#DB0021] text-xl font-body font-semibold uppercase tracking-[0.25em]">
+              <span className="text-[#DB0021] text-xl font-body font-semibold uppercase tracking-[0.25em]" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
                 Eredivisie
               </span>
-              <h2 className="text-white text-4xl font-headline font-bold mt-1">Stand</h2>
+              <h2 className="text-white text-4xl font-headline font-bold mt-1" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>Stand</h2>
             </div>
             <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-20 w-auto opacity-80" />
           </div>

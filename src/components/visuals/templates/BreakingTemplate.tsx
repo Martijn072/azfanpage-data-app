@@ -16,6 +16,7 @@ export const BreakingTemplate = forwardRef<HTMLDivElement, BreakingTemplateProps
           <div className="absolute inset-0 bg-[#0F1117]" />
         )}
 
+        <div className="absolute inset-0 bg-black/40" />
         <div
           className="absolute inset-0"
           style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 35%, transparent 60%)' }}
@@ -37,13 +38,13 @@ export const BreakingTemplate = forwardRef<HTMLDivElement, BreakingTemplateProps
 
           <p
             className="text-white font-headline font-black leading-tight"
-            style={{ fontSize: headline.length > 60 ? 52 : headline.length > 30 ? 64 : 80 }}
+            style={{ fontSize: headline.length > 60 ? 52 : headline.length > 30 ? 64 : 80, textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}
           >
             {headline || 'Headline'}
           </p>
 
           {(subtitle || !headline) && (
-            <p className="text-white/80 font-body font-medium mt-4" style={{ fontSize: 36 }}>
+            <p className="text-white/80 font-body font-medium mt-4" style={{ fontSize: 36, textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
               {subtitle || 'Subtitel'}
             </p>
           )}

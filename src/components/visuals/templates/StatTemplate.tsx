@@ -18,7 +18,7 @@ export const StatTemplate = forwardRef<HTMLDivElement, StatTemplateProps>(
 
         <div
           className="absolute inset-0"
-          style={{ background: 'radial-gradient(circle at 50% 50%, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.8) 100%)' }}
+          style={{ background: 'radial-gradient(circle at 50% 50%, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.85) 100%)' }}
         />
 
         {/* Red top bar */}
@@ -28,13 +28,13 @@ export const StatTemplate = forwardRef<HTMLDivElement, StatTemplateProps>(
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
           <span
             className="text-white font-headline font-black leading-none"
-            style={{ fontSize: statValue.length > 4 ? 160 : 240 }}
+            style={{ fontSize: statValue.length > 4 ? 160 : 240, textShadow: '0 2px 16px rgba(0,0,0,0.8)' }}
           >
             {statValue || '0'}
           </span>
           <span
             className="text-white/90 font-headline font-bold uppercase tracking-widest mt-4"
-            style={{ fontSize: 48 }}
+            style={{ fontSize: 48, textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}
           >
             {statLabel || 'Statistiek'}
           </span>

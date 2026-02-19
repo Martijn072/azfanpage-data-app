@@ -20,7 +20,8 @@ export const PlayerHighlightTemplate = forwardRef<HTMLDivElement, PlayerHighligh
           <div className="absolute inset-0 bg-[#0F1117]" />
         )}
 
-        {/* Bottom gradient overlay for text legibility */}
+        {/* Base overlay + gradient for text legibility */}
+        <div className="absolute inset-0 bg-black/40" />
         <div
           className="absolute inset-0"
           style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 35%, transparent 60%)' }}
@@ -36,14 +37,14 @@ export const PlayerHighlightTemplate = forwardRef<HTMLDivElement, PlayerHighligh
         <div className="absolute bottom-14 left-14 right-36 z-10">
           <p
             className="text-white font-headline font-black leading-none"
-            style={{ fontSize: playerName.length > 16 ? 72 : 88 }}
+            style={{ fontSize: playerName.length > 16 ? 72 : 88, textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}
           >
             {playerName || 'Spelernaam'}
           </p>
           {(tagline || !playerName) && (
             <p
               className="text-white/80 font-body font-medium mt-3"
-              style={{ fontSize: 36 }}
+              style={{ fontSize: 36, textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}
             >
               {tagline || 'Man of the Match'}
             </p>
