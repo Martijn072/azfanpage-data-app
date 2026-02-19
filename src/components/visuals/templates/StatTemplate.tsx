@@ -42,7 +42,7 @@ export const StatTemplate = forwardRef<HTMLDivElement, StatTemplateProps>(
 
         {/* Logo */}
         <div className="absolute top-14 right-10 z-10">
-          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-24 w-auto" />
+          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" style={{ height: 96, width: 96, objectFit: 'contain' }} />
         </div>
       </div>
     );

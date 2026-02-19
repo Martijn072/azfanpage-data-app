@@ -94,7 +94,7 @@ export const MatchdayTemplate = forwardRef<HTMLDivElement, MatchdayTemplateProps
         </div>
 
         <div className="absolute bottom-8 right-10 z-10">
-          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-24 w-auto" />
+          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" style={{ height: 96, width: 96, objectFit: 'contain' }} />
         </div>
       </div>
     );

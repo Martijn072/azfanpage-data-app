@@ -80,7 +80,7 @@ export const StandingsTemplate = forwardRef<HTMLDivElement, StandingsTemplatePro
               </span>
               <h2 className="text-white text-4xl font-headline font-bold mt-1" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>Stand</h2>
             </div>
-            <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-24 w-auto" />
+            <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" style={{ height: 96, width: 96, objectFit: 'contain' }} />
           </div>
 
           {/* AZ Central Block */}
