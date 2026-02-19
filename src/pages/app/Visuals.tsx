@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 import { TemplateSelector, TemplateType, VisualFormat, STORY_TEMPLATES } from '@/components/visuals/TemplateSelector';
 import { VisualPreview } from '@/components/visuals/VisualPreview';
 import { BackgroundUploader } from '@/components/visuals/BackgroundUploader';
@@ -8,6 +9,13 @@ import { Square, RectangleVertical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const Visuals = () => {
+  const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    const prev = theme;
+    setTheme('dark');
+    return () => { if (prev && prev !== 'dark') setTheme(prev); };
+  }, []);
   const [selected, setSelected] = useState<TemplateType>('result');
   const [format, setFormat] = useState<VisualFormat>('square');
   const [playerName, setPlayerName] = useState('');

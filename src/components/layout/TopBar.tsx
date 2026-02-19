@@ -1,7 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { useSeason } from "@/contexts/SeasonContext";
 import { getSeasonOptions } from "@/utils/seasonUtils";
-import { Calendar, Menu } from "lucide-react";
+import { Calendar, Menu, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 import {
   Select,
   SelectContent,
@@ -29,6 +30,7 @@ export const TopBar = ({ onMenuToggle, isMobile }: TopBarProps) => {
   const currentRoute = routeNames[location.pathname] || "AZ Fanpage Data";
   const { season, setSeason, isCurrentSeason } = useSeason();
   const seasonOptions = getSeasonOptions();
+  const { theme, setTheme } = useTheme();
 
   return (
     <header className="h-14 border-b border-border bg-card flex items-center px-4 md:px-6 shrink-0">
@@ -58,6 +60,13 @@ export const TopBar = ({ onMenuToggle, isMobile }: TopBarProps) => {
             ))}
           </SelectContent>
         </Select>
+        <button
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+          aria-label="Thema wisselen"
+        >
+          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </button>
         <span className="text-app-small text-muted-foreground hidden md:inline">Redactie</span>
       </div>
     </header>

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { SeasonProvider } from "@/contexts/SeasonContext";
+import { ThemeProvider } from "next-themes";
 
 const Dashboard = lazy(() => import("./pages/app/Dashboard"));
 const Wedstrijden = lazy(() => import("./pages/app/Wedstrijden"));
@@ -28,17 +29,14 @@ const EmbedMatchStats = lazy(() => import("./pages/embed/EmbedMatchStats"));
 const queryClient = new QueryClient();
 
 function App() {
-  useEffect(() => {
-    document.documentElement.classList.add("dark");
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <SeasonProvider>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <SeasonProvider>
             <Suspense fallback={<div className="animate-pulse h-64 bg-card rounded-xl" />}>
               <Routes>
                 {/* Embed routes - no AppLayout */}
@@ -68,9 +66,10 @@ function App() {
                 } />
               </Routes>
             </Suspense>
-          </SeasonProvider>
-        </BrowserRouter>
-      </TooltipProvider>
+            </SeasonProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
