@@ -55,7 +55,7 @@ export const BreakingTemplate = forwardRef<HTMLDivElement, BreakingTemplateProps
 
         {/* Logo */}
         <div className="absolute top-14 right-10 z-10">
-          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-20 w-auto opacity-80" />
+          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-24 w-auto" style={{ mixBlendMode: 'screen' }} />
         </div>
       </div>
     );

@@ -85,7 +85,7 @@ export const ResultTemplate = forwardRef<HTMLDivElement, ResultTemplateProps>(
         </div>
 
         <div className="absolute bottom-8 right-10 flex items-center gap-2 z-10">
-          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-20 w-auto opacity-80" />
+          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-24 w-auto" style={{ mixBlendMode: 'screen' }} />
         </div>
       </div>
     );
