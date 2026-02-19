@@ -2,6 +2,9 @@ import { Trophy, FileSearch, BarChart3, Calendar, User, Quote, Zap, Hash, Flame,
 import { cn } from '@/lib/utils';
 
 export type TemplateType = 'result' | 'preview' | 'standings' | 'matchday' | 'player' | 'quote' | 'breaking' | 'stat' | 'gameday' | 'poll';
+export type VisualFormat = 'square' | 'story';
+
+export const STORY_TEMPLATES: TemplateType[] = ['player', 'quote', 'breaking', 'gameday'];
 
 interface TemplateSelectorProps {
   selected: TemplateType;

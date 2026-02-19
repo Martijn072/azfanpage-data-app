@@ -2,7 +2,7 @@ import { useRef, useMemo } from 'react';
 import { Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useVisualDownload } from '@/hooks/useVisualDownload';
-import { TemplateType } from './TemplateSelector';
+import { TemplateType, VisualFormat } from './TemplateSelector';
 import { ResultTemplate } from './templates/ResultTemplate';
 import { PreviewTemplate } from './templates/PreviewTemplate';
 import { StandingsTemplate } from './templates/StandingsTemplate';
@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 
 interface VisualPreviewProps {
   template: TemplateType;
+  format: VisualFormat;
   backgroundImage: string | null;
   playerName?: string;
   tagline?: string;
@@ -28,20 +29,13 @@ interface VisualPreviewProps {
   question?: string;
 }
 
-const TEMPLATE_SIZES: Record<TemplateType, { w: number; h: number }> = {
-  result: { w: 1080, h: 1080 },
-  preview: { w: 1080, h: 1080 },
-  standings: { w: 1080, h: 1080 },
-  matchday: { w: 1080, h: 1080 },
-  player: { w: 1080, h: 1080 },
-  quote: { w: 1080, h: 1080 },
-  breaking: { w: 1080, h: 1080 },
-  stat: { w: 1080, h: 1080 },
-  gameday: { w: 1080, h: 1080 },
-  poll: { w: 1080, h: 1080 },
+const getTemplateSize = (template: TemplateType, format: VisualFormat) => {
+  const storyTemplates = ['player', 'quote', 'breaking', 'gameday'];
+  const h = storyTemplates.includes(template) && format === 'story' ? 1920 : 1080;
+  return { w: 1080, h };
 };
 
-export const VisualPreview = ({ template, backgroundImage, playerName = '', tagline = '', headline = '', subtitle = '', statValue = '', statLabel = '', question = '' }: VisualPreviewProps) => {
+export const VisualPreview = ({ template, format: visualFormat, backgroundImage, playerName = '', tagline = '', headline = '', subtitle = '', statValue = '', statLabel = '', question = '' }: VisualPreviewProps) => {
   const templateRef = useRef<HTMLDivElement>(null);
   const { downloadPng } = useVisualDownload();
 
@@ -51,7 +45,7 @@ export const VisualPreview = ({ template, backgroundImage, playerName = '', tagl
   const { data: standings, isLoading: standingsLoading } = useEredivisieStandings();
 
   const lastFixture = fixtures?.[0] ?? null;
-  const size = TEMPLATE_SIZES[template];
+  const size = getTemplateSize(template, visualFormat);
 
   const isLoading = fixturesLoading || nextLoading || standingsLoading;
 
@@ -72,7 +66,8 @@ export const VisualPreview = ({ template, backgroundImage, playerName = '', tagl
       gameday: 'matchday',
       poll: 'poll',
     };
-    downloadPng(templateRef, `az-${labels[template]}-${format(new Date(), 'yyyyMMdd')}.png`);
+    const suffix = visualFormat === 'story' ? '-story' : '';
+    downloadPng(templateRef, `az-${labels[template]}${suffix}-${format(new Date(), 'yyyyMMdd')}.png`);
   };
 
   return (
@@ -98,11 +93,11 @@ export const VisualPreview = ({ template, backgroundImage, playerName = '', tagl
             {template === 'preview' && <PreviewTemplate ref={templateRef} fixture={nextFixture} backgroundImage={backgroundImage} />}
             {template === 'standings' && <StandingsTemplate ref={templateRef} standings={standings ?? null} backgroundImage={backgroundImage} />}
             {template === 'matchday' && <MatchdayTemplate ref={templateRef} lastFixture={lastFixture} nextFixture={nextFixture} backgroundImage={backgroundImage} />}
-            {template === 'player' && <PlayerHighlightTemplate ref={templateRef} playerName={playerName} tagline={tagline} backgroundImage={backgroundImage} />}
-            {template === 'quote' && <QuoteTemplate ref={templateRef} playerName={playerName} tagline={tagline} backgroundImage={backgroundImage} />}
-            {template === 'breaking' && <BreakingTemplate ref={templateRef} headline={headline} subtitle={subtitle} backgroundImage={backgroundImage} />}
+            {template === 'player' && <PlayerHighlightTemplate ref={templateRef} playerName={playerName} tagline={tagline} backgroundImage={backgroundImage} format={visualFormat} />}
+            {template === 'quote' && <QuoteTemplate ref={templateRef} playerName={playerName} tagline={tagline} backgroundImage={backgroundImage} format={visualFormat} />}
+            {template === 'breaking' && <BreakingTemplate ref={templateRef} headline={headline} subtitle={subtitle} backgroundImage={backgroundImage} format={visualFormat} />}
             {template === 'stat' && <StatTemplate ref={templateRef} statValue={statValue} statLabel={statLabel} backgroundImage={backgroundImage} />}
-            {template === 'gameday' && <GamedayTemplate ref={templateRef} fixture={nextFixture} backgroundImage={backgroundImage} />}
+            {template === 'gameday' && <GamedayTemplate ref={templateRef} fixture={nextFixture} backgroundImage={backgroundImage} format={visualFormat} />}
             {template === 'poll' && <PollTemplate ref={templateRef} question={question} backgroundImage={backgroundImage} />}
           </div>
         )}

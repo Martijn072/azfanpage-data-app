@@ -1,25 +1,29 @@
 import { forwardRef } from 'react';
 import { Fixture } from '@/types/footballApi';
-import { format } from 'date-fns';
+import { format as formatDate } from 'date-fns';
 import { nl } from 'date-fns/locale';
 
 interface GamedayTemplateProps {
   fixture: Fixture | null;
   backgroundImage?: string | null;
+  format?: 'square' | 'story';
 }
 
 export const GamedayTemplate = forwardRef<HTMLDivElement, GamedayTemplateProps>(
-  ({ fixture, backgroundImage }, ref) => {
+  ({ fixture, backgroundImage, format = 'square' }, ref) => {
+    const isStory = format === 'story';
+    const height = isStory ? 1920 : 1080;
+
     if (!fixture) {
       return (
-        <div ref={ref} style={{ width: 1080, height: 1080 }} className="bg-[#0F1117] flex items-center justify-center">
+        <div ref={ref} style={{ width: 1080, height }} className="bg-[#0F1117] flex items-center justify-center">
           <p className="text-[#9CA3AF] text-xl">Geen wedstrijddata beschikbaar</p>
         </div>
       );
     }
 
     return (
-      <div ref={ref} style={{ width: 1080, height: 1080 }} className="relative overflow-hidden">
+      <div ref={ref} style={{ width: 1080, height }} className="relative overflow-hidden">
         {backgroundImage ? (
           <img src={backgroundImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (
@@ -37,7 +41,7 @@ export const GamedayTemplate = forwardRef<HTMLDivElement, GamedayTemplateProps>(
         <div className="absolute top-0 left-0 right-0 h-[6px] z-10" style={{ background: 'linear-gradient(90deg, #DB0021 0%, #DB0021 60%, transparent 100%)' }} />
 
         {/* Content */}
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-10 px-16">
+        <div className={`absolute inset-0 z-10 flex flex-col items-center justify-center px-16 ${isStory ? 'gap-16' : 'gap-10'}`}>
           {/* MATCHDAY header */}
           <div className="flex flex-col items-center gap-2">
             <div className="w-16 h-[4px]" style={{ background: '#DB0021' }} />
@@ -58,10 +62,10 @@ export const GamedayTemplate = forwardRef<HTMLDivElement, GamedayTemplateProps>(
 
             <div className="flex flex-col items-center gap-2">
               <span className="text-white font-headline font-bold" style={{ fontSize: 72, textShadow: '0 2px 16px rgba(0,0,0,0.8)' }}>
-                {format(new Date(fixture.fixture.date), 'HH:mm')}
+                {formatDate(new Date(fixture.fixture.date), 'HH:mm')}
               </span>
               <span className="text-white/90 text-2xl font-body capitalize" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
-                {format(new Date(fixture.fixture.date), 'EEEE d MMMM', { locale: nl })}
+                {formatDate(new Date(fixture.fixture.date), 'EEEE d MMMM', { locale: nl })}
               </span>
             </div>
 

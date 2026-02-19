@@ -4,14 +4,17 @@ interface QuoteTemplateProps {
   playerName: string;
   tagline: string; // used as the quote text
   backgroundImage?: string | null;
+  format?: 'square' | 'story';
 }
 
 export const QuoteTemplate = forwardRef<HTMLDivElement, QuoteTemplateProps>(
-  ({ playerName, tagline, backgroundImage }, ref) => {
+  ({ playerName, tagline, backgroundImage, format = 'square' }, ref) => {
+    const isStory = format === 'story';
+    const height = isStory ? 1920 : 1080;
     return (
       <div
         ref={ref}
-        style={{ width: 1080, height: 1080 }}
+        style={{ width: 1080, height }}
         className="relative overflow-hidden"
       >
         {backgroundImage ? (

@@ -4,14 +4,17 @@ interface PlayerHighlightTemplateProps {
   playerName: string;
   tagline: string;
   backgroundImage?: string | null;
+  format?: 'square' | 'story';
 }
 
 export const PlayerHighlightTemplate = forwardRef<HTMLDivElement, PlayerHighlightTemplateProps>(
-  ({ playerName, tagline, backgroundImage }, ref) => {
+  ({ playerName, tagline, backgroundImage, format = 'square' }, ref) => {
+    const isStory = format === 'story';
+    const height = isStory ? 1920 : 1080;
     return (
       <div
         ref={ref}
-        style={{ width: 1080, height: 1080 }}
+        style={{ width: 1080, height }}
         className="relative overflow-hidden"
       >
         {backgroundImage ? (
@@ -34,7 +37,7 @@ export const PlayerHighlightTemplate = forwardRef<HTMLDivElement, PlayerHighligh
         />
 
         {/* Text content bottom-left */}
-        <div className="absolute bottom-14 left-14 right-36 z-10">
+        <div className={`absolute left-14 right-36 z-10 ${isStory ? 'bottom-24' : 'bottom-14'}`}>
           <p
             className="text-white font-headline font-black leading-none"
             style={{ fontSize: playerName.length > 16 ? 72 : 88, textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}

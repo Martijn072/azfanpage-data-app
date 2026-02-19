@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import { TemplateSelector, TemplateType } from '@/components/visuals/TemplateSelector';
+import { useState, useEffect } from 'react';
+import { TemplateSelector, TemplateType, VisualFormat, STORY_TEMPLATES } from '@/components/visuals/TemplateSelector';
 import { VisualPreview } from '@/components/visuals/VisualPreview';
 import { BackgroundUploader } from '@/components/visuals/BackgroundUploader';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Square, RectangleVertical } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const Visuals = () => {
   const [selected, setSelected] = useState<TemplateType>('result');
+  const [format, setFormat] = useState<VisualFormat>('square');
   const [playerName, setPlayerName] = useState('');
   const [tagline, setTagline] = useState('');
   const [headline, setHeadline] = useState('');
@@ -44,7 +47,36 @@ const Visuals = () => {
         </p>
       </div>
 
-      <TemplateSelector selected={selected} onSelect={setSelected} />
+      <TemplateSelector selected={selected} onSelect={(t) => { setSelected(t); if (!STORY_TEMPLATES.includes(t)) setFormat('square'); }} />
+
+      {STORY_TEMPLATES.includes(selected) && (
+        <div className="flex items-center gap-2">
+          <span className="text-app-body text-muted-foreground text-sm">Formaat:</span>
+          <button
+            onClick={() => setFormat('square')}
+            className={cn(
+              "p-2 rounded-md border transition-all",
+              format === 'square' ? "bg-primary/10 text-primary border-primary/30" : "bg-card text-muted-foreground border-border hover:border-primary/20"
+            )}
+            title="Vierkant (1080×1080)"
+          >
+            <Square className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => setFormat('story')}
+            className={cn(
+              "p-2 rounded-md border transition-all",
+              format === 'story' ? "bg-primary/10 text-primary border-primary/30" : "bg-card text-muted-foreground border-border hover:border-primary/20"
+            )}
+            title="Story (1080×1920)"
+          >
+            <RectangleVertical className="h-4 w-4" />
+          </button>
+          <span className="text-app-tiny text-muted-foreground/60 ml-1">
+            {format === 'square' ? '1080×1080' : '1080×1920'}
+          </span>
+        </div>
+      )}
 
       <BackgroundUploader
         backgroundImage={backgrounds[selected]}
@@ -100,6 +132,7 @@ const Visuals = () => {
 
       <VisualPreview
         template={selected}
+        format={format}
         backgroundImage={backgrounds[selected]}
         playerName={playerName}
         tagline={tagline}

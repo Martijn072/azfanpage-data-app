@@ -4,12 +4,15 @@ interface BreakingTemplateProps {
   headline: string;
   subtitle: string;
   backgroundImage?: string | null;
+  format?: 'square' | 'story';
 }
 
 export const BreakingTemplate = forwardRef<HTMLDivElement, BreakingTemplateProps>(
-  ({ headline, subtitle, backgroundImage }, ref) => {
+  ({ headline, subtitle, backgroundImage, format = 'square' }, ref) => {
+    const isStory = format === 'story';
+    const height = isStory ? 1920 : 1080;
     return (
-      <div ref={ref} style={{ width: 1080, height: 1080 }} className="relative overflow-hidden">
+      <div ref={ref} style={{ width: 1080, height }} className="relative overflow-hidden">
         {backgroundImage ? (
           <img src={backgroundImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (
@@ -26,7 +29,7 @@ export const BreakingTemplate = forwardRef<HTMLDivElement, BreakingTemplateProps
         <div className="absolute top-0 left-0 right-0 h-[6px] z-10" style={{ background: 'linear-gradient(90deg, #DB0021 0%, #DB0021 60%, transparent 100%)' }} />
 
         {/* Breaking badge */}
-        <div className="absolute bottom-14 left-14 right-36 z-10">
+        <div className={`absolute left-14 right-36 z-10 ${isStory ? 'bottom-24' : 'bottom-14'}`}>
           <div
             className="inline-block px-5 py-2 mb-5"
             style={{ background: '#DB0021' }}
