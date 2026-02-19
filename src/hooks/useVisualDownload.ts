@@ -10,12 +10,20 @@ export const useVisualDownload = () => {
       const dataUrl = await toPng(ref.current, {
         pixelRatio: 2,
         cacheBust: true,
+        skipFonts: true,
         style: {
           transform: 'none',
           transformOrigin: 'top left',
         },
         width: ref.current.scrollWidth,
         height: ref.current.scrollHeight,
+        filter: (node: HTMLElement) => {
+          // Skip external stylesheets that cause CORS errors
+          if (node.tagName === 'LINK' && (node as HTMLLinkElement).href?.includes('fonts.googleapis.com')) {
+            return false;
+          }
+          return true;
+        },
       });
 
       const link = document.createElement('a');
