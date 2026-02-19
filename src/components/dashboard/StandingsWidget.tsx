@@ -6,6 +6,7 @@ interface StandingsWidgetProps {
   standings: Standing[] | undefined;
   isLoading: boolean;
   compact?: boolean;
+  hideLink?: boolean;
 }
 
 const AZ_TEAM_ID = 201;
@@ -29,8 +30,9 @@ const FormBadges = ({ form }: { form: string }) => {
   );
 };
 
-export const StandingsWidget = ({ standings, isLoading, compact = false }: StandingsWidgetProps) => {
+export const StandingsWidget = ({ standings, isLoading, compact = false, hideLink = false }: StandingsWidgetProps) => {
   const navigate = useNavigate();
+  const showLink = compact && !hideLink;
 
   if (isLoading) {
     return (
@@ -73,7 +75,7 @@ export const StandingsWidget = ({ standings, isLoading, compact = false }: Stand
         <h3 className="text-app-tiny uppercase tracking-wider text-muted-foreground font-medium">
           Eredivisie Stand
         </h3>
-        {compact && (
+        {showLink && (
           <button
             onClick={() => navigate("/competitie")}
             className="text-app-tiny text-primary hover:underline"
