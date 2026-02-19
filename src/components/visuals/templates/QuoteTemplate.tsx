@@ -64,7 +64,7 @@ export const QuoteTemplate = forwardRef<HTMLDivElement, QuoteTemplateProps>(
 
         {/* AZ Fanpage logo top-right */}
         <div className="absolute top-14 right-10 z-10">
-          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-24 w-auto" style={{ mixBlendMode: 'screen' }} />
+          <img src="/images/az-fanpage-logo.png" alt="AZ Fanpage" className="h-24 w-auto" />
         </div>
       </div>
     );
