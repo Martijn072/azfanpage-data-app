@@ -23,7 +23,7 @@ export const QuoteTemplate = forwardRef<HTMLDivElement, QuoteTemplateProps>(
         {/* Dark overlay for legibility */}
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(160deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%)' }}
+          style={{ background: 'linear-gradient(160deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.85) 100%)' }}
         />
 
         {/* Red top bar */}
@@ -45,7 +45,7 @@ export const QuoteTemplate = forwardRef<HTMLDivElement, QuoteTemplateProps>(
           {/* Quote text */}
           <p
             className="text-white font-headline font-bold leading-tight -mt-12"
-            style={{ fontSize: tagline.length > 120 ? 40 : tagline.length > 80 ? 48 : 56 }}
+            style={{ fontSize: tagline.length > 120 ? 40 : tagline.length > 80 ? 48 : 56, textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}
           >
             {tagline || 'Typ hier het citaat...'}
           </p>
@@ -53,7 +53,7 @@ export const QuoteTemplate = forwardRef<HTMLDivElement, QuoteTemplateProps>(
           {/* Player name */}
           <div className="mt-8 flex items-center gap-3">
             <div className="w-12 h-[3px] bg-white/80" />
-            <p className="text-white/80 font-body font-semibold" style={{ fontSize: 32 }}>
+            <p className="text-white/80 font-body font-semibold" style={{ fontSize: 32, textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
               {playerName || 'Spelernaam'}
             </p>
           </div>
