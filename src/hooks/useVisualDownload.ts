@@ -25,6 +25,21 @@ async function toDataUrlViaProxy(src: string): Promise<string | null> {
   }
 }
 
+async function blobToDataUrl(blobUrl: string): Promise<string | null> {
+  try {
+    const res = await fetch(blobUrl);
+    const blob = await res.blob();
+    return await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return null;
+  }
+}
+
 async function inlineExternalImages(container: HTMLDivElement) {
   const images = container.querySelectorAll('img');
   const originals: { img: HTMLImageElement; src: string }[] = [];
@@ -34,11 +49,17 @@ async function inlineExternalImages(container: HTMLDivElement) {
   await Promise.all(
     Array.from(images).map(async (img) => {
       const src = img.getAttribute('src') || img.src;
-      console.log('[visual-export] Checking image:', src);
-      
-      // Skip empty, data URLs, and local images
       if (!src || src.startsWith('data:')) return;
-      
+
+      // Handle blob URLs - convert to data URL to avoid cacheBust issues
+      if (src.startsWith('blob:')) {
+        console.log('[visual-export] Converting blob URL:', src);
+        originals.push({ img, src });
+        const dataUrl = await blobToDataUrl(src);
+        if (dataUrl) img.src = dataUrl;
+        return;
+      }
+
       // Check if it's a local/relative image
       try {
         const imgUrl = new URL(src, window.location.origin);
@@ -47,17 +68,14 @@ async function inlineExternalImages(container: HTMLDivElement) {
           return;
         }
       } catch {
-        // relative URL, skip
         return;
       }
 
       originals.push({ img, src });
-
+      console.log('[visual-export] Proxying image:', src);
       const dataUrl = await toDataUrlViaProxy(src);
       if (dataUrl) {
         img.src = dataUrl;
-      } else {
-        console.warn('[visual-export] Could not proxy image:', src);
       }
     })
   );
