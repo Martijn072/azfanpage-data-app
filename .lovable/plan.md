@@ -1,78 +1,59 @@
 
-# Embeddable Widgets voor AZ Fanpage Artikelen
+# Light Mode voor de Applicatie
 
-## Concept
+## Wat gaat er gebeuren?
 
-Standalone, iframe-vriendelijke widgets die op azfanpage.nl in WordPress-artikelen ingebed kunnen worden. Elke widget laadt zijn eigen data, heeft een transparante/donkere achtergrond die past bij de site, en is responsive.
+De hele app krijgt een schakelaar waarmee je kunt wisselen tussen licht en donker. Standaard wordt het systeem-thema van je apparaat gevolgd. De visuals-pagina (social media afbeeldingen) blijft altijd donker, want die zien er zo het beste uit.
 
-## Welke embeds zijn waardevol in artikelen?
+## Zichtbare veranderingen
 
-### 1. Eredivisie Stand (compact)
-- Perfecte aanvulling bij elk competitie-gerelateerd artikel
-- Toont top 5 + AZ-positie (als die buiten top 5 valt)
-- Live data, altijd actueel
+- Een zon/maan-icoontje rechts in de bovenste balk om te wisselen
+- Alle pagina's, kaarten, tabellen en navigatie passen zich automatisch aan
+- De lichte modus gebruikt de witte/grijze kleuren die al in het systeem zitten
+- Visuals-pagina blijft altijd in dark mode
 
-### 2. Wedstrijdscore / Uitslagkaart
-- Voor wedstrijdverslagen: toont de eindstand met logo's
-- Kan gekoppeld worden aan een specifieke fixture ID
+## Technisch plan
 
-### 3. Volgende Wedstrijd
-- Voor voorbeschouwingen: toont tegenstander, tijd, locatie, countdown
-- Altijd de eerstvolgende AZ-wedstrijd
+### 1. ThemeProvider toevoegen (App.tsx)
+- `next-themes` is al geinstalleerd maar wordt alleen in Sonner gebruikt
+- Wrap de app in `<ThemeProvider attribute="class" defaultTheme="system">`
+- Verwijder de `useEffect` die altijd `dark` forceert
 
-### 4. Head-to-Head balk
-- Voor voorbeschouwingen: visuele W-G-V verdeling tegen de volgende tegenstander
-- Compacte horizontale balk
+### 2. Thema-toggle in TopBar (TopBar.tsx)
+- Voeg een Sun/Moon knop toe naast de seizoensselector
+- Gebruikt `useTheme()` van `next-themes` om te wisselen
 
-### 5. Wedstrijdstatistieken
-- Voor nabeschouwingen: xG, balbezit, schoten etc.
-- Gekoppeld aan een specifieke fixture ID
+### 3. UI-componenten opschonen
+De volgende bestanden gebruiken hardcoded kleuren (`premium-gray-*`, `az-black`, `dark:bg-gray-*`) die niet bestaan in het design system en problemen geven in light mode:
 
-## Technische aanpak
+| Bestand | Aanpassing |
+|---------|-----------|
+| `select.tsx` | `bg-white dark:bg-gray-800 text-az-black` vervangen door `bg-popover text-popover-foreground` |
+| `badge.tsx` | `premium-gray-*` en `dark:` varianten vervangen door `bg-secondary text-secondary-foreground` |
+| `alert.tsx` | `premium-gray-200 dark:border-gray-700` vervangen door `border-border` |
+| `button.tsx` | `premium-gray-300` vervangen door `border-input` |
+| `skeleton.tsx` | `premium-gray-200` vervangen door `bg-muted` |
+| `switch.tsx` | `premium-gray-300 dark:bg-gray-600` vervangen door `bg-input` |
+| `navigation-menu.tsx` | Hardcoded kleuren vervangen door `bg-accent text-accent-foreground` |
+| `toast.tsx` | Kleine `dark:` opruiming |
 
-### Nieuwe embed-routes (zonder AppLayout)
+### 4. Visuals forceren naar dark mode (Visuals.tsx)
+- Bij laden van de Visuals-pagina tijdelijk `dark` class toevoegen
+- Bij verlaten terugzetten naar het gekozen thema
+- Dit raakt alleen de Visuals-pagina, niet de rest van de app
 
-Aparte routes onder `/embed/...` die GEEN sidebar/topbar laden, alleen de widget zelf:
+### Bestanden die worden aangemaakt of gewijzigd
 
-```text
-/embed/standings          - Compacte Eredivisie stand
-/embed/last-match         - Laatste uitslagkaart
-/embed/next-match         - Volgende wedstrijd
-/embed/h2h                - Head-to-head volgende tegenstander
-/embed/match-stats/:id    - Statistieken van specifieke wedstrijd
-```
-
-### Embed wrapper component
-
-Een `EmbedLayout` component die:
-- Donkere achtergrond instelt (passend bij azfanpage.nl)
-- Padding toevoegt
-- Geen navigatie/sidebar toont
-- Een klein "Powered by AZ Fanpage" voetje toont
-
-### WordPress integratie
-
-Op azfanpage.nl kan elk widget ingebed worden met een simpele iframe:
-
-```text
-<iframe 
-  src="https://alkmaar-red-report.lovable.app/embed/standings" 
-  width="100%" 
-  height="400" 
-  frameborder="0"
-/>
-```
-
-## Bestanden
-
-| Actie | Bestand | Beschrijving |
-|-------|---------|-------------|
-| Nieuw | `src/components/embed/EmbedLayout.tsx` | Wrapper: donker thema, padding, geen navigatie |
-| Nieuw | `src/pages/embed/EmbedStandings.tsx` | Compacte stand widget |
-| Nieuw | `src/pages/embed/EmbedLastMatch.tsx` | Laatste uitslag widget |
-| Nieuw | `src/pages/embed/EmbedNextMatch.tsx` | Volgende wedstrijd widget |
-| Nieuw | `src/pages/embed/EmbedH2H.tsx` | Head-to-head balk |
-| Nieuw | `src/pages/embed/EmbedMatchStats.tsx` | Wedstrijdstatistieken (per fixture ID) |
-| Wijzig | `src/App.tsx` | Embed-routes toevoegen buiten AppLayout |
-
-Bestaande componenten (`StandingsWidget`, `LastMatchCard`, `NextMatchCard`, `H2HVisualBar`, `StatComparisonBars`) worden hergebruikt -- er wordt geen logica gedupliceerd.
+| Actie | Bestand |
+|-------|---------|
+| Wijzig | `src/App.tsx` |
+| Wijzig | `src/components/layout/TopBar.tsx` |
+| Wijzig | `src/components/ui/select.tsx` |
+| Wijzig | `src/components/ui/badge.tsx` |
+| Wijzig | `src/components/ui/alert.tsx` |
+| Wijzig | `src/components/ui/button.tsx` |
+| Wijzig | `src/components/ui/skeleton.tsx` |
+| Wijzig | `src/components/ui/switch.tsx` |
+| Wijzig | `src/components/ui/navigation-menu.tsx` |
+| Wijzig | `src/components/ui/toast.tsx` |
+| Wijzig | `src/pages/app/Visuals.tsx` |
