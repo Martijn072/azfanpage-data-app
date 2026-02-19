@@ -37,7 +37,7 @@ export const TemplateSelector = ({ selected, onSelect }: TemplateSelectorProps) 
         >
           <t.icon className="h-4 w-4" />
           <span>{t.label}</span>
-          <span className="text-app-tiny text-muted-foreground/60 ml-1">{t.format}</span>
+          <span className="text-app-tiny text-muted-foreground/60 ml-1 hidden sm:inline">{t.format}</span>
         </button>
       ))}
     </div>
